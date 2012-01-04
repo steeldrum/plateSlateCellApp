@@ -1,0 +1,74 @@
+/***************************************
+$Revision::                            $: Revision of last commit
+$LastChangedBy::                       $: Author of last commit
+$LastChangedDate::                     $: Date of last commit
+***************************************/
+
+.showSection { display: block; }
+.hideSection { display: none; }
+
+.showDiv { display: block; }
+.hideDiv { display: none; }
+
+
+/* tjs 111222
+#plateEditDialog { background-color: white; }
+
+div[class^='flexbox-holder'] {
+    background-color: silver;
+    display: -moz-box;
+    display: -ms-box;
+    display: -webkit-box;
+    width: 490px;
+}
+div.flex {
+    border: 1px solid gray;
+    margin: 2px;
+    padding: 2px;
+    width: 70px;
+    font-size: x-small;
+    -moz-box-flex: 1;
+    -ms-box-flex: 1;
+    -webkit-box-flex: 1;
+}*/
+
+div[type='fruit'] {
+	/*background-color: rgb(204,51,51);*/
+	background-color: crimson;
+}
+div[type='grains'] {
+	/*background-color: rgb(204, 102, 51);*/
+	background-color: sandybrown;
+}
+div[type='dairy'] {
+	/*background-color: rgb(102, 153, 204);*/
+	background-color: cornflowerblue;
+}
+div[type='protein'] {
+	/*background-color: rgb(102, 102, 153);*/
+	background-color: mediumpurple;
+}
+div[type='vegetables'] {
+	/*background-color: rgb(0, 204, 102);*/
+	background-color: mediumseagreen;
+}
+div[type='none'] {
+	background-color: white;
+}
+
+/* tjs 110822 */
+/*
+table.slateView { border: 0;
+cellspacing="0";
+}
+*/
+/*
+.
+.ui-dialog-title {
+	background-color: white;
+}
+
+.ui-dialog-titlebar-close {
+	background-color: white;
+}
+*/

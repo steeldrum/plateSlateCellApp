@@ -1,0 +1,402 @@
+<!--------------------------------------
+$Revision:: 175                        $: Revision of last commit
+$LastChangedBy::                       $: Author of last commit
+$LastChangedDate:: 2012-01-03 14:44:48#$: Date of last commit
+--------------------------------------->
+<html>
+<head>
+    <title>PageSlate</title>
+	<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1">
+	<link rel="stylesheet" href="css/jquery.mobile-1.0.min.css" /> 
+    <link rel="stylesheet" href="css/plateSlateCellApp.css">
+	<style>
+		.segmented-control { text-align:center;}
+		.segmented-control .ui-controlgroup { margin: 0.2em; }
+		.ui-control-active, .ui-control-inactive { border-style: solid; border-color: gray; }
+		.ui-control-active { background: #BBB; }
+		.ui-control-inactive { background: #DDD; }
+	</style>
+    <script src="js/plateSlateCellApp.js"></script>
+	<script src="js/jquery-1.6.4.min.js"></script>
+	<script>
+			//globals used for account management
+		var loginAccountNumber = 0;
+		var db;
+		var currentChoice;
+		//tjs101230
+		var authenticated = false;
+		// tjs 111222
+		var color = 0;
+		
+		// tjs 111228
+		// globals for adding new portions
+		var grainPortionSelectListHtml = null;
+		var proteinPortionSelectListHtml;
+		var vegetablesPortionSelectListHtml;
+		var fruitsPortionSelectListHtml;
+		var dairyPortionSelectListHtml;
+
+		$(document).bind('mobileinit',function(){ 
+		 	// Globally configure search filter placeholder text
+			//$.mobile.listview.prototype.options.filterPlaceholder = "Search me..."; 
+			
+			// Configure a "starts with" search instead of the default
+			//$.mobile.listview.prototype.options.filterCallback = function( text, searchValue ){
+				// New "Starts With" search, return false when there's a match
+				//return !(text.toLowerCase().indexOf( searchValue ) === 0);
+			//};	
+		});
+		
+		$(document).bind('pageloadfailed',function(e, data){ 
+		 	alert("page load failed!");	
+		});
+		
+		// When the page loads configure a custom search
+		/*
+		$('#calendar-page').live("pagebeforeshow", function(){
+		  $("#calendar-list").listview('option', 'filterCallback', 
+				function( text, searchValue ){
+					// New "Starts With" search, return false when there's a match
+					return !(text.toLowerCase().indexOf( searchValue ) === 0);
+				}
+			);
+		});*/
+
+		$('#home-page').live("pageinit", function(){
+			//function to execute when doc ready
+			$(function() {
+				readPortions();
+				setLoginButton();
+				// tjs 111228
+				//derivePortionSelectionLists();
+				
+				// tjs 111224
+				$('.Breakfast').live('change', function() {
+			  		// Live handler called.
+						var offset = color/20;
+						var thresholdOffset = offset + slateOffsetThreshold;
+				    	var el = event.target;
+				    	var optionValue = el.options[el.selectedIndex].value;
+				    	//e.g 82|Breakfast|Flakes-n-Bakes|Cereal, Fruit, etc.|1|2|41|47|5||||||0
+				    	//alert( "index liveSelectionsHandlers breakfast value " + optionValue + " thresholdOffset " + thresholdOffset);
+				    	//alert( "plateslate bindSelectionsHandlers value " + optionValue + " thisOffset " + thisOffset);
+				    	var slate = slates[thresholdOffset];
+				    	slate.breakfastId = optionValue;
+				    	refreshPortionCache(slate, "Breakfast");
+				    	//alert( "plateslate bindSelectionsHandlers slate id " + slate.id + " slate.breakfastId " + slate.breakfastId);
+				    	// tjs 111226
+				    	//view.sendEvent();
+				    	//$.mobile.pageContainer.trigger("create");
+				    	hijaxBreakfastPage();
+				    	updateSlate(offset);
+				    	//alert( "plateslate bindSelectionsHandlers breakfastSelectionId " + breakfastSelectionId + " value " + optionValue);
+				    	// tjs 110819
+				    	return false;
+					});
+
+				$('.Lunch').live('change', function() {
+			  		// Live handler called.
+						var offset = color/20;
+						var thresholdOffset = offset + slateOffsetThreshold;
+				    	var el = event.target;
+				    	var optionValue = el.options[el.selectedIndex].value;
+				    	//e.g 82|Breakfast|Flakes-n-Bakes|Cereal, Fruit, etc.|1|2|41|47|5||||||0
+				    	//alert( "index liveSelectionsHandlers lunch value " + optionValue + " thresholdOffset " + thresholdOffset);
+				    	//alert( "plateslate bindSelectionsHandlers value " + optionValue + " thisOffset " + thisOffset);
+				    	var slate = slates[thresholdOffset];
+				    	slate.lunchId = optionValue;
+				    	refreshPortionCache(slate, "Lunch");
+				    	//alert( "plateslate bindSelectionsHandlers slate id " + slate.id + " slate.breakfastId " + slate.breakfastId);
+				    	// tjs 111226
+				    	//view.sendEvent();
+				    	hijaxLunchPage();
+				    	updateSlate(offset);
+				    	//alert( "plateslate bindSelectionsHandlers breakfastSelectionId " + breakfastSelectionId + " value " + optionValue);
+				    	// tjs 110819
+				    	return false;
+					});
+				$('.Dinner').live('change', function() {
+			  		// Live handler called.
+						var offset = color/20;
+						var thresholdOffset = offset + slateOffsetThreshold;
+				    	var el = event.target;
+				    	var optionValue = el.options[el.selectedIndex].value;
+				    	//e.g 82|Breakfast|Flakes-n-Bakes|Cereal, Fruit, etc.|1|2|41|47|5||||||0
+				    	//alert( "index liveSelectionsHandlers dinner value " + optionValue + " thresholdOffset " + thresholdOffset);
+				    	//alert( "plateslate bindSelectionsHandlers value " + optionValue + " thisOffset " + thisOffset);
+				    	var slate = slates[thresholdOffset];
+				    	slate.dinnerId = optionValue;
+				    	refreshPortionCache(slate, "Dinner");
+				    	//alert( "plateslate bindSelectionsHandlers slate id " + slate.id + " slate.breakfastId " + slate.breakfastId);
+				    	// tjs 111226
+				    	//view.sendEvent();
+				    	hijaxDinnerPage();
+				    	updateSlate(offset);
+				    	//alert( "plateslate bindSelectionsHandlers breakfastSelectionId " + breakfastSelectionId + " value " + optionValue);
+				    	// tjs 110819
+				    	return false;
+					}); 				
+			});
+			});
+
+		// tjs 111228
+			//$('#grain-portion-dial').live("pageinit", function(){
+			$('#breakfast-page').live("pageinit", function(){
+				if (grainPortionSelectListHtml == null)				
+					derivePortionSelectionLists();					
+			});
+			$('#lunch-page').live("pageinit", function(){
+				if (grainPortionSelectListHtml == null)				
+					derivePortionSelectionLists();					
+			});
+			$('#dinner-page').live("pageinit", function(){
+				if (grainPortionSelectListHtml == null)				
+					derivePortionSelectionLists();					
+			});
+
+			// tjs 111230
+			//$('#preferences-page').live("pageinit", function(){
+			//	showPlaceSetting();					
+			//});
+
+		function login() {
+			$.mobile.changePage("#login-dial");
+		}
+
+		function logout() {
+			// process button action...
+			//alert("logout");
+			//handleLogout();
+			doLogout();
+			authenticated = false;
+			loginAccountNumber = 0;
+			setLoginButton();
+		}
+		
+		function setLoginButton() {
+			var buttonHtml = '<input type="button" value="Login" onclick="javascript:login();" data-icon="arrow-l" class="ui-btn-right"/>';
+			$('#loginLogoutButton').empty();
+			$('#loginLogoutButton').append($(buttonHtml));
+		}
+
+		function setLogoutButton() {
+			var buttonHtml = '<input type="button" value="Logout" onclick="javascript:logout();" data-icon="arrow-l" class="ui-btn-right"/>';
+			$('#loginLogoutButton').empty();
+			$('#loginLogoutButton').append($(buttonHtml));
+		}
+
+	</script>
+	<script src="js/jquery.mobile-1.0.min.js"></script>
+ </head>
+
+<body>
+
+<!-- Home Page -->
+<div data-role="page" id="home-page" data-title="Home">
+	<div data-role="header">
+		<h1>Plate Slate</h1>
+		<div id="loginLogoutButton">
+		<!-- a href="#login-dial" data-icon="arrow-r" class="ui-btn-right">Login</a -->
+		</div>
+		
+	</div>
+
+	<div data-role="content">
+		<ul data-role="listview" data-inset="true" data-theme="c" data-dividertheme="b">
+			<li data-role="list-divider">Choices</li>
+			<li>
+			  <a href="javascript:openSlatePlansPage();">
+				<h3>Slates</h3>
+			  </a>
+			</li>
+			<li>
+			  <!-- a href="#plates-page" -->
+			  <a href="javascript:hijaxPlatesPage();">
+				<h3>Plates</h3>
+			  </a>
+			</li>
+			<li>
+			  <a href="#report-page">
+				<h3>Report</h3>
+			  </a>
+			</li>	
+			<li>
+			  <a href="javascript:hijaxPreferencesPage();">
+				<h3>Preferences</h3>
+			  </a>
+			</li>	
+			<li>
+			  <a href="#about-page">
+				<h3>About</h3>
+			  </a>
+			</li>					
+		</ul>
+	</div>	
+</div>
+
+<!-- Plates -->
+<div data-role="page" data-add-back-btn="true" id="plates-page" data-title="Plates">
+	<div data-role="header">
+		<h1>Plates</h1>
+	</div>
+
+	<div data-role="content">
+		<div id="platesContents"></div>
+	</div>
+	<script type="text/javascript">
+
+	</script>	
+</div>
+
+<!-- Report -->
+<div data-role="page" data-add-back-btn="true" id="report-page" data-title="Report">
+	<div data-role="header">
+		<h1>Meal Plan Report</h1>
+	</div>
+
+	<div data-role="content">
+<a href="javascript:doReport();">Get PDF Report</a>	
+	</div>
+	<script type="text/javascript">
+
+	</script>	
+</div>
+
+<!-- About -->
+<div data-role="page" data-add-back-btn="true" id="about-page" data-title="About">
+	<div data-role="header">
+		<h1>About Plate Slate</h1>
+	</div>
+
+	<div data-role="content">
+<section>
+<h1>Welcome to PlateSlate!</h1>
+<article>
+<p>PlateSlate is a web site that provides a free service to users in order
+to help them plan meals.  In short users decide what <i>plates</i> are <i>slated</i> to be
+served over time.</p>
+  <p>The web site is currently undergoing beta tests and, as such, it is incomplete.
+  Nonetheless some brave beta testers have already reported that it helps! 
+  </p>
+  <p>The full potential of the site is described by our host provider
+  <a href="www.collogistics.com">Collogistics</a> as a project (or wiki as they call it).
+  Building the site is a collaborative effort derived mainly from volunteers.
+  The plans are to derive revenue from users interested in special features
+  (not yet implemented) or folks who find the web app valuable enough to
+  remit shareware fees.  (We deeply appreciate your support!)
+  </p>
+  <p>Tips for using the App:
+  <ul>
+  <li>A "slate" lists suggested meals for given day (initially today).  The plans for breakfast are displayed initially
+  for any given day.  Use navigation controls in the page's footer to observe lunch or dinner plans.  For any meal use
+   pull-down controls to alter the suggestions.</li>
+  <li>The suggested meals lists portions by category (e.g. Grains).  Use portioned plate icons to alter portions (for Breakfast,
+   Lunch or Dinner).  If you 'Save To' <strong>Plate</strong> the changes are saved for <i>all</i> new plates.
+     Generally you would 'Save To' <strong>Slate</strong> meaning changes are <i>just for the current slate</i> being edited.</li>
+  <li>To plan a meal for the next day simply click the 'Next' button in the footer.</li>
+  <li>To review past plans simply click the 'Prev' button.</li>
+  <li>Registered users (visit <a href="www.plateslate.com">PlateSlate</a>) will observe the place setting's choice enabled:
+   <img src="images/plateSettingPlate.jpg" />  These buttons enable members to define preferences, view reports, etc.</li>
+  </ul>
+  </p>
+  <p>Warning THIS IS BETA SOFTWARE!  Known bugs:
+  <ul>
+  <li>Usage restricted to html5 compatible browsers.  (For example this app won't operate with IE prior to version 9).</li>
+  <li>The initial screen is blank until your database is fully initialized.  This could take a few seconds.</li>
+  <li>Many features cited in the <a href="www.collogistics.com">Collogistics</a> wiki have NOT been implemented!</li>
+  <li>While registered users can view the slates report, they should enable popup windows to view the data. </li>
+  </ul>
+  </p>
+  <p>
+  <br/>
+  <br/>
+  <br/>
+  </p>
+  </article>
+</section>
+	</div>
+	<script type="text/javascript">
+		/* Page specific scripts here. */
+	</script>	
+</div>
+
+<!-- Login Page/Dialog -->
+<div data-role="dialog" id="login-dial">
+	<div data-role="header">
+		<h1>Login</h1>
+	</div>
+	
+	<div data-role="content" data-theme="c">	
+			<form name="loginForm">
+				<p>
+				Plate Slate login...
+				</p>
+				<p/>
+		<p>	
+	    <label for="name">Username:</label>
+	    <input type="text" name="name" id="name" value="" placeholder="username" data-theme="d"/>
+	    </p>
+		<p>	
+	    <label for="password">Password:</label>
+	    <input type="password" name="pword" id="pword" value="" placeholder="" data-theme="d"/>
+	    </p>
+			</form>
+		<br><br>
+		<a href="#home-page" data-role="button" data-inline="true" data-rel="back" data-theme="a">Cancel</a>		
+		<a href="javascript:processLoginForm();" data-role="button" data-inline="true">Login</a>
+		<div id ="resultLog"></div>
+	</div>
+	<script>
+
+	</script>
+</div>
+
+<!-- Add Plate/Dialog -->
+<div data-role="dialog" id="add-plate-dial">
+	<div data-role="header">
+		<h1>Add New Plate</h1>
+	</div>
+	
+	<div data-role="content" data-theme="c">	
+			<form name="addPlateForm">
+				<p>
+				Add New Plate...
+				</p>
+				<p/>
+		<p>	
+	    <label for="name">Plate Name:</label>
+	    <input type="text" name="name" id="platename" value="" placeholder="platename" data-theme="d"/>
+	    </p>
+		<p>	
+	    <label for="description">Description:</label>
+	    <input type="text" name="description" id="platedescription" value="" placeholder="description" data-theme="d"/>
+	    </p>
+		<p>	
+	    <!-- label for="type">Type:</label -->
+	    <select name="type"><optgroup label="Type">
+	    					<option value ="Breakfast">Breakfast</option>
+	    					<option value ="Lunch">Lunch</option>
+	    					<option value ="Dinner">Dinner</option>
+	    </optgroup></select>'
+	    </p>
+			</form>
+		<br><br>
+		<a href="#home-page" data-role="button" data-inline="true" data-rel="back" data-theme="a">Cancel</a>		
+		<a href="javascript:processAddPlateForm();" data-role="button" data-inline="true">Add New Plate</a>
+		<div id ="resultLog"></div>
+	</div>
+	<script>
+
+	</script>
+</div>
+    <script type="text/javascript">
+/*
+	//function to execute when doc ready
+	$(function() {
+		readPortions();
+		setLoginButton();		
+	  });
+	*/
+		</script>	
+</body>
+</html>
