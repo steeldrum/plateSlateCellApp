@@ -4631,7 +4631,8 @@ function hijaxPlatesPage() {
 	//donationHtml += '<li id="' + charityId + '"><a href="javascript:addDonation(' + memberId + ', ' + charityId + ', 0)">' + charityName + '</a><a class="ui-icon-nonprofit" href="javascript:addSolicitation(' + memberId + ', ' + charityId + ', 0)" data-role="button">Zero Donation</a></li>';
 	//alert("plateSlateCellApp hijaxPlatesPage...");
 	  // create page markup
-	var newPageHtml = '<div data-role="page" id="breakfast-page" data-title="Plates" class="type-interior" data-theme="b" data-dom-cache="true">';
+	//var newPageHtml = '<div data-role="page" id="breakfast-page" data-title="Plates" class="type-interior" data-theme="b" data-dom-cache="true">';
+	var newPageHtml = '<div data-role="page" id="plates-page" data-title="Plates" class="type-interior" data-theme="b" data-dom-cache="true">';
 	newPageHtml += '<div data-role="header" data-theme="f" data-position="fixed">';
 	newPageHtml += '<a href="index.html" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-left jqm-home">Home</a>';
 	newPageHtml += '<h1>Plates</h1>';
@@ -4659,7 +4660,7 @@ function hijaxPlatesPage() {
 	newPageHtml += "</ul>";
 	newPageHtml += '</div>'; // end content primary
 	newPageHtml += '<div class="content-secondary">';
-	newPageHtml += '<ul data-role="listview" id="plates-list" data-filter="false" data-filter-placeholder="Search..." data-split-icon="add" data-split-theme="d">';
+	newPageHtml += '<ul data-role="listview" id="add-plates-list" data-filter="false" data-split-icon="add" data-split-theme="d">';
 	newPageHtml += '<li><a href="javascript:addPlate()">Add New Plate</a><a href="javascript:activatePlate()" data-role="button">Add Plate</a></li>';
 	newPageHtml += "</ul>";
 	newPageHtml += '</div>'; // end content secondary
@@ -4787,4 +4788,178 @@ function processAddPlateForm() {
 		alert(msg);
 		$('#add-plate-dial').dialog('close');
 	}
+}
+
+function hijaxPortionsPage() {
+	// for debug comment out this...
+	if (!authenticated)	{
+		return;
+	}
+	  // create page markup
+	var newPageHtml = '<div data-role="page" id="portions-page" data-title="Portions" class="type-interior" data-theme="b" data-dom-cache="true">';
+	newPageHtml += '<div data-role="header" data-theme="f" data-position="fixed">';
+	newPageHtml += '<a href="index.html" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-left jqm-home">Home</a>';
+	newPageHtml += '<h1>Portions</h1>';
+	newPageHtml += '</div>';
+	newPageHtml += '<div data-role="content">';
+	newPageHtml += '<div class="content-primary">';
+	newPageHtml += '<ul data-role="listview" id="portions-list" data-filter="true" data-filter-placeholder="Search..." data-split-icon="delete" data-split-theme="d">';
+	//alert("plateSlateCellApp hijaxPortionsPage portions.length " + portions.length);
+	for (var i = 0; i < portions.length; i++) {
+	    if (typeof(portions[i]) !== 'undefined') {
+			var portion = portions[i];
+			var portionName = portion.name;
+			newPageHtml += '<li><a href="javascript:editPortion(' + i + ')">' + portionName + '</a><a href="javascript:inactivatePortion(' + i + ')" data-role="button">Remove Portion</a></li>';
+	    }
+	}
+	newPageHtml += "</ul>";
+	newPageHtml += '</div>'; // end content primary
+	newPageHtml += '<div class="content-secondary">';
+	newPageHtml += '<ul data-role="listview" id="add-portions-list" data-filter="false" data-split-icon="add" data-split-theme="d">';
+	newPageHtml += '<li><a href="javascript:addPortion()">Add New Portion</a><a href="javascript:activatePortion()" data-role="button">Add Portion</a></li>';
+	newPageHtml += "</ul>";
+	newPageHtml += '</div>'; // end content secondary
+	newPageHtml += '</div></div>';
+	//alert("plateSlateCellApp hijaxPlatesPage newPageHtml " + newPageHtml);
+	var newPage = $(newPageHtml);
+	//add new dialog to page container
+	newPage.appendTo($.mobile.pageContainer);
+	// enhance and open the new dialog
+    $.mobile.changePage(newPage);	
+}
+
+function addPortion() {
+	//alert("plateSlateCellApp addPlate...");
+	$.mobile.changePage("#add-portion-dial");
+}
+
+function activatePortion() {
+	alert("plateSlateCellApp activatePortion...");
+}
+
+function editPortion(index) {
+	//alert("plateSlateCellApp editPortion index " + index);
+	var portion = portions[index];
+	var portionName = portion.name;
+	var portionDescription = portion.description;
+	var portionType = portion.type;
+	/*
+	 * 	
+			
+	 */
+	var newDialHtml = '<div data-role="dialog" id="edit-portion-dial"><div data-role="header">';
+	newDialHtml += '<h1>Edit Portion</h1></div>';	
+	newDialHtml += '<div data-role="content" data-theme="c">';
+	newDialHtml += '<form name="editPortionForm"><input type="hidden" name="index" value="'+ index + '"/>';
+	newDialHtml += '<p>Edit Portion...</p>';
+	newDialHtml += '<p/><p>	<label for="name">Portion Name:</label>';
+	newDialHtml += '<input type="text" name="name" id="portionname" value="' + portionName + '" placeholder="portionname" data-theme="d"/></p>';
+	newDialHtml += '<p><label for="description">Description:</label>';
+	newDialHtml += '<input type="text" name="description" id="portiondescription" value="' + portionDescription + '" placeholder="description" data-theme="d"/></p>';
+	newDialHtml += '<p><select name="type"><optgroup label="Type">';
+	newDialHtml += '<option value ="Grain"';
+	if (portionType == "Grain") {
+		newDialHtml += 'selected="selected"';
+	}
+	newDialHtml += '>Grain</option>';
+	newDialHtml += '<option value ="Protein"';
+	if (portionType == "Protein") {
+		newDialHtml += 'selected="selected"';
+	}
+	newDialHtml += '>Protein</option>';
+	newDialHtml += '<option value ="Vegetables"';
+	if (portionType == "Vegetables") {
+		newDialHtml += 'selected="selected"';
+	}
+	newDialHtml += '>Vegetables</option>';
+	newDialHtml += '<option value ="Fruits"';
+	if (portionType == "Fruits") {
+		newDialHtml += 'selected="selected"';
+	}
+	newDialHtml += '>Fruits</option>';
+	newDialHtml += '<option value ="Dairy"';
+	if (portionType == "Dairy") {
+		newDialHtml += 'selected="selected"';
+	}
+	newDialHtml += '>Dairy</option>';
+	newDialHtml += '</optgroup></select></p>';
+	newDialHtml += '</form>';
+	newDialHtml += '<br><br>';
+	newDialHtml += '<a href="#home-page" data-role="button" data-inline="true" data-rel="back" data-theme="a">Cancel</a>';		
+	newDialHtml += '<a href="javascript:processEditPortionForm();" data-role="button" data-inline="true">Save Portion Edit</a>';
+	newDialHtml += '<div id ="resultLog"></div>';
+	newDialHtml += '</div><script></script></div>';
+
+	var newDial = $(newDialHtml);
+	//add new dialog to page container
+	newDial.appendTo($.mobile.pageContainer);
+	
+	// tweak the new dialog just added into the dom
+
+	// enhance and open the new dialog
+    $.mobile.changePage(newDial);
+}
+
+function inactivatePortion(index) {
+	alert("plateSlateCellApp inactivatePortion index " + index);
+}
+
+function processAddPortionForm() {
+	var portionName;
+	var portionDescription;
+	var typeSelection;
+	portionName = document.addPortionForm.name.value;
+	portionDescription = document.addPortionForm.description.value;
+	typeSelection = document.addPortionForm.type;
+	var optionValue = typeSelection.options[typeSelection.selectedIndex].value;
+	//alert("plateSlateCellApp processAddPortionForm portionName " + portionName + " portionDescription " + portionDescription + " optionValue " + optionValue);
+	
+	var portion;
+	var portionExists = false;
+	var i = portions.length;
+	for (var j = 1; j < i; j++) {
+		portion = portions[j];
+		if (portion.name == portionName) {
+			portionExists = true;
+			break;
+		}
+	}
+	if (!portionExists) {
+		var index = i++;
+		portion = new Portion(index, optionValue, portionName, portionDescription, 0, 0);
+		portions[index] = portion;
+		/*
+		//dish = new Plate(index, optionValue,  + plateName, plateDescription, 0, null, null, null, null, null, null, null, null, null, 0);
+		dish = new Plate(index, optionValue, plateName, plateDescription, 0, null, null, null, null, null, null, null, null, null, 0);
+		addToPlate(dish);
+		plates[index] = dish;
+		*/
+		// use plate edit dialog...
+		//editPortion(index);
+		addToPortion(portion);
+		$('#add-portion-dial').dialog('close');
+	} else {
+		var msg = "The portion with name " + portionName + " already Exists!";
+		alert(msg);
+		$('#add-portion-dial').dialog('close');
+	}
+}
+
+function processEditPortionForm() {
+	var portionName;
+	var portionDescription;
+	var typeSelection;
+	var index = document.editPortionForm.index.value;
+	portionName = document.editPortionForm.name.value;
+	portionDescription = document.editPortionForm.description.value;
+	typeSelection = document.editPortionForm.type;
+	var optionValue = typeSelection.options[typeSelection.selectedIndex].value;
+	//alert("plateSlateCellApp processEditPortionForm portionName " + portionName + " portionDescription " + portionDescription + " optionValue " + optionValue);
+	
+	var portion = portions[index];
+	portion.name = portionName;
+	portion.description = portionDescription;
+	portion.type = optionValue;
+	addToPortion(portion);
+	$('#edit-portion-dial').dialog('close');
 }

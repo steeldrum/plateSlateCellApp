@@ -216,6 +216,12 @@ $LastChangedDate:: 2012-01-03 14:44:48#$: Date of last commit
 			  </a>
 			</li>
 			<li>
+			  <!-- a href="#portions-page" -->
+			  <a href="javascript:hijaxPortionsPage();">
+				<h3>Portions</h3>
+			  </a>
+			</li>
+			<li>
 			  <a href="#report-page">
 				<h3>Report</h3>
 			  </a>
@@ -292,7 +298,9 @@ served over time.</p>
    pull-down controls to alter the suggestions.</li>
   <li>Any suggested meal lists portions by category (e.g. Grains).  Use controls to alter portions (for Breakfast,
    Lunch or Dinner).  If you choose <strong>Plates</strong> (rather than Slates) the changes are saved for <i>all</i> new plates.
-     Generally you would always choose <strong>Slates</strong> meaning changes are <i>just for the current slate</i> being edited.</li>
+     Generally you would always choose <strong>Slates</strong> meaning changes are <i>just for the current slate</i> being edited.
+     Also note that the <strong>Portions</strong> choice supports adding or altering the plates' portions (e.g. one could add
+     'bangers' as a new portion for that English Breakfast).</li>
   <li>To plan a meal for the next day simply click the 'Next' button in the footer (after choosing Slates).</li>
   <li>To review past plans simply click the 'Prev' button.</li>
   <li>Registered users (visit <a href="http://www.plateslate.com">PlateSlate</a>) will observe the Plates, Reports and Preferences choices are enabled:
@@ -389,6 +397,47 @@ served over time.</p>
 
 	</script>
 </div>
+
+<!-- Add Portion/Dialog -->
+<div data-role="dialog" id="add-portion-dial">
+	<div data-role="header">
+		<h1>Add New Portion</h1>
+	</div>
+	
+	<div data-role="content" data-theme="c">	
+			<form name="addPortionForm">
+				<p>
+				Add New Portion...
+				</p>
+				<p/>
+		<p>	
+	    <label for="name">Portion Name:</label>
+	    <input type="text" name="name" id="portionname" value="" placeholder="portionname" data-theme="d"/>
+	    </p>
+		<p>	
+	    <label for="description">Description:</label>
+	    <input type="text" name="description" id="portiondescription" value="" placeholder="description" data-theme="d"/>
+	    </p>
+		<p>	
+	    <select name="type"><optgroup label="Type">
+	    					<option value ="Grain">Grain</option>
+	    					<option value ="Protein">Protein</option>
+	    					<option value ="Vegetables">Vegetables</option>
+	    					<option value ="Fruits">Fruits</option>
+	    					<option value ="Dairy">Dairy</option>
+	    </optgroup></select>'
+	    </p>
+			</form>
+		<br><br>
+		<a href="#home-page" data-role="button" data-inline="true" data-rel="back" data-theme="a">Cancel</a>		
+		<a href="javascript:processAddPortionForm();" data-role="button" data-inline="true">Add New Portion</a>
+		<div id ="resultLog"></div>
+	</div>
+	<script>
+
+	</script>
+</div>
+
     <script type="text/javascript">
 /*
 	//function to execute when doc ready
