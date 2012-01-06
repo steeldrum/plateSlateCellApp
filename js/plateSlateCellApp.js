@@ -1724,6 +1724,45 @@ function getSlateView(offset, mealName) {
      	//html += '<li data-role="list-divider" data-theme="b"><div data-type="horizontal">';
     	//html += '<a href="#grain-portion-dial" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Grains</a>';
     	//html += '<li data-role="list-divider" data-theme="b"><div data-role="controlgroup" data-type="horizontal">';
+    	// tjs 120106
+    	var grainDeferred = plateGrainsHtml == '<li/>';
+    	var proteinDeferred = plateProteinHtml == '<li/>';
+    	var vegetablesDeferred = plateVegetablesHtml == '<li/>';
+    	var fruitsDeferred = plateFruitsHtml == '<li/>';
+    	var dairyDeferred = plateDairyHtml == '<li/>';
+    	// first obtain non-empty portions of the meal
+    	if (!grainDeferred) {
+    		html += getGrainMealHtml(offset, mealName);
+    	}
+    	if (!proteinDeferred) {
+    		html += getProteinMealHtml(offset, mealName);
+    	}
+    	if (!vegetablesDeferred) {
+    		html += getVegetablesMealHtml(offset, mealName);
+    	}
+    	if (!fruitsDeferred) {
+    		html += getFruitsMealHtml(offset, mealName);
+    	}
+    	if (!dairyDeferred) {
+    		html += getDairyMealHtml(offset, mealName);
+    	}
+    	// else some are deferred since they are empty...
+    	if (grainDeferred) {
+    		html += getGrainMealHtml(offset, mealName);
+    	}
+    	if (proteinDeferred) {
+    		html += getProteinMealHtml(offset, mealName);
+    	}
+    	if (vegetablesDeferred) {
+    		html += getVegetablesMealHtml(offset, mealName);
+    	}
+    	if (fruitsDeferred) {
+    		html += getFruitsMealHtml(offset, mealName);
+    	}
+    	if (dairyDeferred) {
+    		html += getDairyMealHtml(offset, mealName);
+    	}
+    	/*
     	html += '<li data-role="list-divider" data-theme="b"><div data-type="horizontal">';
     	html += '<a href="javascript:hijaxGrainSelectionDial(' + offset + ",'" + mealName + "'" + ');" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Grains</a>';
     	html += '</div></li>';
@@ -1748,6 +1787,7 @@ function getSlateView(offset, mealName) {
     	html += '<a href="javascript:hijaxDairySelectionDial(' + offset + ",'" + mealName + "'" + ');" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Dairy</a>';
     	html += '</div></li>';
     	html += plateDairyHtml;
+    	*/
       //html += '</tbody></table></section>';    
         //html += '</ul>';    
     	//alert("plateslate getSlateView offset " + offset + " mealName " + mealName + " html " + html);
@@ -1757,6 +1797,51 @@ function getSlateView(offset, mealName) {
     //updatePortionsDialogs(slate, mealName, plateGrainsHtml, plateProteinHtml, plateVegetablesHtml, plateFruitsHtml, plateDairyHtml);
     
     return html;
+}
+
+// tjs 120106
+function getGrainMealHtml(offset, mealName) {
+	var html = '<li data-role="list-divider" data-theme="b"><div data-type="horizontal">';
+	html += '<a href="javascript:hijaxGrainSelectionDial(' + offset + ",'" + mealName + "'" + ');" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Grains</a>';
+	html += '</div></li>';
+	html += plateGrainsHtml;
+	return html;
+}
+
+function getProteinMealHtml(offset, mealName) {
+	var html = '<li data-role="list-divider" data-theme="b"><div data-type="horizontal">';
+	//html += '<a href="#protein-portion-dial" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Protein</a>';
+	html += '<a href="javascript:hijaxProteinSelectionDial(' + offset + ",'" + mealName + "'" + ');" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Protein</a>';
+	html += '</div></li>';
+	html += plateProteinHtml;
+	return html;
+}
+
+function getVegetablesMealHtml(offset, mealName) {
+	var html = '<li data-role="list-divider" data-theme="b"><div data-type="horizontal">';
+	//html += '<a href="#vegetables-portion-dial" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Vegetables</a>';
+	html += '<a href="javascript:hijaxVegetablesSelectionDial(' + offset + ",'" + mealName + "'" + ');" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Vegetables</a>';
+	html += '</div></li>';
+	html += plateVegetablesHtml;
+	return html;
+}
+
+function getFruitsMealHtml(offset, mealName) {
+	var html = '<li data-role="list-divider" data-theme="b"><div data-type="horizontal">';
+	//html += '<a href="#fruits-portion-dial" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Fruits</a>';
+	html += '<a href="javascript:hijaxFruitsSelectionDial(' + offset + ",'" + mealName + "'" + ');" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Fruits</a>';
+	html += '</div></li>';
+	html += plateFruitsHtml;
+	return html;
+}
+
+function getDairyMealHtml(offset, mealName) {
+	var html = '<li data-role="list-divider" data-theme="b"><div data-type="horizontal">';
+	//html += '<a href="#dairy-portion-dial" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Dairy</a>';
+	html += '<a href="javascript:hijaxDairySelectionDial(' + offset + ",'" + mealName + "'" + ');" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Dairy</a>';
+	html += '</div></li>';
+	html += plateDairyHtml;
+	return html;
 }
 
 //tjs 110714
