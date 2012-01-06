@@ -2044,33 +2044,33 @@ function appendPortion(plate, portionId, plateIndex) {
 			//}
 			if (plateGrainsHtml == '<li/>') {
 				// c too light, b same as divider, a is black
-				plateGrainsHtml = '<li><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a">' + portion.name + '</a></li>';
+				plateGrainsHtml = '<li><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk">' + portion.name + '</span></a></li>';
 			} else {
-				plateGrainsHtml += '<li><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a">' + portion.name + '</a></li>';
+				plateGrainsHtml += '<li><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk">' + portion.name + '</span></a></li>';
 			}
 		} else if (type == 'Protein') {
 			if (plateProteinHtml == '<li/>') {
-				plateProteinHtml = '<li><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a">' + portion.name + '</a></li>';
+				plateProteinHtml = '<li><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk">' + portion.name + '</span></a></li>';
 			} else {
-				plateProteinHtml += '<li><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a">' + portion.name + '</a></li>';
+				plateProteinHtml += '<li><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk">' + portion.name + '</span></a></li>';
 			}
 		} else if (type == 'Vegetables') {
 			if (plateVegetablesHtml == '<li/>') {
-				plateVegetablesHtml = '<li><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a">' + portion.name + '</a></li>';
+				plateVegetablesHtml = '<li><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk">' + portion.name + '</span></a></li>';
 			} else {
-				plateVegetablesHtml += '<li><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a">' + portion.name + '</a></li>';
+				plateVegetablesHtml += '<li><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk">' + portion.name + '</span></a></li>';
 			}
 		} else if (type == 'Fruits') {
 			if (plateFruitsHtml == '<li/>') {
-				plateFruitsHtml = '<li><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a">' + portion.name + '</a></li>';
+				plateFruitsHtml = '<li><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk">' + portion.name + '</span></a></li>';
 			} else {
-				plateFruitsHtml += '<li><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a">' + portion.name + '</a></li>';
+				plateFruitsHtml += '<li><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk">' + portion.name + '</span></a></li>';
 			}
 		} else if (type == 'Dairy') {
 			if (plateDairyHtml == '<li/>') {
-				plateDairyHtml = '<li><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a">' + portion.name + '</a></li>';
+				plateDairyHtml = '<li><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk">' + portion.name + '</span></a></li>';
 			} else {
-				plateDairyHtml += '<li><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a">' + portion.name + '</a></li>';
+				plateDairyHtml += '<li><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk">' + portion.name + '</span></a></li>';
 			}
 		}
 		//alert("plateslate appendPortion portionId " + portionId + " type " + type + " plateGrainsHtml " + plateGrainsHtml);

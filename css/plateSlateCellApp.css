@@ -10,6 +10,23 @@ $LastChangedDate:: 2012-01-03 14:44:48#$: Date of last commit
 .showDiv { display: block; }
 .hideDiv { display: none; }
 
+/* tjs 120106 */
+@font-face {
+	font-family: Chalkduster;
+	src: local('Chalkduster'), url('../fonts/chalkdust.ttf') format('truetype');
+}
+
+/* tjs 110726 */
+.chalk {
+	font-family: Chalkduster, sans-serif;
+	color: white;
+}
+
+.segmented-control { text-align:center;}
+.segmented-control .ui-controlgroup { margin: 0.2em; }
+.ui-control-active, .ui-control-inactive { border-style: solid; border-color: gray; }
+.ui-control-active { background: #BBB; }
+.ui-control-inactive { background: #DDD; }
 
 /* tjs 111222
 #plateEditDialog { background-color: white; }
