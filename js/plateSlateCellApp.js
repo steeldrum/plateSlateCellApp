@@ -1557,7 +1557,8 @@ function getSlateView(offset, mealName) {
     var slate;
     var plateDescription;
     var html;
-    var slateExists = false;
+    //var slateExists = false;
+    var slateRandomlyGenerated = false;
     // tjs 110818
     var plateType;
     
@@ -1638,6 +1639,7 @@ function getSlateView(offset, mealName) {
     		// tjs 111222
     		//viewSlate(thresholdOffset, slate);
     		addToSlate(slate);
+    		slateRandomlyGenerated = true;
         	//alert("plateslate getSlateView (undefined) thresholdOffset " + thresholdOffset + " slate name " + slate.name + " id " + slate.id); 
         }
     }
@@ -1686,7 +1688,9 @@ function getSlateView(offset, mealName) {
 	        plateDescription = plate.description;
 	        if (plateDescription.length == 0 || plateDescription == null)
 	        	plateDescription = "starter choice!";
-	        plateSelectionsHtml = getPlateSelections(slate, plate, thresholdOffset);
+	        // tjs 120106
+	        //plateSelectionsHtml = getPlateSelections(slate, plate, thresholdOffset);
+	        plateSelectionsHtml = getPlateSelections(slate, plate, thresholdOffset, slateRandomlyGenerated);
 	    	//alert("plateslate getSlateView plate name " + plate.name);
 	        plateType = "'Breakfast'";
 	    	//document.newPortionForm.protionName.value = protionName;
@@ -1695,7 +1699,7 @@ function getSlateView(offset, mealName) {
 	        plateDescription = plate.description;
 	        if (plateDescription.length == 0 || plateDescription == null)
 	        	plateDescription = "midday milestone!";
-	        plateSelectionsHtml = getPlateSelections(slate, plate, thresholdOffset);
+	        plateSelectionsHtml = getPlateSelections(slate, plate, thresholdOffset, slateRandomlyGenerated);
 	        plateType = "'Lunch'";
 	        //html += '<tr><td style="' + tdStyle + '">Lunch:<br/><a onclick="updatePlate(' + slate.offset + ', ' + plateType + ');"><img src="images/chooseMyPlateIcon32_32WB.png" /></a></td><td style="' + tdStyle + '">' + plateSelectionsHtml + '</td><td style="' + tdStyle + '">' + plateDescription + '</td><td style="' + tdStyle + '">' + plateGrainsHtml + '</td><td style="' + tdStyle + '">' + plateProteinHtml + '</td><td style="' + tdStyle + '">' + plateVegetablesHtml + '</td><td style="' + tdStyle + '">' + plateFruitsHtml + '</td><td style="' + tdStyle + '">' + plateDairyHtml + '</td></tr>';
         } else if (mealName == "Dinner") {
@@ -1706,7 +1710,7 @@ function getSlateView(offset, mealName) {
 	        if (plateDescription.length == 0 || plateDescription == null)
 	        	plateDescription = "main entree!";
 	        //plateSelectionsHtml = getPlateSelections(plate);
-	        plateSelectionsHtml = getPlateSelections(slate, plate, thresholdOffset);
+	        plateSelectionsHtml = getPlateSelections(slate, plate, thresholdOffset, slateRandomlyGenerated);
 	        plateType = "'Dinner'";
 	       // html += '<tr><td style="' + tdStyle + '">Dinner:<br/><a onclick="updatePlate(' + slate.offset + ', ' + plateType + ');"><img src="images/chooseMyPlateIcon32_32WB.png" /></a></td><td style="' + tdStyle + '">' + plateSelectionsHtml + '</td><td style="' + tdStyle + '">' + plateDescription + '</td><td style="' + tdStyle + '">' + plateGrainsHtml + '</td><td style="' + tdStyle + '">' + plateProteinHtml + '</td><td style="' + tdStyle + '">' + plateVegetablesHtml + '</td><td style="' + tdStyle + '">' + plateFruitsHtml + '</td><td style="' + tdStyle + '">' + plateDairyHtml + '</td></tr>';
         }
@@ -1758,11 +1762,11 @@ function getRandomPlate(plateType, offset) {
 	var lunchLen = 0;
 	var dinnerLen = 0;
 	var typeLen = 0;
-	plateGrainsHtml = 'none';
-	plateProteinHtml = 'none';
-	plateVegetablesHtml = 'none';
-	plateFruitsHtml = 'none';
-	plateDairyHtml = 'none';
+	plateGrainsHtml = '<li/>';
+	plateProteinHtml = '<li/>';
+	plateVegetablesHtml = '<li/>';
+	plateFruitsHtml = '<li/>';
+	plateDairyHtml = '<li/>';
 	
 	var plate;
 	var selectedPlate = null;
@@ -1858,7 +1862,7 @@ function getRandomPlate(plateType, offset) {
 	return selectedPlate;
 }
 
-function getPlateSelections(slate, plate, offset) {
+function getPlateSelections(slate, plate, offset, slateRandomlyGenerated) {
 	var len = plates.length;
 	//alert("plateslate getPlateSelections len " + len + " slate id" + slate.id + " plateType " + plate.type + " offset " + offset);
 	var breakfastLen = 0;
@@ -1872,11 +1876,14 @@ function getPlateSelections(slate, plate, offset) {
 	//plateVegetablesHtml = 'none';
 	//plateFruitsHtml = 'none';
 	//plateDairyHtml = 'none';
-	plateGrainsHtml = '<li/>';
-	plateProteinHtml = '<li/>';
-	plateVegetablesHtml = '<li/>';
-	plateFruitsHtml = '<li/>';
-	plateDairyHtml = '<li/>';
+	// tjs 120106
+	if (!slateRandomlyGenerated) {
+		plateGrainsHtml = '<li/>';
+		plateProteinHtml = '<li/>';
+		plateVegetablesHtml = '<li/>';
+		plateFruitsHtml = '<li/>';
+		plateDairyHtml = '<li/>';
+	}
 	
 	var currentPlate;
 	var plateType = plate.type;
@@ -1932,7 +1939,11 @@ function getPlateSelections(slate, plate, offset) {
 		}
 		var plateSelectionsHtml = html + '</optgroup></select>';
 		//alert("plateslate getPlateSelections plateSelectionsHtml " + plateSelectionsHtml);
-		getFoodPortions(slate, plate);
+		// tjs 120106
+		if (!slateRandomlyGenerated){
+			getFoodPortions(slate, plate);
+		}
+		//getFoodPortions(slate, plate, slateRandomlyGenerated);
 		//alert("plateslate getPlateSelections plateGrainsHtml " + plateGrainsHtml + " plateProteinHtml " + plateProteinHtml);
 		
 	}
@@ -3242,7 +3253,9 @@ function insertSlateFoodPortion(slateId, type, portionId, master) {
 		}
 	}
 
+// tjs 120106
 function getFoodPortions(slate, plate) {
+//function getFoodPortions(slate, plate, slateRandomlyGenerated) {
 	//alert("plateslate getFoodPortions slate id " + slate.id + " plate id " + plate.id + " plate type " + plate.type);
 	var foodPortions;
 	if (plate.type == "Breakfast") {
@@ -4287,11 +4300,11 @@ function hijaxLunchPage() {
 	newPageHtml += mealHtml;
 	newPageHtml += '</div></div>';
 	newPageHtml += '<div data-role="footer" data-id="foo1" data-position="fixed"><div data-role="navbar"><ul>';
-	newPageHtml += '<li><a href="javascript:previousBreakfast();">Prev</a></li>';
+	newPageHtml += '<li><a href="javascript:previousLunch();">Prev</a></li>';
 	newPageHtml += '<li><a href="javascript:hijaxBreakfastPage();">Breakfast</a></li>';
 	newPageHtml += '<li><a href="javascript:hijaxLunchPage();" class="ui-btn-active ui-state-persist">Lunch</a></li>';
 	newPageHtml += '<li><a href="javascript:hijaxDinnerPage();">Dinner</a></li>';
-	newPageHtml += '<li><a href="javascript:nextBreakfast();">Next</a></li>';
+	newPageHtml += '<li><a href="javascript:nextLunch();">Next</a></li>';
 	newPageHtml += '</ul></div><!-- /navbar --></div><!-- /footer --></div>';
 	var newPage = $(newPageHtml);
 	//add new page to page container
@@ -4322,11 +4335,11 @@ function hijaxDinnerPage() {
 	newPageHtml += mealHtml;
 	newPageHtml += '</div></div>';
 	newPageHtml += '<div data-role="footer" data-id="foo1" data-position="fixed"><div data-role="navbar"><ul>';
-	newPageHtml += '<li><a href="javascript:previousBreakfast();">Prev</a></li>';
+	newPageHtml += '<li><a href="javascript:previousDinner();">Prev</a></li>';
 	newPageHtml += '<li><a href="javascript:hijaxBreakfastPage();">Breakfast</a></li>';
 	newPageHtml += '<li><a href="javascript:hijaxLunchPage();">Lunch</a></li>';
 	newPageHtml += '<li><a href="javascript:hijaxDinnerPage();" class="ui-btn-active ui-state-persist">Dinner</a></li>';
-	newPageHtml += '<li><a href="javascript:nextBreakfast();">Next</a></li>';
+	newPageHtml += '<li><a href="javascript:nextDinner();">Next</a></li>';
 	newPageHtml += '</ul></div><!-- /navbar --></div><!-- /footer --></div>';
 	var newPage = $(newPageHtml);
 	//add new page to page container
@@ -4346,6 +4359,26 @@ function previousBreakfast() {
 function nextBreakfast() {
 	color += 20;
 	hijaxBreakfastPage();	
+}
+
+function previousLunch() {
+	color -= 20;
+	hijaxLunchPage();
+}
+
+function nextLunch() {
+	color += 20;
+	hijaxLunchPage();	
+}
+
+function previousDinner() {
+	color -= 20;
+	hijaxDinnerPage();
+}
+
+function nextDinner() {
+	color += 20;
+	hijaxDinnerPage();	
 }
 
 function processAddNewPortionForm(portionType) {
