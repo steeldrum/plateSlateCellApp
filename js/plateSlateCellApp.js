@@ -1823,35 +1823,35 @@ function getRandomPlate(plateType, offset) {
 			//alert("plateslate getRandomPlate plate name " + selectedPlate.name + " portionId #1 " + portionId);
 			// tjs 111228
 			//appendPortion(portionId);
-			appendPortion(plate, portionId, 0);
+			appendPortion(plate, portionId, 0, true);
 			portionId = selectedPlate.portion2;
 			//alert("plateslate getRandomPlate portionId #2 " + portionId);
 			//appendPortion(portionId);
-			appendPortion(plate, portionId, 0);
+			appendPortion(plate, portionId, 0, true);
 			portionId = selectedPlate.portion3;
 			//alert("plateslate getRandomPlate portionId #3 " + portionId);
 			//appendPortion(portionId);
-			appendPortion(plate, portionId, 0);
+			appendPortion(plate, portionId, 0, true);
 			portionId = selectedPlate.portion4;
 			//alert("plateslate getRandomPlate portionId #4 " + portionId);
 			//appendPortion(portionId);
-			appendPortion(plate, portionId, 0);
+			appendPortion(plate, portionId, 0, true);
 			portionId = selectedPlate.portion5;
 			//alert("plateslate getRandomPlate portionId #5 " + portionId);
 			//appendPortion(portionId);
-			appendPortion(plate, portionId, 0);
+			appendPortion(plate, portionId, 0, true);
 			portionId = selectedPlate.portion6;
 			//appendPortion(portionId);
-			appendPortion(plate, portionId, 0);
+			appendPortion(plate, portionId, 0, true);
 			portionId = selectedPlate.portion7;
 			//appendPortion(portionId);
-			appendPortion(plate, portionId, 0);
+			appendPortion(plate, portionId, 0, true);
 			portionId = selectedPlate.portion8;
 			//appendPortion(portionId);
-			appendPortion(plate, portionId, 0);
+			appendPortion(plate, portionId, 0, true);
 			portionId = selectedPlate.portion9;
 			//appendPortion(portionId);
-			appendPortion(plate, portionId, 0);
+			appendPortion(plate, portionId, 0, true);
 		}
 	}
 	//alert("plateslate getRandomPlate selectedOption " + selectedOption + " typeLen " + typeLen + " plateSelectionsHtml " + plateSelectionsHtml);
@@ -2025,8 +2025,15 @@ function getTestPlateSelections(slate, plate, offset) {
 //function appendPortion(portionId) {
 // tjs 120102
 //function appendPortion(plate, portionId) {
-function appendPortion(plate, portionId, plateIndex) {
+function appendPortion(plate, portionId, plateIndex, slateTorf) {
 	//alert("plateslate appendPortion portionId " + portionId);
+	// tjs 120106
+	//var slateTorf = plateIndex < 1000;
+	var chalkColor = 0;
+	if (slateTorf) {
+		chalkColor = makeColor(color);
+	}
+		
 	if (!isNaN(portionId)) {
 		if (portionId == 0)
 			return;
@@ -2044,33 +2051,73 @@ function appendPortion(plate, portionId, plateIndex) {
 			//}
 			if (plateGrainsHtml == '<li/>') {
 				// c too light, b same as divider, a is black
-				plateGrainsHtml = '<li><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk">' + portion.name + '</span></a></li>';
+				plateGrainsHtml = '<li><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk"';
+				if (slateTorf) {
+					plateGrainsHtml += ' style="color:' + chalkColor + '"';
+				}
+				plateGrainsHtml += '>' + portion.name + '</span></a></li>';
 			} else {
-				plateGrainsHtml += '<li><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk">' + portion.name + '</span></a></li>';
+				plateGrainsHtml += '<li><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk"';
+				if (slateTorf) {
+					plateGrainsHtml += ' style="color:' + chalkColor + '"';
+				}
+				plateGrainsHtml += '>' + portion.name + '</span></a></li>';
 			}
 		} else if (type == 'Protein') {
 			if (plateProteinHtml == '<li/>') {
-				plateProteinHtml = '<li><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk">' + portion.name + '</span></a></li>';
+				plateProteinHtml = '<li><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk"';
+				if (slateTorf) {
+					plateProteinHtml += ' style="color:' + chalkColor + '"';
+				}
+				plateProteinHtml += '>' + portion.name + '</span></a></li>';
 			} else {
-				plateProteinHtml += '<li><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk">' + portion.name + '</span></a></li>';
+				plateProteinHtml += '<li><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk"';
+				if (slateTorf) {
+					plateProteinHtml += ' style="color:' + chalkColor + '"';
+				}
+				plateProteinHtml += '>' + portion.name + '</span></a></li>';
 			}
 		} else if (type == 'Vegetables') {
 			if (plateVegetablesHtml == '<li/>') {
-				plateVegetablesHtml = '<li><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk">' + portion.name + '</span></a></li>';
+				plateVegetablesHtml = '<li><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk"';
+				if (slateTorf) {
+					plateVegetablesHtml += ' style="color:' + chalkColor + '"';
+				}
+				plateVegetablesHtml += '>' + portion.name + '</span></a></li>';
 			} else {
-				plateVegetablesHtml += '<li><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk">' + portion.name + '</span></a></li>';
+				plateVegetablesHtml += '<li><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk"';
+				if (slateTorf) {
+					plateVegetablesHtml += ' style="color:' + chalkColor + '"';
+				}
+				plateVegetablesHtml += '>' + portion.name + '</span></a></li>';
 			}
 		} else if (type == 'Fruits') {
 			if (plateFruitsHtml == '<li/>') {
-				plateFruitsHtml = '<li><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk">' + portion.name + '</span></a></li>';
+				plateFruitsHtml = '<li><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk"';
+				if (slateTorf) {
+					plateFruitsHtml += ' style="color:' + chalkColor + '"';
+				}
+				plateFruitsHtml += '>' + portion.name + '</span></a></li>';
 			} else {
-				plateFruitsHtml += '<li><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk">' + portion.name + '</span></a></li>';
+				plateFruitsHtml += '<li><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk"';
+				if (slateTorf) {
+					plateFruitsHtml += ' style="color:' + chalkColor + '"';
+				}
+				plateFruitsHtml += '>' + portion.name + '</span></a></li>';
 			}
 		} else if (type == 'Dairy') {
 			if (plateDairyHtml == '<li/>') {
-				plateDairyHtml = '<li><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk">' + portion.name + '</span></a></li>';
+				plateDairyHtml = '<li><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk"';
+				if (slateTorf) {
+					plateDairyHtml += ' style="color:' + chalkColor + '"';
+				}
+				plateDairyHtml += '>' + portion.name + '</span></a></li>';
 			} else {
-				plateDairyHtml += '<li><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk">' + portion.name + '</span></a></li>';
+				plateDairyHtml += '<li><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk"';
+				if (slateTorf) {
+					plateDairyHtml += ' style="color:' + chalkColor + '"';
+				}
+				plateDairyHtml += '>' + portion.name + '</span></a></li>';
 			}
 		}
 		//alert("plateslate appendPortion portionId " + portionId + " type " + type + " plateGrainsHtml " + plateGrainsHtml);
@@ -3216,7 +3263,7 @@ function getFoodPortions(slate, plate) {
 			portionId = foodPortions[i];
 			// tjs 111228
 			//(portionId);
-			appendPortion(plate, portionId, 0);
+			appendPortion(plate, portionId, 0, true);
 		}
 	} 
 	//tjs 110812 rewrite
@@ -4445,7 +4492,8 @@ function cancelAddNewPortionForm(portionType) {
 }
 
 // TODO use html for each portion to build select via filtering out those in the lists
-function derivePortionSelectionLists() {
+//function derivePortionSelectionLists() {
+function derivePortionSelectionLists(slateTorf) {
 	grainPortionSelectListHtml = '<select name="portionSelection" class="Grain"><optgroup label="Grain">';
 	proteinPortionSelectListHtml = '<select name="portionSelection" class="Protein"><optgroup label="Protein">';
 	vegetablesPortionSelectListHtml = '<select name="portionSelection" class="Vegetables"><optgroup label="Vegetables">';
@@ -4706,30 +4754,31 @@ function editPlate(index) {
 	var indexOffset = 1000 + index;
 	var plate = plates[index];
 	var mealName = plate.type;
-	derivePortionSelectionLists();
+	//derivePortionSelectionLists();
+	derivePortionSelectionLists(false);
 	plateGrainsHtml = '<li/>';
 	plateProteinHtml = '<li/>';
 	plateVegetablesHtml = '<li/>';
 	plateFruitsHtml = '<li/>';
 	plateDairyHtml = '<li/>';
 	if (plate.portion1 != null)
-		appendPortion(plate, plate.portion1, index);
+		appendPortion(plate, plate.portion1, index, false);
 	if (plate.portion2 != null)
-		appendPortion(plate, plate.portion2, index);
+		appendPortion(plate, plate.portion2, index, false);
 	if (plate.portion3 != null)
-		appendPortion(plate, plate.portion3, index);
+		appendPortion(plate, plate.portion3, index, false);
 	if (plate.portion4 != null)
-		appendPortion(plate, plate.portion4, index);
+		appendPortion(plate, plate.portion4, index, false);
 	if (plate.portion5 != null)
-		appendPortion(plate, plate.portion5, index);
+		appendPortion(plate, plate.portion5, index, false);
 	if (plate.portion6 != null)
-		appendPortion(plate, plate.portion6, index);
+		appendPortion(plate, plate.portion6, index, false);
 	if (plate.portion7 != null)
-		appendPortion(plate, plate.portion7, index);
+		appendPortion(plate, plate.portion7, index, false);
 	if (plate.portion8 != null)
-		appendPortion(plate, plate.portion8, index);
+		appendPortion(plate, plate.portion8, index, false);
 	if (plate.portion9 != null)
-		appendPortion(plate, plate.portion9, index);
+		appendPortion(plate, plate.portion9, index, false);
 	
 	var newDialHtml = '<div data-role="dialog" id="edit-plate-dial"><div data-role="header">';
 	newDialHtml += '<h1>Edit Plate</h1></div>';	
@@ -4982,4 +5031,8 @@ function processEditPortionForm() {
 	portion.type = optionValue;
 	addToPortion(portion);
 	$('#edit-portion-dial').dialog('close');
+}
+
+function makeColor(hue) {
+    return "hsl(" + hue + ", 100%, 50%)";
 }
