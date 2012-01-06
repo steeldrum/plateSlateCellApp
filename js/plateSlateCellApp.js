@@ -1631,7 +1631,12 @@ function getSlateView(offset, mealName) {
     		//alert("plateslate getSlateView breakfastPlate.id " + breakfastPlate.id + " lunchPlate.id " + lunchPlate.id + " dinnerPlate.id " + dinnerPlate.id);
     		// tjs 110901
     		//slate = new Slate(0, thresholdOffset, nextDate, nextDate.toLocaleDateString(), nextDate.toLocaleTimeString(), breakfastPlate.id, lunchPlate.id, dinnerPlate.id, null, null, null, 0);
-    		slate = new Slate(0, thresholdOffset, nextDate, nextDate.toLocaleDateString(), nextDateWeekdayName, breakfastPlate.id, lunchPlate.id, dinnerPlate.id, null, null, null, 0);
+    		//slate = new Slate(0, thresholdOffset, nextDate, nextDate.toLocaleDateString(), nextDateWeekdayName, breakfastPlate.id, lunchPlate.id, dinnerPlate.id, null, null, null, 0);
+    		// tjs 120106
+    		var breakfastPortions = getPlatePortions(breakfastPlate);
+    		var lunchPortions = getPlatePortions(lunchPlate);
+    		var dinnerPortions = getPlatePortions(dinnerPlate);    		
+    		slate = new Slate(0, thresholdOffset, nextDate, nextDate.toLocaleDateString(), nextDateWeekdayName, breakfastPlate.id, lunchPlate.id, dinnerPlate.id, breakfastPortions, lunchPortions, dinnerPortions, 0);
     		//insert the new slate...
     		//tjs 110815
     		//slate.id = addToSlate(slate);
@@ -1762,12 +1767,14 @@ function getRandomPlate(plateType, offset) {
 	var lunchLen = 0;
 	var dinnerLen = 0;
 	var typeLen = 0;
+	// tjs 120106
+	/*
 	plateGrainsHtml = '<li/>';
 	plateProteinHtml = '<li/>';
 	plateVegetablesHtml = '<li/>';
 	plateFruitsHtml = '<li/>';
 	plateDairyHtml = '<li/>';
-	
+	*/
 	var plate;
 	var selectedPlate = null;
 	for (var i = 0; i < len; i++) {
@@ -1821,6 +1828,8 @@ function getRandomPlate(plateType, offset) {
 		}
 		plateSelectionsHtml = html + '</optgroup></select>';
 		//alert("plateslate getRandomPlate plateSelectionsHtml " + plateSelectionsHtml);
+		// tjs 120106
+		/*
 		//tjs 110707
 		if (selectedPlate != null) {
 			var portionId = selectedPlate.portion1;
@@ -1856,10 +1865,82 @@ function getRandomPlate(plateType, offset) {
 			portionId = selectedPlate.portion9;
 			//appendPortion(portionId);
 			appendPortion(plate, portionId, 0, true);
-		}
+		}*/
 	}
 	//alert("plateslate getRandomPlate selectedOption " + selectedOption + " typeLen " + typeLen + " plateSelectionsHtml " + plateSelectionsHtml);
 	return selectedPlate;
+}
+
+function getPlatePortions(plate) {
+	var typePortions = new Array();
+	var portionId;
+	for (var i = 0; i < 9; i++) {
+			//alert("plateslate updatePlate input element name " + inputElm.name + " value of id " + inputElm.value);
+			switch (i) {
+			case 0:
+				portionId = plate.portion1;
+				if (portionId != null && portionId > 0)
+			    	//typePortions.push(portions[portionId]);
+			    	typePortions.push(portionId);
+				break;
+				
+			case 1:
+				portionId = plate.portion2;
+				if (portionId != null && portionId > 0)
+			    	typePortions.push(portionId);
+				break;
+				
+			case 2:
+				portionId = plate.portion3;
+				if (portionId != null && portionId > 0)
+			    	typePortions.push(portionId);
+				break;
+				
+			case 3:
+				portionId = plate.portion4;
+				if (portionId != null && portionId > 0)
+			    	typePortions.push(portionId);
+				break;
+				
+			case 4:
+				portionId = plate.portion5;
+				if (portionId != null && portionId > 0)
+			    	typePortions.push(portionId);
+				break;
+				
+			case 5:
+				portionId = plate.portion6;
+				if (portionId != null && portionId > 0)
+			    	typePortions.push(portionId);
+				break;
+				
+			case 6:
+				portionId = plate.portion7;
+				if (portionId != null && portionId > 0)
+			    	typePortions.push(portionId);
+				break;
+				
+			case 7:
+				portionId = plate.portion8;
+				if (portionId != null && portionId > 0)
+			    	typePortions.push(portionId);
+				break;
+				
+			case 8:
+				portionId = plate.portion9;
+				if (portionId != null && portionId > 0)
+			    	typePortions.push(portionId);
+				break;
+			
+				default:
+					break;
+			}
+		//must ensure row exists and is active
+		// tjs 110825
+		//updateFood(slateId, plate.type, portion);
+		//updateFood(slateId, plate.type, portion, 0, 0);
+	}
+	return typePortions;
 }
 
 function getPlateSelections(slate, plate, offset, slateRandomlyGenerated) {
@@ -1877,13 +1958,13 @@ function getPlateSelections(slate, plate, offset, slateRandomlyGenerated) {
 	//plateFruitsHtml = 'none';
 	//plateDairyHtml = 'none';
 	// tjs 120106
-	if (!slateRandomlyGenerated) {
+	//if (!slateRandomlyGenerated) {
 		plateGrainsHtml = '<li/>';
 		plateProteinHtml = '<li/>';
 		plateVegetablesHtml = '<li/>';
 		plateFruitsHtml = '<li/>';
 		plateDairyHtml = '<li/>';
-	}
+	//}
 	
 	var currentPlate;
 	var plateType = plate.type;
@@ -1940,9 +2021,9 @@ function getPlateSelections(slate, plate, offset, slateRandomlyGenerated) {
 		var plateSelectionsHtml = html + '</optgroup></select>';
 		//alert("plateslate getPlateSelections plateSelectionsHtml " + plateSelectionsHtml);
 		// tjs 120106
-		if (!slateRandomlyGenerated){
+		//if (!slateRandomlyGenerated){
 			getFoodPortions(slate, plate);
-		}
+		//}
 		//getFoodPortions(slate, plate, slateRandomlyGenerated);
 		//alert("plateslate getPlateSelections plateGrainsHtml " + plateGrainsHtml + " plateProteinHtml " + plateProteinHtml);
 		
