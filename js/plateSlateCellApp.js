@@ -4402,7 +4402,16 @@ function openSlatePlansPage() {
 	}
 }
 
-function hijaxBreakfastPage() {
+function hijaxBreakfastPage(direction) {
+	var transition = 'slide';
+	var reverse = false;
+	if (direction != null) {
+		if (direction == 'reverse')
+			reverse = true;
+		else 
+			transition = direction;
+	}
+		
 	// derive dynamic html content
     var offset = color/20;
     //TODO fix
@@ -4422,8 +4431,8 @@ function hijaxBreakfastPage() {
 	newPageHtml += '<div data-role="footer" data-id="foo1" data-position="fixed"><div data-role="navbar"><ul>';
 	newPageHtml += '<li><a href="javascript:previousBreakfast();">Prev</a></li>';
 	newPageHtml += '<li><a href="javascript:hijaxBreakfastPage();" class="ui-btn-active ui-state-persist">Breakfast</a></li>';
-	newPageHtml += '<li><a href="javascript:hijaxLunchPage();">Lunch</a></li>';
-	newPageHtml += '<li><a href="javascript:hijaxDinnerPage();">Dinner</a></li>';
+	newPageHtml += '<li><a href="javascript:hijaxLunchPage(' + "'slideup'" + ');">Lunch</a></li>';
+	newPageHtml += '<li><a href="javascript:hijaxDinnerPage(' + "'slideup'" + ');">Dinner</a></li>';
 	newPageHtml += '<li><a href="javascript:nextBreakfast();">Next</a></li>';
 	newPageHtml += '</ul></div><!-- /navbar --></div><!-- /footer --></div>';
 	var newPage = $(newPageHtml);
@@ -4444,11 +4453,21 @@ function hijaxBreakfastPage() {
     */
 // enhance and open the new page
     //$.mobile.changePage(newPage);
-    $.mobile.changePage(newPage, {reloadPage: true });
+	// tjs 120106
+    //$.mobile.changePage(newPage, {reloadPage: true });
+    $.mobile.changePage(newPage, {transition: transition, reverse: reverse });
 			
 }
 
-function hijaxLunchPage() {
+function hijaxLunchPage(direction) {
+	var transition = 'slide';
+	var reverse = false;
+	if (direction != null) {
+		if (direction == 'reverse')
+			reverse = true;
+		else 
+			transition = direction;
+	}
 	// derive dynamic html content
     var offset = color/20;
     //TODO fix
@@ -4467,9 +4486,9 @@ function hijaxLunchPage() {
 	newPageHtml += '</div></div>';
 	newPageHtml += '<div data-role="footer" data-id="foo1" data-position="fixed"><div data-role="navbar"><ul>';
 	newPageHtml += '<li><a href="javascript:previousLunch();">Prev</a></li>';
-	newPageHtml += '<li><a href="javascript:hijaxBreakfastPage();">Breakfast</a></li>';
+	newPageHtml += '<li><a href="javascript:hijaxBreakfastPage(' + "'slidedown'" + ');">Breakfast</a></li>';
 	newPageHtml += '<li><a href="javascript:hijaxLunchPage();" class="ui-btn-active ui-state-persist">Lunch</a></li>';
-	newPageHtml += '<li><a href="javascript:hijaxDinnerPage();">Dinner</a></li>';
+	newPageHtml += '<li><a href="javascript:hijaxDinnerPage(' + "'slideup'" + ');">Dinner</a></li>';
 	newPageHtml += '<li><a href="javascript:nextLunch();">Next</a></li>';
 	newPageHtml += '</ul></div><!-- /navbar --></div><!-- /footer --></div>';
 	var newPage = $(newPageHtml);
@@ -4479,11 +4498,20 @@ function hijaxLunchPage() {
 	// tweak the new page just added into the dom
     */
 // enhance and open the new page
-    $.mobile.changePage(newPage);
+    //$.mobile.changePage(newPage);
+    $.mobile.changePage(newPage, {transition: transition, reverse: reverse });
 			
 }
 
-function hijaxDinnerPage() {
+function hijaxDinnerPage(direction) {
+	var transition = 'slide';
+	var reverse = false;
+	if (direction != null) {
+		if (direction == 'reverse')
+			reverse = true;
+		else 
+			transition = direction;
+	}
 	// derive dynamic html content
     var offset = color/20;
     //TODO fix
@@ -4502,8 +4530,8 @@ function hijaxDinnerPage() {
 	newPageHtml += '</div></div>';
 	newPageHtml += '<div data-role="footer" data-id="foo1" data-position="fixed"><div data-role="navbar"><ul>';
 	newPageHtml += '<li><a href="javascript:previousDinner();">Prev</a></li>';
-	newPageHtml += '<li><a href="javascript:hijaxBreakfastPage();">Breakfast</a></li>';
-	newPageHtml += '<li><a href="javascript:hijaxLunchPage();">Lunch</a></li>';
+	newPageHtml += '<li><a href="javascript:hijaxBreakfastPage(' + "'slidedown'" + ');">Breakfast</a></li>';
+	newPageHtml += '<li><a href="javascript:hijaxLunchPage(' + "'slidedown'" + ');">Lunch</a></li>';
 	newPageHtml += '<li><a href="javascript:hijaxDinnerPage();" class="ui-btn-active ui-state-persist">Dinner</a></li>';
 	newPageHtml += '<li><a href="javascript:nextDinner();">Next</a></li>';
 	newPageHtml += '</ul></div><!-- /navbar --></div><!-- /footer --></div>';
@@ -4514,12 +4542,13 @@ function hijaxDinnerPage() {
 	// tweak the new page just added into the dom
     */
 // enhance and open the new page
-    $.mobile.changePage(newPage);			
+    //$.mobile.changePage(newPage);			
+    $.mobile.changePage(newPage, {transition: transition, reverse: reverse });
 }
 
 function previousBreakfast() {
 	color -= 20;
-	hijaxBreakfastPage();
+	hijaxBreakfastPage('reverse');
 }
 
 function nextBreakfast() {
@@ -4529,7 +4558,7 @@ function nextBreakfast() {
 
 function previousLunch() {
 	color -= 20;
-	hijaxLunchPage();
+	hijaxLunchPage('reverse');
 }
 
 function nextLunch() {
@@ -4539,7 +4568,7 @@ function nextLunch() {
 
 function previousDinner() {
 	color -= 20;
-	hijaxDinnerPage();
+	hijaxDinnerPage('reverse');
 }
 
 function nextDinner() {
