@@ -4013,11 +4013,29 @@ function hijaxPreferencesPage() {
 	</slate>
 </slates>
 */
-function doReport() {
-	//alert("plateSlateCellApp doReport authenticated " + authenticated);
+
+function hijaxReportPage() {
 	if (!authenticated)	{
+		alert("You must login before using this feature!");
 		return;
 	}
+	var newPageHtml = '<div data-role="page" data-add-back-btn="true" id="report-page" data-title="Report">';
+	//newPageHtml += '<div data-role="header"><h1>Meal Plan Report</h1></div>';
+	newPageHtml += '<div data-role="header" data-theme="f" data-position="fixed">';
+	newPageHtml += '<a href="index.html" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-left jqm-home">Home</a>';
+	newPageHtml += '<h1>Report</h1>';
+	newPageHtml += '</div>';
+	newPageHtml += '<div data-role="content">';
+	newPageHtml += '<a href="javascript:doReport();">Get PDF Report</a>';	
+	newPageHtml += '</div><script type="text/javascript"></script></div>';
+	var newPage = $(newPageHtml);
+	//add new dialog to page container
+	newPage.appendTo($.mobile.pageContainer);
+	// enhance and open the new page
+    $.mobile.changePage(newPage);
+}
+function doReport() {
+	//alert("plateSlateCellApp doReport authenticated " + authenticated);
 	//var xml = getReportXml(info[0], info[1]);
 	//var thresholdOffset = offset + slateOffsetThreshold;
 	var thresholdOffset = slateOffsetThreshold;
@@ -4625,6 +4643,7 @@ function dropPortion(plateIndex, mealName, portionId) {
 //function showPlatesList() {
 function hijaxPlatesPage() {
 	if (!authenticated)	{
+		alert("You must login before using this feature!");
 		return;
 	}
 	//donationHtml = '<ul data-role="listview" id="charities-list" data-filter="true" data-filter-placeholder="Search..." data-split-icon="refresh" data-split-theme="d">';
@@ -4793,6 +4812,7 @@ function processAddPlateForm() {
 function hijaxPortionsPage() {
 	// for debug comment out this...
 	if (!authenticated)	{
+		alert("You must login before using this feature!");
 		return;
 	}
 	  // create page markup

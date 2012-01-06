@@ -5,7 +5,7 @@ $LastChangedDate:: 2012-01-03 14:44:48#$: Date of last commit
 --------------------------------------->
 <html>
 <head>
-    <title>PageSlate</title>
+    <title>PlateSlate</title>
 	<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1">
 	<link rel="stylesheet" href="css/jquery.mobile-1.0.min.css" /> 
     <link rel="stylesheet" href="css/plateSlateCellApp.css">
@@ -192,7 +192,7 @@ $LastChangedDate:: 2012-01-03 14:44:48#$: Date of last commit
 <body>
 
 <!-- Home Page -->
-<div data-role="page" id="home-page" data-title="Home">
+<div data-role="page" id="home-page" data-title="Home" data-dom-cache="false">
 	<div data-role="header">
 		<h1>Plate Slate</h1>
 		<div id="loginLogoutButton">
@@ -222,7 +222,7 @@ $LastChangedDate:: 2012-01-03 14:44:48#$: Date of last commit
 			  </a>
 			</li>
 			<li>
-			  <a href="#report-page">
+			  <a href="javascript:hijaxReportPage();">
 				<h3>Report</h3>
 			  </a>
 			</li>	
@@ -248,20 +248,6 @@ $LastChangedDate:: 2012-01-03 14:44:48#$: Date of last commit
 
 	<div data-role="content">
 		<div id="platesContents"></div>
-	</div>
-	<script type="text/javascript">
-
-	</script>	
-</div>
-
-<!-- Report -->
-<div data-role="page" data-add-back-btn="true" id="report-page" data-title="Report">
-	<div data-role="header">
-		<h1>Meal Plan Report</h1>
-	</div>
-
-	<div data-role="content">
-<a href="javascript:doReport();">Get PDF Report</a>	
 	</div>
 	<script type="text/javascript">
 
