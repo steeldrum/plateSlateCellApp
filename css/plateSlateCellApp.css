@@ -29,11 +29,6 @@ $LastChangedDate:: 2012-01-03 14:44:48#$: Date of last commit
 .ui-control-inactive { background: #DDD; }
 
 /* tjs 120110 */
-.dividerControl {
-	/*display: inline;*/
-		display: inline-block;
-}
-
 p.dividerIcon {
 	font-size: 200%;
 	}
