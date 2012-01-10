@@ -4289,18 +4289,19 @@ function hijaxPreferencesPage() {
 */
 
 function hijaxReportPage() {
-	if (!authenticated)	{
-		alert("You must login before using this feature!");
-		return;
-	}
+	//if (!authenticated)	{
+	//	alert("You must login before using this feature!");
+	//	return;
+	//}
 	var newPageHtml = '<div data-role="page" data-add-back-btn="true" id="report-page" data-title="Report">';
 	//newPageHtml += '<div data-role="header"><h1>Meal Plan Report</h1></div>';
 	newPageHtml += '<div data-role="header" data-theme="f" data-position="fixed">';
 	newPageHtml += '<a href="index.html" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-left jqm-home">Home</a>';
-	newPageHtml += '<h1>Report</h1>';
+	newPageHtml += '<h1>Reports</h1>';
 	newPageHtml += '</div>';
 	newPageHtml += '<div data-role="content">';
-	newPageHtml += '<a href="javascript:doReport();">Get PDF Report</a>';	
+	newPageHtml += '<p><a href="javascript:hijaxScreenReportPage();">View Meal Plans Report</a></p>';	
+	newPageHtml += '<p><a href="javascript:doReport();">Get PDF Report</a></p>';	
 	newPageHtml += '</div><script type="text/javascript"></script></div>';
 	var newPage = $(newPageHtml);
 	//add new dialog to page container
@@ -4308,7 +4309,207 @@ function hijaxReportPage() {
 	// enhance and open the new page
     $.mobile.changePage(newPage);
 }
+
+function hijaxScreenReportPage() {
+	/*
+	 * <div data-role="page" id="home">
+	<div data-role="header">
+		<h1>5-Column Grid</h1>
+	</div>
+
+	<div data-role="content">
+		<div class="ui-grid-d" style="text-align: center;"> 
+			<div class="ui-block-a">&#xe21c;</div>
+			<div class="ui-block-b">&#xe21d;</div>
+			<div class="ui-block-c">&#xe21e;</div>	
+			<div class="ui-block-d">&#xe21f;</div>
+			<div class="ui-block-e">&#xe220;</div>
+		</div>
+	</div>
+</div>
+
+	 */
+	var thresholdOffset = slateOffsetThreshold;
+	var results = getReportGridArrays(thresholdOffset);
+//	alert("plateSlateCellApp hijaxScreenReportPage results.length " + results.length);
+	var dows = results[0];
+	var breakfastPlates = results[1];
+	var lunchPlates = results[2];
+	var dinnerPlates = results[3];
+	var len = dows.length;
+	if (len < 2)
+		return;
+	var gridClass = 'ui-grid-';
+	if (len < 3)
+		gridClass += 'a';
+	else if (len < 4)
+		gridClass += 'b';
+	else if (len < 5)
+		gridClass += 'c';
+	else if (len < 6)
+		gridClass += 'd';
+	var columnClass = 'ui-block-';
+	var newPageHtml = '<div data-role="page" data-add-back-btn="true" id="screen-report-page" data-title="Report">';
+	//newPageHtml += '<div data-role="header"><h1>Meal Plan Report</h1></div>';
+	newPageHtml += '<div data-role="header" data-theme="f" data-position="fixed">';
+	newPageHtml += '<a href="index.html" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-left jqm-home">Home</a>';
+	newPageHtml += '<h1>Report</h1>';
+	newPageHtml += '</div>';
+	newPageHtml += '<div data-role="content">';
+	newPageHtml += '<div class="' + gridClass + '" style="text-align: center;">';
+	// grid headers (dow)
+	for (var i = 0; i < len; i++) {
+		switch (i) {
+		case 0:
+			newPageHtml += '<div class="' + columnClass + 'a">'+ dows[i] + '</div>';
+			break;
+		case 1:
+			newPageHtml += '<div class="' + columnClass + 'b">'+ dows[i] + '</div>';
+			break;
+		case 2:
+			newPageHtml += '<div class="' + columnClass + 'c">'+ dows[i] + '</div>';
+			break;
+		case 3:
+			newPageHtml += '<div class="' + columnClass + 'd">'+ dows[i] + '</div>';
+			break;
+		case 4:
+			newPageHtml += '<div class="' + columnClass + 'e">'+ dows[i] + '</div>';
+			break;			
+		}			
+	}
+	// breakfast headers
+	for (var i = 0; i < len; i++) {
+		switch (i) {
+		case 0:
+			newPageHtml += '<div class="' + columnClass + 'a">Breakfast</div>';
+			break;
+		case 1:
+			newPageHtml += '<div class="' + columnClass + 'b">Breakfast</div>';
+			break;
+		case 2:
+			newPageHtml += '<div class="' + columnClass + 'c">Breakfast</div>';
+			break;
+		case 3:
+			newPageHtml += '<div class="' + columnClass + 'd">Breakfast</div>';
+			break;
+		case 4:
+			newPageHtml += '<div class="' + columnClass + 'e">Breakfast</div>';
+			break;			
+		}			
+	}
+	// breakfast plates
+	for (var i = 0; i < len; i++) {
+		switch (i) {
+		case 0:
+			newPageHtml += '<div class="' + columnClass + 'a">'+ breakfastPlates[i] + '</div>';
+			break;
+		case 1:
+			newPageHtml += '<div class="' + columnClass + 'b">'+ breakfastPlates[i] + '</div>';
+			break;
+		case 2:
+			newPageHtml += '<div class="' + columnClass + 'c">'+ breakfastPlates[i] + '</div>';
+			break;
+		case 3:
+			newPageHtml += '<div class="' + columnClass + 'd">'+ breakfastPlates[i] + '</div>';
+			break;
+		case 4:
+			newPageHtml += '<div class="' + columnClass + 'e">'+ breakfastPlates[i] + '</div>';
+			break;			
+		}			
+	}
+	// lunch headers
+	for (var i = 0; i < len; i++) {
+		switch (i) {
+		case 0:
+			newPageHtml += '<div class="' + columnClass + 'a">Lunch</div>';
+			break;
+		case 1:
+			newPageHtml += '<div class="' + columnClass + 'b">Lunch</div>';
+			break;
+		case 2:
+			newPageHtml += '<div class="' + columnClass + 'c">Lunch</div>';
+			break;
+		case 3:
+			newPageHtml += '<div class="' + columnClass + 'd">Lunch</div>';
+			break;
+		case 4:
+			newPageHtml += '<div class="' + columnClass + 'e">Lunch</div>';
+			break;			
+		}			
+	}
+	// lunch plates
+	for (var i = 0; i < len; i++) {
+		switch (i) {
+		case 0:
+			newPageHtml += '<div class="' + columnClass + 'a">'+ lunchPlates[i] + '</div>';
+			break;
+		case 1:
+			newPageHtml += '<div class="' + columnClass + 'b">'+ lunchPlates[i] + '</div>';
+			break;
+		case 2:
+			newPageHtml += '<div class="' + columnClass + 'c">'+ lunchPlates[i] + '</div>';
+			break;
+		case 3:
+			newPageHtml += '<div class="' + columnClass + 'd">'+ lunchPlates[i] + '</div>';
+			break;
+		case 4:
+			newPageHtml += '<div class="' + columnClass + 'e">'+ lunchPlates[i] + '</div>';
+			break;			
+		}			
+	}
+	// dinner headers
+	for (var i = 0; i < len; i++) {
+		switch (i) {
+		case 0:
+			newPageHtml += '<div class="' + columnClass + 'a">Dinner</div>';
+			break;
+		case 1:
+			newPageHtml += '<div class="' + columnClass + 'b">Dinner</div>';
+			break;
+		case 2:
+			newPageHtml += '<div class="' + columnClass + 'c">Dinner</div>';
+			break;
+		case 3:
+			newPageHtml += '<div class="' + columnClass + 'd">Dinner</div>';
+			break;
+		case 4:
+			newPageHtml += '<div class="' + columnClass + 'e">Dinner</div>';
+			break;			
+		}			
+	}
+	// dinner plates
+	for (var i = 0; i < len; i++) {
+		switch (i) {
+		case 0:
+			newPageHtml += '<div class="' + columnClass + 'a">'+ dinnerPlates[i] + '</div>';
+			break;
+		case 1:
+			newPageHtml += '<div class="' + columnClass + 'b">'+ dinnerPlates[i] + '</div>';
+			break;
+		case 2:
+			newPageHtml += '<div class="' + columnClass + 'c">'+ dinnerPlates[i] + '</div>';
+			break;
+		case 3:
+			newPageHtml += '<div class="' + columnClass + 'd">'+ dinnerPlates[i] + '</div>';
+			break;
+		case 4:
+			newPageHtml += '<div class="' + columnClass + 'e">'+ dinnerPlates[i] + '</div>';
+			break;			
+		}			
+	}
+	newPageHtml += '</div></div><script type="text/javascript"></script></div>';
+	var newPage = $(newPageHtml);
+	//add new dialog to page container
+	newPage.appendTo($.mobile.pageContainer);
+	// enhance and open the new page
+    $.mobile.changePage(newPage);
+}
+
 function doReport() {
+	if (!authenticated)	{
+		alert("You must login before using this feature!");
+		return;
+	}
 	//alert("plateSlateCellApp doReport authenticated " + authenticated);
 	//var xml = getReportXml(info[0], info[1]);
 	//var thresholdOffset = offset + slateOffsetThreshold;
@@ -4421,6 +4622,50 @@ function getXml(slate) {
 	xml += '</portions></plate></plates></slate>';
 	//alert("plateslate getXml slate name " + slate.name + " xml " + xml);
 	return xml;
+}
+
+function getReportGridArrays(offset) {
+	//alert("plateslate getReportGridArrays name " + name + " offset " + offset);
+	//use cache for the report.
+	var cursor = offset;
+	//var backwardsCursor = offset - 1;
+	var slate;
+	var count = 0;
+	var maxCount = 5;
+	var dows = new Array();
+	var breakfastPlates = new Array();
+	var lunchPlates = new Array();
+	var dinnerPlates = new Array();
+	var plateId;
+	var plate;
+	while (count < maxCount) {
+		//alert("plateslate getReportXml count " + count + " cursor " + cursor + " slate name " + slates[cursor].name);
+		//alert("plateslate getReportXml forwards count " + count + " cursor " + cursor);
+	    if (typeof(slates[cursor]) === 'undefined') {
+	    	break;
+	    } else {
+	    	slate = slates[cursor++];
+	    	dows.push(slate.description);
+	    	plateId = slate.breakfastId;
+	    	plate = plates[plateId];
+	    	breakfastPlates.push(plate.name);
+	    	plateId = slate.lunchId;
+	    	plate = plates[plateId];
+	    	lunchPlates.push(plate.name);
+	    	plateId = slate.dinnerId;
+	    	plate = plates[plateId];
+	    	dinnerPlates.push(plate.name);
+	    	count++;
+			//alert("plateslate createReport next cursor " + cursor + " count " + count + " today onwards xml " + xml);
+		}		
+	}
+	var results = new Array();
+	results.push(dows);
+	results.push(breakfastPlates);
+	results.push(lunchPlates);
+	results.push(dinnerPlates);
+	//alert("plateSlateCellApp getReportGridArrays results.length " + results.length);
+	return results;
 }
 
 function loadPreferences() {
