@@ -1801,45 +1801,67 @@ function getSlateView(offset, mealName) {
 
 // tjs 120106
 function getGrainMealHtml(offset, mealName) {
-	var html = '<li data-role="list-divider" data-theme="b"><div data-type="horizontal">';
-	html += '<a href="javascript:hijaxGrainSelectionDial(' + offset + ",'" + mealName + "'" + ');" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Grains</a>';
-	html += '</div></li>';
+	// tjs 120109
+	//var html = '<li data-role="list-divider" data-theme="b"><div data-type="horizontal">';
+	//var html = '<li data-role="list-divider" data-theme="b" id="grain' + mealName + '"><div data-type="horizontal">';
+	//var html = '<li data-role="list-divider" data-theme="b"><div data-type="horizontal">';
+	//var html = '<li data-role="list-divider" data-theme="b" class="dividerControl"><div data-type="horizontal">';
+	// tjs 120109
+	//html += '<a href="javascript:hijaxGrainSelectionDial(' + offset + ",'" + mealName + "'" + ');" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Grains</a>';
+	//var newGrainHtml = newGrainSelectionHtml(offset , mealName);
+	var newGrainHtml = getPortionSelections(offset , mealName, "Grain");
+	//alert("plateSlateCellApp getGrainMealHtml newGrainHtml " + newGrainHtml);
+	//html += 'New Grain: ' + newGrainHtml;
+	var html = '<li data-role="list-divider" data-theme="b">' + newGrainHtml + ' <p class="ui-li-aside dividerIcon"><strong>+</strong></p></li>';
+//	html += '</div></li>';
 	html += plateGrainsHtml;
 	return html;
 }
 
 function getProteinMealHtml(offset, mealName) {
-	var html = '<li data-role="list-divider" data-theme="b"><div data-type="horizontal">';
+	//var html = '<li data-role="list-divider" data-theme="b"><div data-type="horizontal">';
 	//html += '<a href="#protein-portion-dial" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Protein</a>';
-	html += '<a href="javascript:hijaxProteinSelectionDial(' + offset + ",'" + mealName + "'" + ');" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Protein</a>';
-	html += '</div></li>';
+	//html += '<a href="javascript:hijaxProteinSelectionDial(' + offset + ",'" + mealName + "'" + ');" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Protein</a>';
+	var newProteinHtml = getPortionSelections(offset , mealName, "Protein");
+	//html += 'New Protein: ' + newProteinHtml;
+	//html += '</div></li>';
+	var html = '<li data-role="list-divider" data-theme="b">' + newProteinHtml + ' <p class="ui-li-aside dividerIcon"><strong>+</strong></p></li>';
 	html += plateProteinHtml;
 	return html;
 }
 
 function getVegetablesMealHtml(offset, mealName) {
-	var html = '<li data-role="list-divider" data-theme="b"><div data-type="horizontal">';
+	//var html = '<li data-role="list-divider" data-theme="b"><div data-type="horizontal">';
 	//html += '<a href="#vegetables-portion-dial" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Vegetables</a>';
-	html += '<a href="javascript:hijaxVegetablesSelectionDial(' + offset + ",'" + mealName + "'" + ');" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Vegetables</a>';
-	html += '</div></li>';
+	//html += '<a href="javascript:hijaxVegetablesSelectionDial(' + offset + ",'" + mealName + "'" + ');" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Vegetables</a>';
+	var newVegetablesHtml = getPortionSelections(offset , mealName, "Vegetables");
+	//html += 'New Vegetable: ' + newVegetablesHtml;
+	//html += '</div></li>';
+	var html = '<li data-role="list-divider" data-theme="b">' + newVegetablesHtml + ' <p class="ui-li-aside dividerIcon"><strong>+</strong></p></li>';
 	html += plateVegetablesHtml;
 	return html;
 }
 
 function getFruitsMealHtml(offset, mealName) {
-	var html = '<li data-role="list-divider" data-theme="b"><div data-type="horizontal">';
+	//var html = '<li data-role="list-divider" data-theme="b"><div data-type="horizontal">';
 	//html += '<a href="#fruits-portion-dial" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Fruits</a>';
-	html += '<a href="javascript:hijaxFruitsSelectionDial(' + offset + ",'" + mealName + "'" + ');" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Fruits</a>';
-	html += '</div></li>';
+	//html += '<a href="javascript:hijaxFruitsSelectionDial(' + offset + ",'" + mealName + "'" + ');" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Fruits</a>';
+	var newFruitsHtml = getPortionSelections(offset , mealName, "Fruits");
+	//html += 'New Fruit: ' + newFruitsHtml;
+	//html += '</div></li>';
+	var html = '<li data-role="list-divider" data-theme="b">' + newFruitsHtml + ' <p class="ui-li-aside dividerIcon"><strong>+</strong></p></li>';
 	html += plateFruitsHtml;
 	return html;
 }
 
 function getDairyMealHtml(offset, mealName) {
-	var html = '<li data-role="list-divider" data-theme="b"><div data-type="horizontal">';
+	//var html = '<li data-role="list-divider" data-theme="b"><div data-type="horizontal">';
 	//html += '<a href="#dairy-portion-dial" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Dairy</a>';
-	html += '<a href="javascript:hijaxDairySelectionDial(' + offset + ",'" + mealName + "'" + ');" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Dairy</a>';
-	html += '</div></li>';
+	//html += '<a href="javascript:hijaxDairySelectionDial(' + offset + ",'" + mealName + "'" + ');" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Dairy</a>';
+	var newDairyHtml = getPortionSelections(offset , mealName, "Dairy");
+	//html += 'New Dairy: ' + newDairyHtml;
+	//html += '</div></li>';
+	var html = '<li data-role="list-divider" data-theme="b">' + newDairyHtml + ' <p class="ui-li-aside dividerIcon"><strong>+</strong></p></li>';
 	html += plateDairyHtml;
 	return html;
 }
@@ -2198,6 +2220,30 @@ function getTestPlateSelections(slate, plate, offset) {
 	return plateSelectionsHtml;
 }
 
+function getPortionSelections(offset, mealName, portionType) {
+	//alert("plateSlateCellApp getPortionSelections offset " + offset + " mealName " + mealName);
+	portionSelectionsHtml = '<select name="portionSelection" class="' + portionType + '" onchange="javascript:processAddNewPortion(' + offset  + ', ' + "'" + mealName + "'" + ', ' + "'" + portionType + "', " + 'this.options[this.selectedIndex].value);"><optgroup label="' + portionType + '">';
+	var len = portions.length;
+	//alert("plateSlateCellApp newGrainSelectionHtml len " + len);
+	if (len > 0) {
+		//var offset = 0;
+		for (var i = 0; i < len; i++) {
+			//alert("plateslate populatePlateMenus i " + i);
+			var currentPortion = portions[i];
+			if (currentPortion != null) {
+				//TODO if (currentPlate.master == 1)
+				//alert("plateslate updatePortionsDialogs portion type " + currentPortion.type + " portion name " + currentPortion.name);
+				if (currentPortion.type == portionType) {
+					portionSelectionsHtml += '<option value ="' + currentPortion.id + '">' + currentPortion.name + '</option>';
+				}
+			}
+		}
+		portionSelectionsHtml += '</optgroup></select>';
+	}
+	//alert("plateslate newGrainSelectionHtml offset " + offset + " mealName " + mealName + " grainPortionSelectListHtml " + grainPortionSelectListHtml);
+	return portionSelectionsHtml;
+}
+
 // tjs 111228
 //function appendPortion(portionId) {
 // tjs 120102
@@ -2228,13 +2274,15 @@ function appendPortion(plate, portionId, plateIndex, slateTorf) {
 			//}
 			if (plateGrainsHtml == '<li/>') {
 				// c too light, b same as divider, a is black
-				plateGrainsHtml = '<li><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk"';
+				// tjs 120107
+				//plateGrainsHtml = '<li><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk"';
+				plateGrainsHtml = '<li class="grainPortion"><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk"';
 				if (slateTorf) {
 					plateGrainsHtml += ' style="color:' + chalkColor + '"';
 				}
 				plateGrainsHtml += '>' + portion.name + '</span></a></li>';
 			} else {
-				plateGrainsHtml += '<li><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk"';
+				plateGrainsHtml += '<li class="grainPortion"><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk"';
 				if (slateTorf) {
 					plateGrainsHtml += ' style="color:' + chalkColor + '"';
 				}
@@ -2242,13 +2290,13 @@ function appendPortion(plate, portionId, plateIndex, slateTorf) {
 			}
 		} else if (type == 'Protein') {
 			if (plateProteinHtml == '<li/>') {
-				plateProteinHtml = '<li><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk"';
+				plateProteinHtml = '<li class="proteinPortion"><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk"';
 				if (slateTorf) {
 					plateProteinHtml += ' style="color:' + chalkColor + '"';
 				}
 				plateProteinHtml += '>' + portion.name + '</span></a></li>';
 			} else {
-				plateProteinHtml += '<li><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk"';
+				plateProteinHtml += '<li class="proteinPortion"><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk"';
 				if (slateTorf) {
 					plateProteinHtml += ' style="color:' + chalkColor + '"';
 				}
@@ -2256,13 +2304,13 @@ function appendPortion(plate, portionId, plateIndex, slateTorf) {
 			}
 		} else if (type == 'Vegetables') {
 			if (plateVegetablesHtml == '<li/>') {
-				plateVegetablesHtml = '<li><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk"';
+				plateVegetablesHtml = '<li class="vegetablesPortion"><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk"';
 				if (slateTorf) {
 					plateVegetablesHtml += ' style="color:' + chalkColor + '"';
 				}
 				plateVegetablesHtml += '>' + portion.name + '</span></a></li>';
 			} else {
-				plateVegetablesHtml += '<li><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk"';
+				plateVegetablesHtml += '<li class="vegetablesPortion"><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk"';
 				if (slateTorf) {
 					plateVegetablesHtml += ' style="color:' + chalkColor + '"';
 				}
@@ -2270,13 +2318,13 @@ function appendPortion(plate, portionId, plateIndex, slateTorf) {
 			}
 		} else if (type == 'Fruits') {
 			if (plateFruitsHtml == '<li/>') {
-				plateFruitsHtml = '<li><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk"';
+				plateFruitsHtml = '<li class="fruitsPortion"><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk"';
 				if (slateTorf) {
 					plateFruitsHtml += ' style="color:' + chalkColor + '"';
 				}
 				plateFruitsHtml += '>' + portion.name + '</span></a></li>';
 			} else {
-				plateFruitsHtml += '<li><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk"';
+				plateFruitsHtml += '<li class="fruitsPortion"><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk"';
 				if (slateTorf) {
 					plateFruitsHtml += ' style="color:' + chalkColor + '"';
 				}
@@ -2284,13 +2332,13 @@ function appendPortion(plate, portionId, plateIndex, slateTorf) {
 			}
 		} else if (type == 'Dairy') {
 			if (plateDairyHtml == '<li/>') {
-				plateDairyHtml = '<li><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk"';
+				plateDairyHtml = '<li class="dairyPortion"><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk"';
 				if (slateTorf) {
 					plateDairyHtml += ' style="color:' + chalkColor + '"';
 				}
 				plateDairyHtml += '>' + portion.name + '</span></a></li>';
 			} else {
-				plateDairyHtml += '<li><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk"';
+				plateDairyHtml += '<li class="dairyPortion"><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk"';
 				if (slateTorf) {
 					plateDairyHtml += ' style="color:' + chalkColor + '"';
 				}
@@ -4420,7 +4468,9 @@ function hijaxBreakfastPage(direction) {
     var mealHtml = getSlateView(offset, mealName);
 
     // create page markup
-	var newPageHtml = '<div data-role="page" id="breakfast-page" data-title="Breakfast" class="type-interior" data-theme="b" data-dom-cache="true">';
+    // tjs 120109
+	//var newPageHtml = '<div data-role="page" id="breakfast-page" data-title="Breakfast" class="type-interior" data-theme="b" data-dom-cache="true">';
+	var newPageHtml = '<div data-role="page" id="breakfast-page" data-title="Breakfast" class="type-interior" data-theme="b" data-dom-cache="false">';
 	newPageHtml += '<div data-role="header" data-theme="f" data-position="fixed">';
 	newPageHtml += '<a href="index.html" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-left jqm-home">Home</a>';
 	newPageHtml += '<h1>Breakfast</h1>';
@@ -4685,8 +4735,106 @@ function processAddNewPortionForm(portionType) {
 		}
 	}
 	
-	if (portionType == "grain") {		
+	// tjs 120107
+	
+	var chalkColor = 0;
+	var portionName;
+	var newPortionHtml;
+	var partialNewPortionHtml;
+	if (offset < 1000) {
+		chalkColor = makeColor(color);
+		portionName = portions[optionValue].name;
+		//partialNewPortionHtml = '<a href="javascript:dropPortion(0 , ' + "'" + mealName + "'" + ', ' + optionValue + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk" style="color:' + chalkColor + '">' + portionName + '</span></a></li>';
+		partialNewPortionHtml = '<a href="javascript:dropPortion(0 , ' + "'" + mealName + "'" + ', ' + optionValue + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk" style="color:' + chalkColor + '">' + portionName + '</span></a>';
+		aHref = 'href="javascript:dropPortion(0 , ' + "'" + mealName + "'" + ', ' + optionValue + ');"';
+		spanStyle = 'color:' + chalkColor;
+	}
+
+	if (portionType == "grain") {
 		$('#grain-portion-dial').dialog('close');
+		/*
+		// tjs 120107
+		if (offset < 1000){
+			newPortionHtml = '<li  class="grainPortion">' + partialNewPortionHtml;
+			//alert("plateSlateCellApp processAddNewPortionForm mealName " + mealName + " newPortionHtml " + newPortionHtml);
+			if  (mealName == "Breakfast") {
+				//$('#breakfast-page .grainPortion').append(newPortionHtml);
+				//$('#breakfast-page ul').append(newPortionHtml);
+				//$('#breakfast-page ul').append(newPortionHtml).listview('refresh');
+				//$('#breakfast-page ul').append(newPortionHtml).listview("refresh");
+				$('#breakfast-page ul').append(newPortionHtml);
+				//alert("plateSlateCellApp processAddNewPortionForm appended new list item...");
+				//alert("plateSlateCellApp processAddNewPortionForm appended new list item, then refreshed listview...");
+				//$('#breakfast-page ul').listview('refresh');
+				//$('ul').listview('refresh');
+				//alert("plateSlateCellApp processAddNewPortionForm refreshed list...");
+				$('#grain-portion-dial').dialog('close');
+				// tried this see flashed page (without new item added) then home page!
+				//hijaxBreakfastPage('fade');
+				// tjs 120109
+				try {
+					$('#breakfast-page ul').listview('refresh');
+				} catch (e) {
+					$('#breakfast-page ul').listview();
+				}
+			} else if (mealName == "Lunch") {
+				$('#lunch-page ul').listview('refresh');
+			} else if (mealName == "Dinner") {
+				$('#dinner-page ul').listview('refresh');
+			}
+		} */
+		if (offset < 1000){
+			//var dividerId = 'grain' + mealName;
+			var dividerId = '#grain' + mealName;
+			if  (mealName == "Breakfast") {
+				newPortionHtml = '<li  class="grainPortion">' + partialNewPortionHtml;
+				//alert("plateSlateCellApp processAddNewPortionForm mealName " + mealName + " newPortionHtml " + newPortionHtml + " dividerId " + dividerId);
+				//$('#dividerId').append(newPortionHtml);
+				//$('#dividerId').after(newPortionHtml);
+				//$(dividerId).after(newPortionHtml);
+				//$(dividerId).after($(newPortionHtml));
+				//alert("plateSlateCellApp processAddNewPortionForm mealName " + mealName + " newPortionHtml added using dividerId " + dividerId);
+				//$(dividerId).after(function() {
+				//	alert("plateSlateCellApp processAddNewPortionForm mealName " + mealName + " newPortionHtml added using dividerId " + dividerId);
+				//	  return newPortionHtml;
+				//});
+				// per model
+				$(dividerId).after($('<li/>', {    //here after id'd 'li' and new `<li>`
+				    'class': "grainPortion"
+				}).append($('<a/>', {    //here appending `<a>` into `<li>`
+				    'href': aHref,
+				    'data-role': 'button',
+				    'data-icon': 'delete',
+				    'data-theme': 'a'
+				}).append($('<span/>', { //here appending `<span>` into `<a>
+					'class': 'chalk',
+					'style': spanStyle
+				}).append($(portionName)) // here appending text into the span
+				)));
+				//alert("plateSlateCellApp processAddNewPortionForm mealName " + mealName + " using dividerId " + dividerId + " href " + aHref + " name " + portionName);
+				//$('#breakfast-page').trigger('create');
+				//try {
+				//	$('#breakfast-page ul').listview('refresh');
+				//} catch (e) {
+				//	$('#breakfast-page ul').listview();
+				//}
+				// tjs 120109
+			    //$.mobile.changePage('#breakfast-page', {dataUrl: 'javascript:openSlatePlansPage();' });
+			} else if (mealName == "Lunch") {
+				$('#lunch-page ul').listview('refresh');
+			} else if (mealName == "Dinner") {
+				$('#dinner-page ul').listview('refresh');
+			}
+		}
+		//$('#grain-portion-dial').dialog('close');
+		//alert("plateSlateCellApp processAddNewPortionForm mealName " + mealName);
+		/*if (mealName == "Breakfast") {
+			$('#breakfast-page ul').listview('refresh');
+		} else if (mealName == "Lunch") {
+			$('#lunch-page ul').listview('refresh');
+		} else if (mealName == "Dinner") {
+			$('#dinner-page ul').listview('refresh');
+		}*/
 	} else if (portionType == "protein") {
 		$('#protein-portion-dial').dialog('close');
 	} else if (portionType == "vegetables") {
@@ -4759,10 +4907,175 @@ function derivePortionSelectionLists(slateTorf) {
 	//alert("plateslate derivePortionSelectionLists grainPortionSelectListHtml " + grainPortionSelectListHtml);
 }
 
+/*
+function newGrainSelectionHtmlTest(offset, mealName, portionType) {
+	//alert("plateSlateCellApp newGrainSelectionHtmlTest");
+	//alert("plateSlateCellApp newGrainSelectionHtmlTest offset " + offset + " mealName " + mealName);
+	alert("plateSlateCellApp newGrainSelectionHtmlTest offset " + offset + " mealName " + mealName + " portionType " + portionType);
+}
+*/
+/*
+function newGrainSelectionHtml(offset, mealName) {
+	//alert("plateSlateCellApp newGrainSelectionHtml offset " + offset + " mealName " + mealName);
+	grainPortionSelectListHtml = '<select name="portionSelection" class="Grain" onchange="javascript:processAddNewPortion(' + offset  + ', ' + "'" + mealName + "'" + ', ' + "'grain', " + 'this.options[this.selectedIndex].value);"><optgroup label="Grain">';
+	var len = portions.length;
+	//alert("plateSlateCellApp newGrainSelectionHtml len " + len);
+	if (len > 0) {
+		//var offset = 0;
+		for (var i = 0; i < len; i++) {
+			//alert("plateslate populatePlateMenus i " + i);
+			var currentPortion = portions[i];
+			if (currentPortion != null) {
+				//TODO if (currentPlate.master == 1)
+				//alert("plateslate updatePortionsDialogs portion type " + currentPortion.type + " portion name " + currentPortion.name);
+				if (currentPortion.type == "Grain") {
+					grainPortionSelectListHtml += '<option value ="' + currentPortion.id + '">' + currentPortion.name + '</option>';
+				} else if (currentPortion.type == "Protein") {
+					proteinPortionSelectListHtml += '<option value ="' + currentPortion.id +'">' + currentPortion.name + '</option>';
+				} else if (currentPortion.type == "Vegetables") {
+					vegetablesPortionSelectListHtml += '<option value ="' + currentPortion.id +'">' + currentPortion.name + '</option>';
+				} else if (currentPortion.type == "Fruits") {
+					fruitsPortionSelectListHtml += '<option value ="' + currentPortion.id +'">' + currentPortion.name + '</option>';
+				} else if (currentPortion.type == "Dairy") {
+					dairyPortionSelectListHtml += '<option value ="' + currentPortion.id +'">' + currentPortion.name + '</option>';
+				}
+			}
+		}
+		grainPortionSelectListHtml += '</optgroup></select>';
+	}
+	//alert("plateslate newGrainSelectionHtml offset " + offset + " mealName " + mealName + " grainPortionSelectListHtml " + grainPortionSelectListHtml);
+	return grainPortionSelectListHtml;
+
+}*/
+
+function processAddNewPortion(offset, mealName, portionType, optionValue) {
+	//alert("plateslate processAddNewPortion offset " + offset + " mealName " + mealName + " portionType " + portionType + " optionValue " + optionValue);
+
+	// tjs 120102
+	var slate;
+	var slateId;	
+	if (offset < 1000) { // i.e. if working with slate edits of portions
+		var thresholdOffset = offset + slateOffsetThreshold;
+		//alert("plateslate processAddNewPortionForm thresholdOffset " + thresholdOffset);
+		// e.g. offset 0 means 100
+		
+		slate = slates[thresholdOffset];
+		slateId = slate.id;	
+		updateFood(slateId, mealName, optionValue, 0, 0);
+	} else { // i.e. working with plate edits of portions
+		//alert("plateslate processAddNewPortionForm offset " + offset + " mealName " + mealName + " optionValue " + optionValue);
+		//var index = offset%1000;
+		var index = offset - 1000;
+		var dish = plates[index];
+		var existingPortions = new Array();
+		if (dish.portion1 != null && dish.portion1 > 0)
+			existingPortions.push(dish.portion1);
+		if (dish.portion2 != null && dish.portion2 > 0)
+			existingPortions.push(dish.portion2);
+		if (dish.portion3 != null && dish.portion3 > 0)
+			existingPortions.push(dish.portion3);
+		if (dish.portion4 != null && dish.portion4 > 0)
+			existingPortions.push(dish.portion4);
+		if (dish.portion5 != null && dish.portion5 > 0)
+			existingPortions.push(dish.portion5);
+		if (dish.portion6 != null && dish.portion6 > 0)
+			existingPortions.push(dish.portion6);
+		if (dish.portion7 != null && dish.portion7 > 0)
+			existingPortions.push(dish.portion7);
+		if (dish.portion8 != null && dish.portion8 > 0)
+			existingPortions.push(dish.portion8);
+		if (dish.portion9 != null && dish.portion9 > 0)
+			existingPortions.push(dish.portion9);
+		var okToAdd = true;
+		var count = 0;
+		//alert("plateslate processAddNewPortionForm existingPortions.length " + existingPortions.length);
+		for (var i = 0; i < existingPortions.length; i++) {
+			if (existingPortions[i] == optionValue) {
+				okToAdd = false;
+				break;
+			}
+			count++;
+		}
+		//alert("plateslate processAddNewPortionForm okToAdd " + okToAdd + " count " + count);
+		if (okToAdd && count < 9) {
+			count++;
+			switch (count) {
+			case 1:
+				dish.portion1 = optionValue;
+				break;
+			case 2:
+				dish.portion2 = optionValue;
+				break;
+			case 3:
+				dish.portion3 = optionValue;
+				break;
+			case 4:
+				dish.portion4 = optionValue;
+				break;
+			case 5:
+				dish.portion5 = optionValue;
+				break;
+			case 6:
+				dish.portion6 = optionValue;
+				break;
+			case 7:
+				dish.portion7 = optionValue;
+				break;
+			case 8:
+				dish.portion8 = optionValue;
+				break;
+			case 9:
+				dish.portion9 = optionValue;
+				break;
+			}
+			addToPlate(dish);
+		}
+	}
+	
+	//  update cache
+	if (offset < 1000) {
+		refreshSlatePortionCache(slate, mealName, optionValue);
+	}
+}
+
+function refreshSlatePortionCache(slate, mealName, optionValue) {
+	var typePortions;
+	if  (mealName == "Breakfast") {
+		typePortions = slate.breakfastPortions;
+	} else if (mealName == "Lunch") {
+		typePortions = slate.lunchPortions;
+	} else if (mealName == "Dinner") {
+		typePortions = slate.dinnerPortions;
+	}
+	var index = 0;
+	var portionExists = false;
+	for (var i = 0; i < typePortions.length; i++) {
+		if (typePortions[i] == optionValue) {
+			portionExists = true;
+			break;
+		}
+		index++;
+	}
+	if (!portionExists) {
+		if  (mealName == "Breakfast") {
+			slate.breakfastPortions[index] = optionValue;
+			hijaxBreakfastPage('fade');
+		} else if (mealName == "Lunch") {
+			slate.lunchPortions[index] = optionValue;
+			hijaxLunchPage('fade');
+		} else if (mealName == "Dinner") {
+			slate.dinnerPortions[index] = optionValue;
+			hijaxDinnerPage('fade');
+		}
+	}
+}
+
 function hijaxGrainSelectionDial(offset, mealName) {
 	//alert("plateslate hijaxGrainSelectionDial offset " + offset + " mealName " + mealName);
 	//alert("plateslate hijaxGrainSelectionDial offset " + offset + " mealName " + mealName + " grainPortionSelectListHtml " + grainPortionSelectListHtml);
-	var newDialHtml = '<div data-role="dialog" id="grain-portion-dial"><div data-role="header">';
+// tjs 120109
+	//var newDialHtml = '<div data-role="dialog" id="grain-portion-dial"><div data-role="header">';
+	var newDialHtml = '<div data-role="dialog" id="grain-portion-dial" data-rel="dialog"><div data-role="header">';
 	newDialHtml += '<h1>Add New Grain Portion</h1></div>';	
 	newDialHtml += '<div data-role="content" data-theme="c">';	
 	newDialHtml += '<form name="newGrainPortionForm"><input type="hidden" name="slateOffset" /><input type="hidden" name="portionName" />';
@@ -4782,7 +5095,9 @@ function hijaxGrainSelectionDial(offset, mealName) {
 	document.newGrainPortionForm.mealName.value = mealName;
    
 	// enhance and open the new dialog
+	// tjs 120107
     $.mobile.changePage(newDial);
+    //$.mobile.changePage(newDial,'pop',false,true);
 }
 
 function hijaxProteinSelectionDial(offset, mealName) {
