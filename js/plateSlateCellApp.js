@@ -1527,7 +1527,8 @@ function displayerrormessage(transaction, error) {
 
 //called when page wraps...
 function getSlateView(offset, mealName) {
-	var borderColor = offset * 20;
+	//var borderColor = offset * 20;
+	var plateStyle = 'style="font-family: Chalkduster, sans-serif; color: ' + makeColor(color) + '; font-size: 150%; font-weight: bold;"';
 	/*
 	var tdStyle = '{border-style: solid, border-color: ' + makeColor(borderColor) + '}';
 	var tdStyle = 'border: solid 6px ' + makeColor(borderColor);
@@ -1649,41 +1650,14 @@ function getSlateView(offset, mealName) {
         }
     }
     
- /*   
-    alert("plateslate getSlateView - defined");
-    // tjs 111222
-    if (slates.length == 0) {
-        var nextDate = new Date();
-        var nextDateWeekdayName = weekday[nextDate.getDay()];
-       	breakfastPlate = getRandomPlate("Breakfast", thresholdOffset);
-		lunchPlate = getRandomPlate("Lunch", thresholdOffset);
-		dinnerPlate = getRandomPlate("Dinner", thresholdOffset);
-		slate = new Slate(0, thresholdOffset, nextDate, nextDate.toLocaleDateString(), nextDateWeekdayName, breakfastPlate.id, lunchPlate.id, dinnerPlate.id, null, null, null, 0);
-		slates[thresholdOffset] = slate;
-   		addToSlate(slate);
-    	alert("plateslate getSlateView (zero length) thresholdOffset " + thresholdOffset + " slate name " + slate.name + " id " + slate.id); 
-   	}*/
-    
     if (typeof(slates[thresholdOffset]) !== 'undefined') {
         //alert("plateslate getSlateView defined offset " + offset + " thresholdOffset " + thresholdOffset + " slates len " + slates.length + " dow " + dow);
     	slate = slates[thresholdOffset];
     	//viewSlate("GETSLATEVIEW", slate);
         var name = slate.name;
-        /*
-         * 		<ul data-role="listview" data-filter="true" data-divider-theme="b">
-			<li data-role="list-divider">Mon <p class="ui-li-aside"><strong>Feb 6 2012</strong></p></li>
-			<li><a href="#"><p><strong>6</strong> PM<span class="ui-li-aside"><strong>Birthday Party</strong></span></p></a></li>
-			<li data-role="list-divider">Wed <p class="ui-li-aside"><strong>Feb 8 2012</strong></p></li>
-			<li><a href="#"><p><strong>6</strong> PM<span class="ui-li-aside"><strong>User Group Meeting</strong></span></p></a></li>
-			<li data-role="list-divider">Fri <p class="ui-li-aside"><strong>Feb 10 2012</strong></p></li>
-			<li><a href="#"><p><strong>2</strong> PM<span class="ui-li-aside"><strong>Skiing Lessons</strong></span></p></a></li>				
-			<li><a href="#"><p><strong>5</strong> PM<span class="ui-li-aside"><strong>Team Celebration!</strong></span></p></a></li>	
-		</ul>
-
-        */
     	//html = '<ul data-role="listview" data-filter="true" data-divider-theme="b">';
     	html = '<ul data-role="listview" data-divider-theme="b">';
-    	html += '<li data-role="list-divider">' + dow + ' <p class="ui-li-aside"><strong>' + name + '</strong></p></li>';
+     	html += '<li data-role="list-divider">' + dow + ' <p class="ui-li-aside"><strong>' + name + '</strong></p></li>';
     	// tjs 111226
     	//var localOffset = offset;
         if (mealName == "Breakfast") {
@@ -1719,7 +1693,11 @@ function getSlateView(offset, mealName) {
 	        plateType = "'Dinner'";
 	       // html += '<tr><td style="' + tdStyle + '">Dinner:<br/><a onclick="updatePlate(' + slate.offset + ', ' + plateType + ');"><img src="images/chooseMyPlateIcon32_32WB.png" /></a></td><td style="' + tdStyle + '">' + plateSelectionsHtml + '</td><td style="' + tdStyle + '">' + plateDescription + '</td><td style="' + tdStyle + '">' + plateGrainsHtml + '</td><td style="' + tdStyle + '">' + plateProteinHtml + '</td><td style="' + tdStyle + '">' + plateVegetablesHtml + '</td><td style="' + tdStyle + '">' + plateFruitsHtml + '</td><td style="' + tdStyle + '">' + plateDairyHtml + '</td></tr>';
         }
-    	html += '<li data-role="list-divider">' + plateSelectionsHtml + ' <p class="ui-li-aside"><strong>' + plateDescription + '</strong></p></li>';
+       	// tjs 120110
+    	//html += '<li data-role="list-divider">' + plateSelectionsHtml + ' <p class="ui-li-aside"><strong>' + plateDescription + '</strong></p></li>';
+    	html += '<li data-role="list-divider">' + plateSelectionsHtml + ' <p class="ui-li-aside"><span ' + plateStyle + '>' + plateDescription + '</span></p></li>';
+    	//html += '<li data-role="list-divider">' + dow + ' <p class="ui-li-aside" ' + plateStyle + '><strong>' + name + '</strong></p></li>';
+    	//html += '<li data-role="list-divider">' + dow + ' <p class="ui-li-aside"><span ' + plateStyle + '>' + name + '</span></p></li>';
      	// tjs 111228
      	//html += '<li data-role="list-divider" data-theme="b"><div data-type="horizontal">';
     	//html += '<a href="#grain-portion-dial" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Grains</a>';
@@ -4361,19 +4339,19 @@ function hijaxScreenReportPage() {
 	for (var i = 0; i < len; i++) {
 		switch (i) {
 		case 0:
-			newPageHtml += '<div class="' + columnClass + 'a">'+ dows[i] + '</div>';
+			newPageHtml += '<div class="' + columnClass + 'a"><strong>'+ dows[i] + '</strong></div>';
 			break;
 		case 1:
-			newPageHtml += '<div class="' + columnClass + 'b">'+ dows[i] + '</div>';
+			newPageHtml += '<div class="' + columnClass + 'b"><strong>'+ dows[i] + '</strong></div>';
 			break;
 		case 2:
-			newPageHtml += '<div class="' + columnClass + 'c">'+ dows[i] + '</div>';
+			newPageHtml += '<div class="' + columnClass + 'c"><strong>'+ dows[i] + '</strong></div>';
 			break;
 		case 3:
-			newPageHtml += '<div class="' + columnClass + 'd">'+ dows[i] + '</div>';
+			newPageHtml += '<div class="' + columnClass + 'd"><strong>'+ dows[i] + '</strong></div>';
 			break;
 		case 4:
-			newPageHtml += '<div class="' + columnClass + 'e">'+ dows[i] + '</div>';
+			newPageHtml += '<div class="' + columnClass + 'e"><strong>'+ dows[i] + '</strong></div>';
 			break;			
 		}			
 	}
@@ -4381,19 +4359,19 @@ function hijaxScreenReportPage() {
 	for (var i = 0; i < len; i++) {
 		switch (i) {
 		case 0:
-			newPageHtml += '<div class="' + columnClass + 'a">Breakfast</div>';
+			newPageHtml += '<div class="' + columnClass + 'a"><i>Breakfast</i></div>';
 			break;
 		case 1:
-			newPageHtml += '<div class="' + columnClass + 'b">Breakfast</div>';
+			newPageHtml += '<div class="' + columnClass + 'b"><i>Breakfast</i></div>';
 			break;
 		case 2:
-			newPageHtml += '<div class="' + columnClass + 'c">Breakfast</div>';
+			newPageHtml += '<div class="' + columnClass + 'c"><i>Breakfast</i></div>';
 			break;
 		case 3:
-			newPageHtml += '<div class="' + columnClass + 'd">Breakfast</div>';
+			newPageHtml += '<div class="' + columnClass + 'd"><i>Breakfast</i></div>';
 			break;
 		case 4:
-			newPageHtml += '<div class="' + columnClass + 'e">Breakfast</div>';
+			newPageHtml += '<div class="' + columnClass + 'e"><i>Breakfast</i></div>';
 			break;			
 		}			
 	}
@@ -4421,19 +4399,19 @@ function hijaxScreenReportPage() {
 	for (var i = 0; i < len; i++) {
 		switch (i) {
 		case 0:
-			newPageHtml += '<div class="' + columnClass + 'a">Lunch</div>';
+			newPageHtml += '<div class="' + columnClass + 'a"><i>Lunch</i></div>';
 			break;
 		case 1:
-			newPageHtml += '<div class="' + columnClass + 'b">Lunch</div>';
+			newPageHtml += '<div class="' + columnClass + 'b"><i>Lunch</i></div>';
 			break;
 		case 2:
-			newPageHtml += '<div class="' + columnClass + 'c">Lunch</div>';
+			newPageHtml += '<div class="' + columnClass + 'c"><i>Lunch</i></div>';
 			break;
 		case 3:
-			newPageHtml += '<div class="' + columnClass + 'd">Lunch</div>';
+			newPageHtml += '<div class="' + columnClass + 'd"><i>Lunch</i></div>';
 			break;
 		case 4:
-			newPageHtml += '<div class="' + columnClass + 'e">Lunch</div>';
+			newPageHtml += '<div class="' + columnClass + 'e"><i>Lunch</i></div>';
 			break;			
 		}			
 	}
@@ -4461,19 +4439,19 @@ function hijaxScreenReportPage() {
 	for (var i = 0; i < len; i++) {
 		switch (i) {
 		case 0:
-			newPageHtml += '<div class="' + columnClass + 'a">Dinner</div>';
+			newPageHtml += '<div class="' + columnClass + 'a"><i>Dinner</i></div>';
 			break;
 		case 1:
-			newPageHtml += '<div class="' + columnClass + 'b">Dinner</div>';
+			newPageHtml += '<div class="' + columnClass + 'b"><i>Dinner</i></div>';
 			break;
 		case 2:
-			newPageHtml += '<div class="' + columnClass + 'c">Dinner</div>';
+			newPageHtml += '<div class="' + columnClass + 'c"><i>Dinner</i></div>';
 			break;
 		case 3:
-			newPageHtml += '<div class="' + columnClass + 'd">Dinner</div>';
+			newPageHtml += '<div class="' + columnClass + 'd"><i>Dinner</i></div>';
 			break;
 		case 4:
-			newPageHtml += '<div class="' + columnClass + 'e">Dinner</div>';
+			newPageHtml += '<div class="' + columnClass + 'e"><i>Dinner</i></div>';
 			break;			
 		}			
 	}
