@@ -23,29 +23,23 @@ var selectedBreakfastPlate;
 var selectedLunchPlate;
 var selectedDinnerPlate;
 
-//tjs 110825
 var plateSelectionRandom = true;
 var plateSelectionSeasonal = true;
 var plateSelectionShared = false;
-// tjs 110826
 var plateSelectionReport = 'slate';
 // tjs 120103 additional preferences
 //TODO
 //open page with bfast|lunch|dinner pref
-//pref checkbox states meals planned (e.g. just dinner)
 //pref - setting reset would re-activitate inactibe plates
 var slateMealPlansForDinnerOnly = false;
 
-// tjs 110831
 var preferences = {
 	plateSelectionRandom: true,
 	plateSelectionSeasonal: true,
 	plateSelectionShared: false,
-	// tjs 120103
 	slateMealPlansForDinnerOnly: false
 };
 
-// tjs 110831
 var loginInfo = {
 	id: 0,
 	userName: 'unknown',
@@ -53,7 +47,6 @@ var loginInfo = {
 	lastName: 'lastName'
 };
 
-// tjs 110901
 var weekday=new Array(7);
 weekday[0]="Sunday";
 weekday[1]="Monday";
@@ -63,7 +56,6 @@ weekday[4]="Thursday";
 weekday[5]="Friday";
 weekday[6]="Saturday";
 
-//tjs 110814
 var systemDB;
 
 function Portion(id, type, name, description, master, isInactive) {
@@ -93,19 +85,16 @@ function Plate(id, type, name, description, master, portion1, portion2, portion3
 	this.isInactive = isInactive;
 }
 
-//tjs 110812
 function Slate(id, offset, date, name, description, breakfastId, lunchId, dinnerId, breakfastPortions, lunchPortions, dinnerPortions, isInactive) {
 	this.id = id;
 	this.offset = offset;
 	this.date = date;
-	//tjs 110725
 	this.time = Date.parse(date);
 	this.name = name;
 	this.description = description;
 	this.breakfastId = breakfastId;
 	this.lunchId = lunchId;
 	this.dinnerId = dinnerId;
-	//tjs 110815
 	if (breakfastPortions != null)
 		this.breakfastPortions = breakfastPortions;
 	else
@@ -121,12 +110,10 @@ function Slate(id, offset, date, name, description, breakfastId, lunchId, dinner
 	this.isInactive = isInactive;
 }
 
-// tjs 110814
 function initDB() {	 
 	try {
 	    if (!window.openDatabase) {
 	        alert('not supported');
-
 	    } else {
 	    	var datab;
 	    	var shortName = 'plateSlate';
@@ -153,11 +140,10 @@ function initDB() {
 }
 
 /*! This creates the database tables. */
-function createTables(db)
-{
+function createTables(db) {
 /* To wipe out the table (if you are still experimenting with schemas,
    for example), enable this block. */
-if (0) {
+	if (0) {
     db.transaction(
         function (transaction) {
         transaction.executeSql('DROP TABLE portion;');
@@ -169,7 +155,6 @@ if (0) {
 }
 
 db.transaction(
-
     function (transaction) {
 
 			transaction.executeSql(
@@ -204,10 +189,7 @@ db.transaction(
 
 function readPortions()
 {	
-	// tjs 110814
 	initDB();
-
-	// tjs 110831
 	loadPreferences();
 	
 	//ensure tables are populated with master data...
@@ -234,7 +216,6 @@ function loadPortions()
 	systemDB.transaction(
 			function(transaction) {
 				transaction.executeSql(
-				//'SELECT id, type, name,  description, master, isInactive FROM portion;',null,
 				'SELECT id, type, name,  description, master, isInactive FROM portion', null,
 				
 				function (transaction, result) {
@@ -261,9 +242,6 @@ function loadPortions()
 						isPortionMasterDataInserted = true;
 						//e.g. 49
 						//alert("plateslate loadPortions isPortionMasterDataInserted " + isPortionMasterDataInserted + " portions length " + portions.length);
-						//tjs 110707
-						//populateMenus();
-						//tjs 110708
 						//now that the dependent portions are stored in the database
 						//and available in the cache array, portions[], load the plates that use portions...
 						loadPlates();						
@@ -278,22 +256,16 @@ function loadPortions()
 }
 
 function populatePortion() {
-
 	populatePortionMasterData();
-	//tjs110712
-	//portions.length = 0;
 }
 
 function populatePortionMasterData() {
 
 	var i = 1;
 	var portly;
-	//tjs 110712
-	//tjs 110717
 	if (portions.length > 0) {
 		//alert("plateslate populatePortionMasterData portions len " + portions.length);
 		portions.length = 0;
-		//tjs 110725
 		if (plates.length > 0) {
 			//alert("plateslate populatePortionMasterData plates len " + plates.length);
 			plates.length = 0;
@@ -463,14 +435,11 @@ function populatePortionMasterData() {
 function insertPortionMasterData() {
 	var len = portions.length;
 	var i = 0;
-	//var i = 1;
 	//alert("plateslate insertPortionMasterData len " + len);
 	while (i < len) {
 		var portion = portions[i++];
 		addToPortion(portion);
 	}
-	
-	//tjs110712
 	portions.length = 0;
 	loadPortions();
 }
@@ -526,7 +495,6 @@ function getPortionByName(name) {
 	var len = portions.length;
 	for (var i = 0; i < len; i++) {
 		var portion = portions[i];
-		//if (name == portions.name) {
 		if (portion != null && name == portion.name) {
 			return portion;
 		}
@@ -556,7 +524,6 @@ function loadPlates()
 	systemDB.transaction(
 			function(transaction) {
 				transaction.executeSql(
-				//'SELECT id, type, name,  description, master, isInactive FROM portion;',null,
 				'SELECT id, type, name,  description, master, portion1, portion2, portion3, portion4, portion5, portion6, portion7, portion8, portion9, isInactive FROM plate', null,
 				
 				function (transaction, result) {
@@ -594,8 +561,6 @@ function loadPlates()
 						//alert("plateslate loadPlates isPlateMasterDataInserted " + isPlateMasterDataInserted + " plates len " + plates.length);
 						//now that the dependent plates are stored in the database
 						//and available in the cache array, plates[], load the slates that use plates...
-						// tjs 110908
-						//loadSlates();
 						truncateSlates();
 						//alert("plateslate loadPlates slates loaded... plates len " + plates.length);
 					}
@@ -608,11 +573,7 @@ function loadPlates()
 }
 
 function populatePlate() {
-
 	populatePlateMasterData();
-	//tjs 110712
-	//plates.length = 0;
-	//loadPlates();
 }
 
 function populatePlateMasterData() {
@@ -629,7 +590,6 @@ function populatePlateMasterData() {
 	var portion8;
 	var portion9;
 	
-	//tjs 110725
 	if (plates.length > 0) {
 		//alert("plateslate populatePlateMasterData plates len " + plates.length);
 		plates.length = 0;
@@ -841,15 +801,12 @@ function populatePlateMasterData() {
 	i++;
 	portion1 = getPortionByName('Pork Products');
 	portion2 = getPortionByName('Peas');
-	//portion3 = getPortionByName('');
-	//portion4 = getPortionByName('');
 	dish = new Plate(i, "Dinner", "Pea Soup-w-Ham", "", 1, portion1.id, portion2.id, null, null, null, null, null, null, null, 0);
 	plates.push(dish);
 	i++;
 	portion1 = getPortionByName('Pork Products');
 	portion2 = getPortionByName('Potatos');
 	portion3 = getPortionByName('Brussel Sprouts');
-	//portion4 = getPortionByName('');
 	dish = new Plate(i, "Dinner", "Pork Chops-w-PotVeg", "", 1, portion1.id, portion2.id, portion3.id, null, null, null, null, null, null, 0);
 	plates.push(dish);
 	i++;
@@ -863,21 +820,18 @@ function populatePlateMasterData() {
 	portion1 = getPortionByName('Pork Products');
 	portion2 = getPortionByName('Eggs');
 	portion3 = getPortionByName('Toast');
-	//portion4 = getPortionByName('');
 	dish = new Plate(i, "Dinner", "Salami-n-Eggs-w-Toast", "", 1, portion1.id, portion2.id, portion3.id, null, null, null, null, null, null, 0);
 	plates.push(dish);
 	i++;
 	portion1 = getPortionByName('Pork Products');
 	portion2 = getPortionByName('Peppers');
 	portion3 = getPortionByName('Onions');
-	//portion4 = getPortionByName('');
 	dish = new Plate(i, "Dinner", "Sausage-w-Pepper-n-Onion", "", 1, portion1.id, portion2.id, portion3.id, null, null, null, null, null, null, 0);
 	plates.push(dish);
 	i++;
 	portion1 = getPortionByName('Beef Products');
 	portion2 = getPortionByName('Potatos');
 	portion3 = getPortionByName('Corn');
-	//portion4 = getPortionByName('');
 	dish = new Plate(i, "Dinner", "Shepards Pie", "", 1, portion1.id, portion2.id, portion3.id, null, null, null, null, null, null, 0);
 	plates.push(dish);
 	i++;
@@ -891,7 +845,6 @@ function populatePlateMasterData() {
 	portion1 = getPortionByName('Beef Products');
 	portion2 = getPortionByName('Potatos');
 	portion3 = getPortionByName('Squash');
-//	portion4 = getPortionByName('');
 	dish = new Plate(i, "Dinner", "Steak-w-PotVeg", "", 1, portion1.id, portion2.id, portion3.id, null, null, null, null, null, null, 0);
 	plates.push(dish);
 	i++;
@@ -918,15 +871,12 @@ function populatePlateMasterData() {
 	i++;
 	portion1 = getPortionByName('Pasta');
 	portion2 = getPortionByName('Fish');
-	//portion3 = getPortionByName('');
-	//portion4 = getPortionByName('');
 	dish = new Plate(i, "Dinner", "Tuna Noodle Caserole", "", 1, portion1.id, portion2.id, null, null, null, null, null, null, null, 0);
 	plates.push(dish);
 	i++;
 	portion1 = getPortionByName('Poultry');
 	portion2 = getPortionByName('Potatos');
 	portion3 = getPortionByName('Corn');
-	//portion4 = getPortionByName('');
 	dish = new Plate(i, "Dinner", "Turkey-w-PotVeg", "", 1, portion1.id, portion2.id, portion3.id, null, null, null, null, null, null, 0);
 	plates.push(dish);
 	i++;
@@ -940,7 +890,6 @@ function populatePlateMasterData() {
 function insertPlateMasterData() {
 	var len = plates.length;
 	var i = 0;
-	//var i = 1;
 	//e.g. 41
 	//alert("plateslate insertPlateMasterData len " + len);
 	while (i < len) {
@@ -999,12 +948,10 @@ function addToPlate(plate) {
 			);
 	}
 
-// tjs 110908
 function truncateSlates() {
 	// for now consider one month or four weeks maximum...
 	var maximumSlateCount = 28;
 	 // for test only
-	//var maximumSlateCount = 15;
 	systemDB.transaction(
 			function(transaction) {
 				transaction.executeSql(
@@ -1072,8 +1019,7 @@ function deleteSlatesBeforeDate(id, torf) {
 						loadSlates();
 					}					
 				});
-			});
-	
+			});	
 }
 
 function loadSlates()
@@ -1081,11 +1027,9 @@ function loadSlates()
 	var today = new Date();
 	today.setHours(0, 0, 0, 0);
 	var todayName = today.toLocaleDateString();
-	// tjs 110901
 	var weekdayName = weekday[today.getDay()];
 	var isSlateDataInserted = false;
 	var id;
-	//var offset = 0;
 	var offset = slateOffsetThreshold;
 	var date;
 	var name;
@@ -1105,7 +1049,7 @@ function loadSlates()
 	var tempSlatesLen = 0;
 	var resultsLen = 0;
 	var tempSlate;
-	// tjs 110816 needed to ensure no duplicates are listed in the slates
+	// needed to ensure no duplicates are listed in the slates
 	var lastSlateName = null;
 
 	//alert("plateslate loadSlates todayName " + todayName);
@@ -1129,9 +1073,6 @@ function loadSlates()
 	systemDB.transaction(
 			function(transaction) {
 				transaction.executeSql(
-				//'SELECT id, type, name,  description, master, isInactive FROM portion;',null,
-						//'SELECT id, date, name,  description, breakfast, lunch, dinner, isInactive FROM slate', null,
-				//'SELECT id, date, name,  description, breakfast, lunch, dinner, isInactive FROM slate ORDER BY date', null,
 				'SELECT id, date, name,  description, breakfast, lunch, dinner, isInactive FROM slate', null,
 				
 				function (transaction, result) {
@@ -1150,38 +1091,23 @@ function loadSlates()
 							dinnerId=parseInt(row.dinner);
 							isInactive=parseInt(row.isInactive);
 							//alert("plateslate loadSlates name " + name + " id " + id + " breakfastId " + breakfastId + " lunchId " + lunchId + " dinnerId " + dinnerId);
-							// tjs 110826
-							//slate = new Slate(id, 0, date, name, description, breakfastId, lunchId, dinnerId, null, null, null, isInactive);
 							tempSlates[index++] = new Slate(id, 0, date, name, description, breakfastId, lunchId, dinnerId, null, null, null, isInactive);
 							//viewSlate("LOADSLATES SLATE", slate);
 							//alert("plateslate loadSlates slate name " + slate.name + " slate id " + slate.id + " breakfastId " + slate.breakfastId + " lunchId " + slate.lunchId + " dinnerId " + slate.dinnerId + " name " + name + " todayName " + todayName);
 							//alert("plateslate loadSlates for id " + id + " have slate name " + slate.name + " breakfastId " + breakfastId + " lunchId " + lunchId + " dinnerId " + dinnerId + " tempIndex " + index + " markIndex " + markIndex);
-							// tjs 110826
-							//tempSlates[index++] = copySlate(slate);
 							var tempIndex = index - 1;
 							//alert("plateslate loadSlates tempSlate index " + tempIndex + " name " + tempSlates[tempIndex].name + " id " + tempSlates[tempIndex].id + " breakfastId " + tempSlates[tempIndex].breakfastId + " lunchId " + tempSlates[tempIndex].lunchId + " dinnerId " + tempSlates[tempIndex].dinnerId);
-							// tjs 110819
-							// tjs 110826
-							//destroySlate(slate);
-							//alert("plateslate loadSlates (after copy source destroyed) tempSlate index " + tempIndex + " name " + tempSlates[tempIndex].name + " id " + tempSlates[tempIndex].id + " breakfastId " + tempSlates[tempIndex].breakfastId + " lunchId " + tempSlates[tempIndex].lunchId + " dinnerId " + tempSlates[tempIndex].dinnerId);
-							
-							//viewSlate("LOADSLATES LOADTEMP", tempSlates[index - 1]);
+							//alert("plateslate loadSlates (after copy source destroyed) tempSlate index " + tempIndex + " name " + tempSlates[tempIndex].name + " id " + tempSlates[tempIndex].id + " breakfastId " + tempSlates[tempIndex].breakfastId + " lunchId " + tempSlates[tempIndex].lunchId + " dinnerId " + tempSlates[tempIndex].dinnerId);							
 							//alert("plateslate loadPlates for id " + id + " have plate name " + plate.name);
 							//alert("plateslate loadSlates for id " + id + " have today name " + todayName + " have slate name " + slate.name + " markIndex " + markIndex + " index " + index + " breakfastId " + breakfastId + " lunchId " + lunchId + " dinnerId " + dinnerId);
 						}
-						//tjs 110725
 						//alert("plateslate loadSlates tempSlates.length " + tempSlates.length + " have today name " + todayName);
 						tempSlates.sort(compareTimes);
 						//alert("plateslate loadSlates after sort tempSlates.length " + tempSlates.length);
 						for (var i=0; i < tempSlates.length; i++) {
-							//viewSlate("LOADSLATES SCANTEMP", tempSlates[i]);
-							// tjs 110816
 							// deep copy not needed here...
 							slate = tempSlates[i];
 							//alert("plateslate loadSlates sorted by date slate id " + slate.id);
-							//var locationIndex = "tempSlates[" + new String(i) + "]";
-							//viewSlate(locationIndex, slate);
-							//copySlate(slate, tempSlates[i]);
 							name = slate.name;
 							//alert("plateslate loadSlates slate name " + slate.name + " slate id " + slate.id + " breakfastId " + slate.breakfastId + " lunchId " + slate.lunchId + " dinnerId " + slate.dinnerId + " name " + name + " todayName " + todayName);
 							if (name == todayName) {
@@ -1191,26 +1117,16 @@ function loadSlates()
 							//alert("plateslate loadSlates for id " + slate.id + " have today name " + todayName + " have slate name " + slate.name + " markIndex " + markIndex + " index " + index + " breakfastId " + slate.breakfastId + " lunchId " + slate.lunchId + " dinnerId " + slate.dinnerId);
 						}
 						
-						// tjs 110815
-						//var tempSlatesLen = tempSlates.length;
 						tempSlatesLen = tempSlates.length;
 						//alert("plateslate loadSlates result len " + result.rows.length + " tempSlatesLen " + tempSlatesLen + " markIndex " + markIndex);
 						//found today's date...
 						if (markIndex >= 0) {
-							//offset = 0;
-							//tjs 110816
-							//copySlate(currentSlate, tempSlates[markIndex]);
-							// tjs 110819
-							//currentSlate = copySlate(tempSlates[markIndex]);
 							// DEBUG
 							//viewSlate("CURRENTSLATE", currentSlate);
 							lastSlateName = null;
 							offset = slateOffsetThreshold;
 							for (var i = markIndex; i >= 0; i--) {
-								//slate = tempSlates[i];
-								//copySlate(slate, tempSlates[i]);
 								slate = copySlate(tempSlates[i]);
-								// tjs 110819
 								destroySlate(tempSlates[i]);
 								if (lastSlateName == null) {
 									lastSlateName = slate.name;
@@ -1219,7 +1135,6 @@ function loadSlates()
 								} else {
 									lastSlateName = slate.name;
 								}
-								// tjs 110819
 								if (i == markIndex) {
 									currentSlate = slate;
 								}
@@ -1234,10 +1149,7 @@ function loadSlates()
 								lastSlateName = null;
 								offset = slateOffsetThreshold + 1;
 								for (var i = markIndex + 1; i < tempSlatesLen; i++) {
-									//slate = tempSlates[i];
-									//copySlate(slate, tempSlates[i]);
 									slate = copySlate(tempSlates[i]);
-									// tjs 110819
 									destroySlate(tempSlates[i]);
 									if (lastSlateName == null) {
 										lastSlateName = slate.name;
@@ -1254,27 +1166,20 @@ function loadSlates()
 									offset++;
 								}
 							}
-							// tjs 110816
-							//appendFood(loadSlatesCallback, 0, 1, slate);
 							appendFood(loadSlatesCallback, 0, 1, currentSlate);
 							//viewSlate("CURRENTSLATE", currentSlate);
 							//alert("plateslate loadSlates currentSlate id " + currentSlate.id + " have slate name " + currentSlate.name + " breakfastPortions len " + currentSlate.breakfastPortions.length);
 						} 
-						// tjs 110816
 						else {
 							//today's date not entered yet (i.e. markIndex remained -1)
 							offset = slateOffsetThreshold;
 							breakfastPlate = getRandomPlate("Breakfast", offset);
 							lunchPlate = getRandomPlate("Lunch", offset);
 							dinnerPlate = getRandomPlate("Dinner", offset);
-							
-							// tjs 110901
-							//slate = new Slate(0, offset, today, today.toLocaleDateString(), today.toLocaleTimeString(), breakfastPlate.id, lunchPlate.id, dinnerPlate.id, null, null, null, 0);
 							slate = new Slate(0, offset, today, today.toLocaleDateString(), weekdayName, breakfastPlate.id, lunchPlate.id, dinnerPlate.id, null, null, null, 0);
 							// DEBUG
 							//viewSlate("NO MARKINDEX", slate);
 							//alert("plateslate loadSlates today's new slate markIndex -1 " + slate.name);
-							// tjs 110815
 							//TODO embed assignment in append...
 							appendSlate(loadSlatesCallback, slate, offset);
 							//alert("plateslate loadSlates today's new slate id " + slate.id);
@@ -1283,10 +1188,7 @@ function loadSlates()
 								lastSlateName = null;
 								offset = slateOffsetThreshold - 1;
 								for (var i = tempSlatesLen - 1; i >= 0; i--) {
-									//slate = tempSlates[i];
-									//copySlate(slate, tempSlates[i]);
 									slate = copySlate(tempSlates[i]);
-									// tjs 110819
 									destroySlate(tempSlates[i]);
 									if (lastSlateName == null) {
 										lastSlateName = slate.name;
@@ -1312,22 +1214,15 @@ function loadSlates()
 						breakfastPlate = getRandomPlate("Breakfast", offset);
 						lunchPlate = getRandomPlate("Lunch", offset);
 						dinnerPlate = getRandomPlate("Dinner", offset);
-						
-						// tjs 110901
-						//slate = new Slate(0, offset, today, today.toLocaleDateString(), today.toLocaleTimeString(), breakfastPlate.id, lunchPlate.id, dinnerPlate.id, null, null, null, 0);
 						slate = new Slate(0, offset, today, today.toLocaleDateString(), weekdayName, breakfastPlate.id, lunchPlate.id, dinnerPlate.id, null, null, null, 0);
 						// DEBUG
 						//viewSlate("NO SLATES", slate);
 						//alert("plateslate loadSlates today's new slate markIndex -1 " + slate.name);
-						// tjs 110815
 						//TODO embed assignment in append...
 						appendSlate(loadSlatesCallback, slate, offset);
 						//alert("plateslate loadSlates today's new slate id " + slate.id);
 						//alert("plateslate loadSlates (no markIndex) for today have slate name " + slate.name + " offset " + offset);
 					} // end if not entered or entered
-					// tjs 110815
-					//tjs 110712
-					//populateSlate();
 				},
 				displayerrormessage
 				);	// end trx sql
@@ -1350,7 +1245,6 @@ function addToSlate(slate) {
 			systemDB.transaction(
 				function(transaction) {
 					transaction.executeSql(
-					//'SELECT cart_sess, cart_sku,  cart_item_name, cart_qty, cart_price FROM shopcart where cart_sess=? and cart_sku=?;',[sid, sku],
 							'SELECT id, date, name,  description, breakfast, lunch, dinner, isInactive FROM slate where name=?;',[slate.name],
 
 							function (transaction, result) {
@@ -1362,8 +1256,6 @@ function addToSlate(slate) {
 									systemDB.transaction(
 											function(transaction) {
 												transaction.executeSql(
-														//'update slate set description=? where name=?;',
-														//[slate.description, slate.name],
 														'update slate set description=?, breakfast=?, lunch=?, dinner=? where name=?;',
 														[slate.description, slate.breakfastId, slate.lunchId ,slate.dinnerId, slate.name],
 														function(){
@@ -1375,8 +1267,6 @@ function addToSlate(slate) {
 											}	// end function trx		
 									); // end systemDB trx
 									appendFood(loadSlatesCallback, 0, 1, slate);							    		
-
-									//return id;
 								} else {	// i.e. no rows found in query
 									//alert("plateslate addToPlate inserting: type " + plate.type + " name " + plate.name + " desc " + plate.description + " master " + plate.master + " isInactive? " + plate.isInactive + " portion #1 " + plate.portion1);
 									systemDB.transaction(
@@ -1390,31 +1280,16 @@ function addToSlate(slate) {
 														//},
 														//displayerrormessage
 											            function (transaction, result) {
-
 											                if (!result.rowsAffected) {
-
 											                    // Previous insert failed. Bail.
-
 											                    alert('plateslate addToSlate No rows affected!');
-
 											                    return false;
-
 											                }
 											                id = result.insertId;
 											                //alert('plateslate addToSlate insert ID was ' + id);
 											                slate.id = id;
 											                //appendFood(transaction, slate);
 											                appendFood(loadSlatesCallback, 0, 1, slate);
-											                
-											                //transaction.executeSql('INSERT into tbl_b (name_id, color) VALUES (?, ?);',
-
-											                    //[ resultSet.insertId,
-
-											                     // document.getElementById('colorElt').innerHTML ],
-
-											                   // nullDataHandler, errorHandler);
-
-											            //}, errorHandler);
 														} // end function trx result
 												); //end trx sql
 											}	//end function trx		
@@ -1439,7 +1314,6 @@ function appendSlate(loadSlatesCallback, slate, offset) {
 			systemDB.transaction(
 				function(transaction) {
 					transaction.executeSql(
-					//'SELECT cart_sess, cart_sku,  cart_item_name, cart_qty, cart_price FROM shopcart where cart_sess=? and cart_sku=?;',[sid, sku],
 							'SELECT id, date, name,  description, breakfast, lunch, dinner, isInactive FROM slate where name=?;',[slate.name],
 
 							function (transaction, result) {
@@ -1451,8 +1325,6 @@ function appendSlate(loadSlatesCallback, slate, offset) {
 									systemDB.transaction(
 											function(transaction) {
 												transaction.executeSql(
-														//'update slate set description=? where name=?;',
-														//[slate.description, slate.name],
 														'update slate set description=?, breakfast=?, lunch=?, dinner=? where name=?;',
 														[slate.description, slate.breakfastId, slate.lunchId ,slate.dinnerId, slate.name],
 														function(){
@@ -1477,15 +1349,10 @@ function appendSlate(loadSlatesCallback, slate, offset) {
 														//},
 														//displayerrormessage
 											            function (transaction, result) {
-
 											                if (!result.rowsAffected) {
-
 											                    // Previous insert failed. Bail.
-
 											                    alert('plateslate appendSlate No rows affected!');
-
 											                    return false;
-
 											                }
 											                id = result.insertId;
 											                //alert('plateslate appendSlate insert ID is ' + id);
@@ -1496,16 +1363,6 @@ function appendSlate(loadSlatesCallback, slate, offset) {
 											                slates[offset] = slate;
 											                //alert("plateslate appendSlate slate id " + slate.id + " call append food breakfast " + slate.breakfastId + " lunch " + slate.lunchId + " dinner " + slate.dinnerId);
 											                appendFood(loadSlatesCallback, 0, 1, slate);
-											                //populateSlate();
-											                
-											                //transaction.executeSql('INSERT into tbl_b (name_id, color) VALUES (?, ?);',
-
-											                    //[ resultSet.insertId,
-
-											                     // document.getElementById('colorElt').innerHTML ],
-
-											                   // nullDataHandler, errorHandler);
-
 											            //}, errorHandler);
 														} // end function trx result
 												); //end trx sql
@@ -1527,14 +1384,7 @@ function displayerrormessage(transaction, error) {
 
 //called when page wraps...
 function getSlateView(offset, mealName) {
-	//var borderColor = offset * 20;
-	var plateStyle = 'style="font-family: Chalkduster, sans-serif; color: ' + makeColor(color) + '; font-size: 150%; font-weight: bold;"';
-	/*
-	var tdStyle = '{border-style: solid, border-color: ' + makeColor(borderColor) + '}';
-	var tdStyle = 'border: solid 6px ' + makeColor(borderColor);
-    //alert("plateslate getSlateView tdStyle " + tdStyle);
-	*/
-	
+	var plateStyle = 'style="font-family: Chalkduster, sans-serif; color: ' + makeColor(color) + '; font-size: 150%; font-weight: bold;"';	
 	//e.g. for offset 0 = 100, 1 = 101, -1 = 99
 	var thresholdOffset = offset + slateOffsetThreshold;
     var dow;
@@ -1564,9 +1414,6 @@ function getSlateView(offset, mealName) {
     var plateType;
     
     //alert("plateslate getSlateView offset " + offset + " thresholdOffset " + thresholdOffset + " slates len " + slates.length + " dow " + dow);
-    //tjs 110714
-    // tjs 111222
-    // tjs 111222
     if (slates.length == 0) {
         var nextDate = new Date();
         var nextDateWeekdayName = weekday[nextDate.getDay()];
@@ -1580,29 +1427,21 @@ function getSlateView(offset, mealName) {
     	//alert("plateslate getSlateView (zero length) thresholdOffset " + thresholdOffset + " slate name " + slate.name + " id " + slate.id); 
    	}
     if (typeof(slates[thresholdOffset]) === 'undefined') {
-    //if (slates.length == 0) {
         //alert("plateslate getSlateView undefined offset " + offset + " thresholdOffset " + thresholdOffset + " slates len " + slates.length + " dow " + dow);
     	// too far into past...
     	if (thresholdOffset - slateOffsetThreshold < 0) {
             var name = 'NO MORE PRIOR SLATES!';
-        	//html = '<ul data-role="listview" data-filter="true" data-divider-theme="b">';
         	html = '<ul data-role="listview" data-divider-theme="b">';
-        	// tjs 111223
-        	//html += '<li data-role="list-divider">' + dow + ' <p class="ui-li-aside"><strong>' + name + '</strong></p></li>';
-        	html += '<li data-role="list-divider">';
+         	html += '<li data-role="list-divider">';
         	html += dow + ' <p class="ui-li-aside"><strong>' + name + '</strong></p></li>';
         	html += '<li>No Meals Were Planned for this Day!</li>';
-            //html = '<section><table class="slateView"><thead><th>' + dow + '</th><th>' + name + '</th><th><img src="images/plateSettingPlate.jpg" /></th><th>Grains</th><th>Protein</th><th>Vegetables</th><th>Fruits</th><th>Dairy</th></thead><tbody>';
-            //html += '</tbody></table></section>';    
-        	//alert("plateslate getSlateView offset " + offset + " html " + html);        	
+         	//alert("plateslate getSlateView offset " + offset + " html " + html);        	
         } else {
         	// new territory for slate in future...
         	var priorOffset = offset - 1;
         	//alert("plateslate getSlateView priorOffset " + priorOffset + " slates.length " + slates.length);
-        	// tjs 111222
         	var nextDateMillis;
-        	//if (typeof(slates[priorOffset + slateOffsetThreshold]) !== 'undefined') {
-        	if (slates.length > 0) {
+         	if (slates.length > 0) {
 	        	slate = slates[priorOffset + slateOffsetThreshold];
 	        	//alert("plateslate getSlateView priorOffset " + priorOffset + " slate name " + slate.name + " id " + slate.id);        	
 	            var priorDate = slate.date;
@@ -1619,7 +1458,6 @@ function getSlateView(offset, mealName) {
         		nextDateMillis = 0;
         	}
 	        var nextDate = new Date();
-	        // tjs 111222
 	        if (nextDateMillis > 0) {
 	        	nextDate.setTime(nextDateMillis);
 	        }	        
@@ -1630,20 +1468,12 @@ function getSlateView(offset, mealName) {
     		lunchPlate = getRandomPlate("Lunch", thresholdOffset);
     		dinnerPlate = getRandomPlate("Dinner", thresholdOffset);
     		//alert("plateslate getSlateView breakfastPlate.id " + breakfastPlate.id + " lunchPlate.id " + lunchPlate.id + " dinnerPlate.id " + dinnerPlate.id);
-    		// tjs 110901
-    		//slate = new Slate(0, thresholdOffset, nextDate, nextDate.toLocaleDateString(), nextDate.toLocaleTimeString(), breakfastPlate.id, lunchPlate.id, dinnerPlate.id, null, null, null, 0);
-    		//slate = new Slate(0, thresholdOffset, nextDate, nextDate.toLocaleDateString(), nextDateWeekdayName, breakfastPlate.id, lunchPlate.id, dinnerPlate.id, null, null, null, 0);
-    		// tjs 120106
     		var breakfastPortions = getPlatePortions(breakfastPlate);
     		var lunchPortions = getPlatePortions(lunchPlate);
     		var dinnerPortions = getPlatePortions(dinnerPlate);    		
     		slate = new Slate(0, thresholdOffset, nextDate, nextDate.toLocaleDateString(), nextDateWeekdayName, breakfastPlate.id, lunchPlate.id, dinnerPlate.id, breakfastPortions, lunchPortions, dinnerPortions, 0);
     		//insert the new slate...
-    		//tjs 110815
-    		//slate.id = addToSlate(slate);
     		slates[thresholdOffset] = slate;
-    		// tjs 111222
-    		//viewSlate(thresholdOffset, slate);
     		addToSlate(slate);
     		slateRandomlyGenerated = true;
         	//alert("plateslate getSlateView (undefined) thresholdOffset " + thresholdOffset + " slate name " + slate.name + " id " + slate.id); 
@@ -1655,24 +1485,16 @@ function getSlateView(offset, mealName) {
     	slate = slates[thresholdOffset];
     	//viewSlate("GETSLATEVIEW", slate);
         var name = slate.name;
-    	//html = '<ul data-role="listview" data-filter="true" data-divider-theme="b">';
     	html = '<ul data-role="listview" data-divider-theme="b">';
      	html += '<li data-role="list-divider">' + dow + ' <p class="ui-li-aside"><strong>' + name + '</strong></p></li>';
-    	// tjs 111226
-    	//var localOffset = offset;
         if (mealName == "Breakfast") {
-	        //html = '<section><table class="slateView"><thead><th>' + dow + '</th><th>' + name + '</th><th><a onclick="showPlaceSetting(' + slate.offset + ');"><img src="images/plateSettingPlate.jpg" /></a></th><th>Grains</th><th>Protein</th><th>Vegetables</th><th>Fruits</th><th>Dairy</th></thead><tbody>';
-	        //var plate = getRandomPlate('Breakfast');
 	        var plate = plates[slate.breakfastId];
 	        plateDescription = plate.description;
 	        if (plateDescription.length == 0 || plateDescription == null)
 	        	plateDescription = "starter choice!";
-	        // tjs 120106
-	        //plateSelectionsHtml = getPlateSelections(slate, plate, thresholdOffset);
 	        plateSelectionsHtml = getPlateSelections(slate, plate, thresholdOffset, slateRandomlyGenerated);
 	    	//alert("plateslate getSlateView plate name " + plate.name);
 	        plateType = "'Breakfast'";
-	    	//document.newPortionForm.protionName.value = protionName;
         } else if (mealName == "Lunch") {
 	        plate = plates[slate.lunchId];
 	        plateDescription = plate.description;
@@ -1680,29 +1502,16 @@ function getSlateView(offset, mealName) {
 	        	plateDescription = "midday milestone!";
 	        plateSelectionsHtml = getPlateSelections(slate, plate, thresholdOffset, slateRandomlyGenerated);
 	        plateType = "'Lunch'";
-	        //html += '<tr><td style="' + tdStyle + '">Lunch:<br/><a onclick="updatePlate(' + slate.offset + ', ' + plateType + ');"><img src="images/chooseMyPlateIcon32_32WB.png" /></a></td><td style="' + tdStyle + '">' + plateSelectionsHtml + '</td><td style="' + tdStyle + '">' + plateDescription + '</td><td style="' + tdStyle + '">' + plateGrainsHtml + '</td><td style="' + tdStyle + '">' + plateProteinHtml + '</td><td style="' + tdStyle + '">' + plateVegetablesHtml + '</td><td style="' + tdStyle + '">' + plateFruitsHtml + '</td><td style="' + tdStyle + '">' + plateDairyHtml + '</td></tr>';
         } else if (mealName == "Dinner") {
 	        plate = plates[slate.dinnerId];
 	        plateDescription = plate.description;
-	        //if (plateDescription == null)
 	    	//alert("plateslate getSlateView offset " + offset + " plateDescription " + plateDescription);
 	        if (plateDescription.length == 0 || plateDescription == null)
 	        	plateDescription = "main entree!";
-	        //plateSelectionsHtml = getPlateSelections(plate);
 	        plateSelectionsHtml = getPlateSelections(slate, plate, thresholdOffset, slateRandomlyGenerated);
 	        plateType = "'Dinner'";
-	       // html += '<tr><td style="' + tdStyle + '">Dinner:<br/><a onclick="updatePlate(' + slate.offset + ', ' + plateType + ');"><img src="images/chooseMyPlateIcon32_32WB.png" /></a></td><td style="' + tdStyle + '">' + plateSelectionsHtml + '</td><td style="' + tdStyle + '">' + plateDescription + '</td><td style="' + tdStyle + '">' + plateGrainsHtml + '</td><td style="' + tdStyle + '">' + plateProteinHtml + '</td><td style="' + tdStyle + '">' + plateVegetablesHtml + '</td><td style="' + tdStyle + '">' + plateFruitsHtml + '</td><td style="' + tdStyle + '">' + plateDairyHtml + '</td></tr>';
         }
-       	// tjs 120110
-    	//html += '<li data-role="list-divider">' + plateSelectionsHtml + ' <p class="ui-li-aside"><strong>' + plateDescription + '</strong></p></li>';
-    	html += '<li data-role="list-divider">' + plateSelectionsHtml + ' <p class="ui-li-aside"><span ' + plateStyle + '>' + plateDescription + '</span></p></li>';
-    	//html += '<li data-role="list-divider">' + dow + ' <p class="ui-li-aside" ' + plateStyle + '><strong>' + name + '</strong></p></li>';
-    	//html += '<li data-role="list-divider">' + dow + ' <p class="ui-li-aside"><span ' + plateStyle + '>' + name + '</span></p></li>';
-     	// tjs 111228
-     	//html += '<li data-role="list-divider" data-theme="b"><div data-type="horizontal">';
-    	//html += '<a href="#grain-portion-dial" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Grains</a>';
-    	//html += '<li data-role="list-divider" data-theme="b"><div data-role="controlgroup" data-type="horizontal">';
-    	// tjs 120106
+     	html += '<li data-role="list-divider">' + plateSelectionsHtml + ' <p class="ui-li-aside"><span ' + plateStyle + '>' + plateDescription + '</span></p></li>';
     	var grainDeferred = plateGrainsHtml == '<li/>';
     	var proteinDeferred = plateProteinHtml == '<li/>';
     	var vegetablesDeferred = plateVegetablesHtml == '<li/>';
@@ -1740,111 +1549,49 @@ function getSlateView(offset, mealName) {
     	if (dairyDeferred) {
     		html += getDairyMealHtml(offset, mealName);
     	}
-    	/*
-    	html += '<li data-role="list-divider" data-theme="b"><div data-type="horizontal">';
-    	html += '<a href="javascript:hijaxGrainSelectionDial(' + offset + ",'" + mealName + "'" + ');" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Grains</a>';
-    	html += '</div></li>';
-    	html += plateGrainsHtml;
-     	html += '<li data-role="list-divider" data-theme="b"><div data-type="horizontal">';
-    	//html += '<a href="#protein-portion-dial" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Protein</a>';
-    	html += '<a href="javascript:hijaxProteinSelectionDial(' + offset + ",'" + mealName + "'" + ');" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Protein</a>';
-    	html += '</div></li>';
-    	html += plateProteinHtml;
-     	html += '<li data-role="list-divider" data-theme="b"><div data-type="horizontal">';
-    	//html += '<a href="#vegetables-portion-dial" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Vegetables</a>';
-    	html += '<a href="javascript:hijaxVegetablesSelectionDial(' + offset + ",'" + mealName + "'" + ');" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Vegetables</a>';
-    	html += '</div></li>';
-    	html += plateVegetablesHtml;
-     	html += '<li data-role="list-divider" data-theme="b"><div data-type="horizontal">';
-    	//html += '<a href="#fruits-portion-dial" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Fruits</a>';
-    	html += '<a href="javascript:hijaxFruitsSelectionDial(' + offset + ",'" + mealName + "'" + ');" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Fruits</a>';
-    	html += '</div></li>';
-    	html += plateFruitsHtml;
-     	html += '<li data-role="list-divider" data-theme="b"><div data-type="horizontal">';
-    	//html += '<a href="#dairy-portion-dial" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Dairy</a>';
-    	html += '<a href="javascript:hijaxDairySelectionDial(' + offset + ",'" + mealName + "'" + ');" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Dairy</a>';
-    	html += '</div></li>';
-    	html += plateDairyHtml;
-    	*/
-      //html += '</tbody></table></section>';    
-        //html += '</ul>';    
     	//alert("plateslate getSlateView offset " + offset + " mealName " + mealName + " html " + html);
     } 
     html += '</ul>';    
 	//alert("plateslate getSlateView offset " + offset + " mealName " + mealName + " html " + html);
-    //updatePortionsDialogs(slate, mealName, plateGrainsHtml, plateProteinHtml, plateVegetablesHtml, plateFruitsHtml, plateDairyHtml);
-    
     return html;
 }
 
-// tjs 120106
 function getGrainMealHtml(offset, mealName) {
-	// tjs 120109
-	//var html = '<li data-role="list-divider" data-theme="b"><div data-type="horizontal">';
-	//var html = '<li data-role="list-divider" data-theme="b" id="grain' + mealName + '"><div data-type="horizontal">';
-	//var html = '<li data-role="list-divider" data-theme="b"><div data-type="horizontal">';
-	//var html = '<li data-role="list-divider" data-theme="b" class="dividerControl"><div data-type="horizontal">';
-	// tjs 120109
-	//html += '<a href="javascript:hijaxGrainSelectionDial(' + offset + ",'" + mealName + "'" + ');" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Grains</a>';
-	//var newGrainHtml = newGrainSelectionHtml(offset , mealName);
 	var newGrainHtml = getPortionSelections(offset , mealName, "Grain");
 	//alert("plateSlateCellApp getGrainMealHtml newGrainHtml " + newGrainHtml);
-	//html += 'New Grain: ' + newGrainHtml;
-	var html = '<li data-role="list-divider" data-theme="b">' + newGrainHtml + ' <p class="ui-li-aside dividerIcon"><strong>+</strong></p></li>';
-//	html += '</div></li>';
+	var html = '<li data-role="list-divider" data-theme="b">' + newGrainHtml + ' <p class="ui-li-aside dividerIcon"><strong>+ Grain</strong></p></li>';
 	html += plateGrainsHtml;
 	return html;
 }
 
 function getProteinMealHtml(offset, mealName) {
-	//var html = '<li data-role="list-divider" data-theme="b"><div data-type="horizontal">';
-	//html += '<a href="#protein-portion-dial" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Protein</a>';
-	//html += '<a href="javascript:hijaxProteinSelectionDial(' + offset + ",'" + mealName + "'" + ');" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Protein</a>';
 	var newProteinHtml = getPortionSelections(offset , mealName, "Protein");
-	//html += 'New Protein: ' + newProteinHtml;
-	//html += '</div></li>';
-	var html = '<li data-role="list-divider" data-theme="b">' + newProteinHtml + ' <p class="ui-li-aside dividerIcon"><strong>+</strong></p></li>';
+	var html = '<li data-role="list-divider" data-theme="b">' + newProteinHtml + ' <p class="ui-li-aside dividerIcon"><strong>+ Protein</strong></p></li>';
 	html += plateProteinHtml;
 	return html;
 }
 
 function getVegetablesMealHtml(offset, mealName) {
-	//var html = '<li data-role="list-divider" data-theme="b"><div data-type="horizontal">';
-	//html += '<a href="#vegetables-portion-dial" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Vegetables</a>';
-	//html += '<a href="javascript:hijaxVegetablesSelectionDial(' + offset + ",'" + mealName + "'" + ');" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Vegetables</a>';
 	var newVegetablesHtml = getPortionSelections(offset , mealName, "Vegetables");
-	//html += 'New Vegetable: ' + newVegetablesHtml;
-	//html += '</div></li>';
-	var html = '<li data-role="list-divider" data-theme="b">' + newVegetablesHtml + ' <p class="ui-li-aside dividerIcon"><strong>+</strong></p></li>';
+	var html = '<li data-role="list-divider" data-theme="b">' + newVegetablesHtml + ' <p class="ui-li-aside dividerIcon"><strong>+ Vegetable</strong></p></li>';
 	html += plateVegetablesHtml;
 	return html;
 }
 
 function getFruitsMealHtml(offset, mealName) {
-	//var html = '<li data-role="list-divider" data-theme="b"><div data-type="horizontal">';
-	//html += '<a href="#fruits-portion-dial" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Fruits</a>';
-	//html += '<a href="javascript:hijaxFruitsSelectionDial(' + offset + ",'" + mealName + "'" + ');" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Fruits</a>';
 	var newFruitsHtml = getPortionSelections(offset , mealName, "Fruits");
-	//html += 'New Fruit: ' + newFruitsHtml;
-	//html += '</div></li>';
-	var html = '<li data-role="list-divider" data-theme="b">' + newFruitsHtml + ' <p class="ui-li-aside dividerIcon"><strong>+</strong></p></li>';
+	var html = '<li data-role="list-divider" data-theme="b">' + newFruitsHtml + ' <p class="ui-li-aside dividerIcon"><strong>+ Fruit</strong></p></li>';
 	html += plateFruitsHtml;
 	return html;
 }
 
 function getDairyMealHtml(offset, mealName) {
-	//var html = '<li data-role="list-divider" data-theme="b"><div data-type="horizontal">';
-	//html += '<a href="#dairy-portion-dial" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Dairy</a>';
-	//html += '<a href="javascript:hijaxDairySelectionDial(' + offset + ",'" + mealName + "'" + ');" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Dairy</a>';
 	var newDairyHtml = getPortionSelections(offset , mealName, "Dairy");
-	//html += 'New Dairy: ' + newDairyHtml;
-	//html += '</div></li>';
-	var html = '<li data-role="list-divider" data-theme="b">' + newDairyHtml + ' <p class="ui-li-aside dividerIcon"><strong>+</strong></p></li>';
+	var html = '<li data-role="list-divider" data-theme="b">' + newDairyHtml + ' <p class="ui-li-aside dividerIcon"><strong>+ Dairy</strong></p></li>';
 	html += plateDairyHtml;
 	return html;
 }
 
-//tjs 110714
 function getRandomPlate(plateType, offset) {
 	var len = plates.length;
 	//alert("plateslate getRandomPlate len " + len + " plateType " + plateType);
@@ -1852,28 +1599,17 @@ function getRandomPlate(plateType, offset) {
 	var lunchLen = 0;
 	var dinnerLen = 0;
 	var typeLen = 0;
-	// tjs 120106
-	/*
-	plateGrainsHtml = '<li/>';
-	plateProteinHtml = '<li/>';
-	plateVegetablesHtml = '<li/>';
-	plateFruitsHtml = '<li/>';
-	plateDairyHtml = '<li/>';
-	*/
 	var plate;
 	var selectedPlate = null;
 	for (var i = 0; i < len; i++) {
 		//alert("plateslate getRandomPlate i " + i);
-		//tjs 110714
 	    if (typeof(plates[i]) === 'undefined')
 	    	continue;
 		plate = plates[i];
 		if (plate != null) {
 			//TODO if (plate.master == 1)
-			//if (typeLen == 0)
 				//alert("plateslate getRandomPlate plate.type " + plate.type + " plate.name " + plate.name + " index " + i);
 			if (plate.type == plateType) {
-				//return plate;
 				typeLen++;
 			}
 		} else {
@@ -1882,16 +1618,13 @@ function getRandomPlate(plateType, offset) {
 	}
 
 	//TODO consider offset for uniqueness
-	//var html = '<select id="' + plateType + '"><optgroup label="' + plateType + '">';
 	var html = '<select id="' + plateType + '_' + offset + '"><optgroup label="' + plateType + '">';
 	if (typeLen > 0) {
 		//return a random integer between 0 and typeLen
-		//var selectedOption = Math.floor(Math.random()*typeLen);
 		var selectedOption = Math.floor(Math.random()*(typeLen - 1));
 		var offset = 0;
 		for (var i = 0; i < len; i++) {
 			//alert("plateslate populatePlateMenus i " + i);
-			//tjs 110714
 		    if (typeof(plates[i]) === 'undefined')
 		    	continue;
 			plate = plates[i];
@@ -1899,8 +1632,6 @@ function getRandomPlate(plateType, offset) {
 				//TODO if (plate.master == 1)
 				//alert("plateslate populatePlateMenus plate.type " + plate.type + " plate.name " + plate.name);
 				if (plate.type == plateType) {
-					//return plate;
-					//offset++;
 					html += '<option value ="' + plate.id +'"';
 					if (offset == selectedOption) {
 						html += ' selected="selected" ';
@@ -1913,44 +1644,6 @@ function getRandomPlate(plateType, offset) {
 		}
 		plateSelectionsHtml = html + '</optgroup></select>';
 		//alert("plateslate getRandomPlate plateSelectionsHtml " + plateSelectionsHtml);
-		// tjs 120106
-		/*
-		//tjs 110707
-		if (selectedPlate != null) {
-			var portionId = selectedPlate.portion1;
-			//alert("plateslate getRandomPlate plate name " + selectedPlate.name + " portionId #1 " + portionId);
-			// tjs 111228
-			//appendPortion(portionId);
-			appendPortion(plate, portionId, 0, true);
-			portionId = selectedPlate.portion2;
-			//alert("plateslate getRandomPlate portionId #2 " + portionId);
-			//appendPortion(portionId);
-			appendPortion(plate, portionId, 0, true);
-			portionId = selectedPlate.portion3;
-			//alert("plateslate getRandomPlate portionId #3 " + portionId);
-			//appendPortion(portionId);
-			appendPortion(plate, portionId, 0, true);
-			portionId = selectedPlate.portion4;
-			//alert("plateslate getRandomPlate portionId #4 " + portionId);
-			//appendPortion(portionId);
-			appendPortion(plate, portionId, 0, true);
-			portionId = selectedPlate.portion5;
-			//alert("plateslate getRandomPlate portionId #5 " + portionId);
-			//appendPortion(portionId);
-			appendPortion(plate, portionId, 0, true);
-			portionId = selectedPlate.portion6;
-			//appendPortion(portionId);
-			appendPortion(plate, portionId, 0, true);
-			portionId = selectedPlate.portion7;
-			//appendPortion(portionId);
-			appendPortion(plate, portionId, 0, true);
-			portionId = selectedPlate.portion8;
-			//appendPortion(portionId);
-			appendPortion(plate, portionId, 0, true);
-			portionId = selectedPlate.portion9;
-			//appendPortion(portionId);
-			appendPortion(plate, portionId, 0, true);
-		}*/
 	}
 	//alert("plateslate getRandomPlate selectedOption " + selectedOption + " typeLen " + typeLen + " plateSelectionsHtml " + plateSelectionsHtml);
 	return selectedPlate;
@@ -2021,9 +1714,6 @@ function getPlatePortions(plate) {
 					break;
 			}
 		//must ensure row exists and is active
-		// tjs 110825
-		//updateFood(slateId, plate.type, portion);
-		//updateFood(slateId, plate.type, portion, 0, 0);
 	}
 	return typePortions;
 }
@@ -2035,21 +1725,11 @@ function getPlateSelections(slate, plate, offset, slateRandomlyGenerated) {
 	var lunchLen = 0;
 	var dinnerLen = 0;
 	var typeLen = 0;
-
-	// tjs 111222
-	//plateGrainsHtml = 'none';
-	//plateProteinHtml = 'none';
-	//plateVegetablesHtml = 'none';
-	//plateFruitsHtml = 'none';
-	//plateDairyHtml = 'none';
-	// tjs 120106
-	//if (!slateRandomlyGenerated) {
 		plateGrainsHtml = '<li/>';
 		plateProteinHtml = '<li/>';
 		plateVegetablesHtml = '<li/>';
 		plateFruitsHtml = '<li/>';
 		plateDairyHtml = '<li/>';
-	//}
 	
 	var currentPlate;
 	var plateType = plate.type;
@@ -2058,16 +1738,13 @@ function getPlateSelections(slate, plate, offset, slateRandomlyGenerated) {
 	var selectedPlate = null;
 	for (var i = 0; i < len; i++) {
 		//alert("plateslate getRandomPlate i " + i);
-		//tjs 110714
 	    if (typeof(plates[i]) === 'undefined')
 	    	continue;
 	    currentPlate = plates[i];
 		if (currentPlate != null) {
 			//TODO if (currentPlate.master == 1)
-			//if (typeLen == 0)
 				//alert("plateslate getRandomPlate plate.type " + plate.type + " plate.name " + plate.name + " index " + i);
 			if (currentPlate.type == plateType) {
-				//return plate;
 				typeLen++;
 			}
 		} else {
@@ -2079,11 +1756,9 @@ function getPlateSelections(slate, plate, offset, slateRandomlyGenerated) {
 	var html = '<select class="' + plateType + '"><optgroup label="' + plateType + '">';
 	if (typeLen > 0) {
 		//return a random integer between 0 and typeLen
-		//var selectedOption = Math.floor(Math.random()*(typeLen - 1));
 		var offset = 0;
 		for (var i = 0; i < len; i++) {
 			//alert("plateslate populatePlateMenus i " + i);
-			//tjs 110714
 		    if (typeof(plates[i]) === 'undefined')
 		    	continue;
 		    currentPlate = plates[i];
@@ -2091,12 +1766,9 @@ function getPlateSelections(slate, plate, offset, slateRandomlyGenerated) {
 				//TODO if (currentPlate.master == 1)
 				//alert("plateslate getPlateSelections plate.type " + plate.type + " plate.name " + plate.name);
 				if (currentPlate.type == plateType) {
-					//return plate;
-					//offset++;
 					html += '<option value ="' + currentPlate.id +'"';
 					if (id == currentPlate.id) {
 						html += ' selected="selected" ';
-						//selectedPlate = plate;
 					}
 					html += '>' + currentPlate.name + '</option>';
 					offset++;
@@ -2105,13 +1777,8 @@ function getPlateSelections(slate, plate, offset, slateRandomlyGenerated) {
 		}
 		var plateSelectionsHtml = html + '</optgroup></select>';
 		//alert("plateslate getPlateSelections plateSelectionsHtml " + plateSelectionsHtml);
-		// tjs 120106
-		//if (!slateRandomlyGenerated){
 			getFoodPortions(slate, plate);
-		//}
-		//getFoodPortions(slate, plate, slateRandomlyGenerated);
-		//alert("plateslate getPlateSelections plateGrainsHtml " + plateGrainsHtml + " plateProteinHtml " + plateProteinHtml);
-		
+		//alert("plateslate getPlateSelections plateGrainsHtml " + plateGrainsHtml + " plateProteinHtml " + plateProteinHtml);		
 	}
 	//alert("plateslate getRandomPlate selectedOption " + selectedOption + " typeLen " + typeLen + " plateSelectionsHtml " + plateSelectionsHtml);
 	return plateSelectionsHtml;
@@ -2125,12 +1792,6 @@ function getTestPlateSelections(slate, plate, offset) {
 	var dinnerLen = 0;
 	var typeLen = 0;
 	
-	// tjs 111222
-	//plateGrainsHtml = 'none';
-	//plateProteinHtml = 'none';
-	//plateVegetablesHtml = 'none';
-	//plateFruitsHtml = 'none';
-	//plateDairyHtml = 'none';
 	plateGrainsHtml = '<li/>';
 	plateProteinHtml = '<li/>';
 	plateVegetablesHtml = '<li/>';
@@ -2144,16 +1805,13 @@ function getTestPlateSelections(slate, plate, offset) {
 	var selectedPlate = null;
 	for (var i = 0; i < len; i++) {
 		//alert("plateslate getRandomPlate i " + i);
-		//tjs 110714
 	    if (typeof(plates[i]) === 'undefined')
 	    	continue;
 	    currentPlate = plates[i];
 		if (currentPlate != null) {
 			//TODO if (currentPlate.master == 1)
-			//if (typeLen == 0)
 				//alert("plateslate getRandomPlate plate.type " + plate.type + " plate.name " + plate.name + " index " + i);
 			if (currentPlate.type == plateType) {
-				//return plate;
 				typeLen++;
 			}
 		} else {
@@ -2165,11 +1823,9 @@ function getTestPlateSelections(slate, plate, offset) {
 	var html = '<select id="' + plateType + '_' + offset + '"><optgroup label="' + plateType + '">';
 	if (typeLen > 0) {
 		//return a random integer between 0 and typeLen
-		//var selectedOption = Math.floor(Math.random()*(typeLen - 1));
 		var offset = 0;
 		for (var i = 0; i < len; i++) {
 			//alert("plateslate populatePlateMenus i " + i);
-			//tjs 110714
 		    if (typeof(plates[i]) === 'undefined')
 		    	continue;
 		    currentPlate = plates[i];
@@ -2177,13 +1833,9 @@ function getTestPlateSelections(slate, plate, offset) {
 				//TODO if (currentPlate.master == 1)
 				//alert("plateslate getPlateSelections plate.type " + plate.type + " plate.name " + plate.name);
 				if (currentPlate.type == plateType) {
-					//return plate;
-					//offset++;
 					html += '<option value ="' + currentPlate.id +'"';
-					//html += '<option value ="' + offset + '_' + currentPlate.id +'"';
 					if (id == currentPlate.id) {
 						html += ' selected="selected" ';
-						//selectedPlate = plate;
 					}
 					html += '>' + currentPlate.name + '</option>';
 					offset++;
@@ -2199,6 +1851,19 @@ function getTestPlateSelections(slate, plate, offset) {
 }
 
 function getPortionSelections(offset, mealName, portionType) {
+	// tjs 120111
+	// consider that the slate already has portions assigned...
+	var thresholdOffset = offset + slateOffsetThreshold;
+	var slate = slates[thresholdOffset];
+	var foodPortions;
+	if (mealName == "Breakfast") {
+		foodPortions = slate.breakfastPortions;
+	}  else if (mealName == "Lunch") {
+		foodPortions = slate.lunchPortions;
+	}  else if (mealName == "Dinner") {
+		foodPortions = slate.dinnerPortions;
+	}
+	
 	//alert("plateSlateCellApp getPortionSelections offset " + offset + " mealName " + mealName);
 	portionSelectionsHtml = '<select name="portionSelection" class="' + portionType + '" onchange="javascript:processAddNewPortion(' + offset  + ', ' + "'" + mealName + "'" + ', ' + "'" + portionType + "', " + 'this.options[this.selectedIndex].value);"><optgroup label="' + portionType + '">';
 	var len = portions.length;
@@ -2212,7 +1877,9 @@ function getPortionSelections(offset, mealName, portionType) {
 				//TODO if (currentPlate.master == 1)
 				//alert("plateslate updatePortionsDialogs portion type " + currentPortion.type + " portion name " + currentPortion.name);
 				if (currentPortion.type == portionType) {
-					portionSelectionsHtml += '<option value ="' + currentPortion.id + '">' + currentPortion.name + '</option>';
+					if (!isPortionSelected(currentPortion.id, foodPortions)) {
+						portionSelectionsHtml += '<option value ="' + currentPortion.id + '">' + currentPortion.name + '</option>';
+					}
 				}
 			}
 		}
@@ -2222,14 +1889,19 @@ function getPortionSelections(offset, mealName, portionType) {
 	return portionSelectionsHtml;
 }
 
-// tjs 111228
-//function appendPortion(portionId) {
-// tjs 120102
-//function appendPortion(plate, portionId) {
+function isPortionSelected(portionId, foodPortions) {
+	var torf = false;
+	for (var i = 0; i < foodPortions.length; i++) {
+		if (portionId == foodPortions[i]) {
+			torf = true;
+			break;
+		}
+	}
+	return torf;
+}
+
 function appendPortion(plate, portionId, plateIndex, slateTorf) {
 	//alert("plateslate appendPortion portionId " + portionId);
-	// tjs 120106
-	//var slateTorf = plateIndex < 1000;
 	var chalkColor = 0;
 	if (slateTorf) {
 		chalkColor = makeColor(color);
@@ -2244,16 +1916,8 @@ function appendPortion(plate, portionId, plateIndex, slateTorf) {
 		var type = portion.type;
 		//alert("plateslate appendPortion portionId " + portionId + " type " + type);
 		if (type == 'Grain') {
-			// tjs 111228
-			//if (plateGrainsHtml == '<li/>') {
-			//	plateGrainsHtml = '<li>' + portion.name + '</li>';
-			//} else {
-			//	plateGrainsHtml += '<li>' + portion.name + '</li>';
-			//}
 			if (plateGrainsHtml == '<li/>') {
 				// c too light, b same as divider, a is black
-				// tjs 120107
-				//plateGrainsHtml = '<li><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk"';
 				plateGrainsHtml = '<li class="grainPortion"><a href="javascript:dropPortion(' + plateIndex + ", '" + plate.type + "', " + portionId + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk"';
 				if (slateTorf) {
 					plateGrainsHtml += ' style="color:' + chalkColor + '"';
@@ -2334,8 +1998,6 @@ function updateSlate(offset) {
     	var slate = slates[thresholdOffset];
     	//alert( "plateslate updateSlate thresholdOffset " + thresholdOffset + " name " + slate.name + " breakfast " + slate.breakfastId);
     	addToSlate(slate);
-		//tjs 110811
-		//addToFood(slate);
    }
 }
 
@@ -2343,7 +2005,6 @@ function populateSlate() {
 	view = new PageView(wrap);
 }
 
-//tjs 110725
 function compareTimes(a, b) {
 	return a.time - b.time;
 }
@@ -2605,8 +2266,6 @@ function processPlateEdit(slateId, plate, typePortions, override) {
     }
 
 	//alert( "plateslate processPlateEdit call deactivateFoodPortions slateId " + slateId + " plate.type " + plate.type);
-    //deactivateFoodPortions(slateId, plate.type);
-    
 	var portionsChecked = $("#plateEditDialog input:checked");
 	var len = portionsChecked.length;
 	var portion;
@@ -2621,8 +2280,6 @@ function processPlateEdit(slateId, plate, typePortions, override) {
 			//alert("plateslate updatePlate input element name " + inputElm.name + " value of id " + inputElm.value);
 			switch (i) {
 			case 0:
-				//tjs 110811
-				//plate.portion1 = inputElm.value;
 					plate.portion1 = portion;
 				break;
 				
@@ -2663,11 +2320,8 @@ function processPlateEdit(slateId, plate, typePortions, override) {
 			}
 		}
 		//must ensure row exists and is active
-		// tjs 110825
-		//updateFood(slateId, plate.type, portion);
 		updateFood(slateId, plate.type, portion, 0, 0);
 	}
-	// tjs 110818
 	deactivateFoodComplement(slateId, plate.type, typePortions);
 	
 	//alert( "plateslate processPlateEdit updated name " + plate.name + " id " + plate.id + " portion1 " + plate.portion1 + " portion2 " + plate.portion2 + " portion3 " + plate.portion3);
@@ -2680,7 +2334,6 @@ function processPlateEdit(slateId, plate, typePortions, override) {
 	}
 	$("#plateEditDialog").dialog("close");
 	
-	//tjs 110810
 	view.sendEvent();
 }
 
@@ -2706,7 +2359,6 @@ function getChecked(slateId, plate, id, typePortions) {
 	systemDB.transaction(
 			function(transaction) {
 				transaction.executeSql(
-				//'SELECT cart_sess, cart_sku,  cart_item_name, cart_qty, cart_price FROM shopcart where cart_sess=? and cart_sku=?;',[sid, sku],
 						'SELECT id, slate, type, portion, master, isInactive FROM food where slate=? and type=? and portion=?;',[slateId, plate.type, id],
 
 				function (transaction, result) {
@@ -2748,19 +2400,6 @@ function getChecked(slateId, plate, id, typePortions) {
 	//if (id == 37) {
 	//	alert("plateslate getChecked banana (37) plate.portion1 " + plate.portion1);
 	//}
-	//var checked = 'checked=""';
-	var checked = '';
-	if (plate.portion1 == id 
-			|| plate.portion2 == id
-			|| plate.portion3 == id
-			|| plate.portion4 == id
-			|| plate.portion5 == id
-			|| plate.portion6 == id
-			|| plate.portion7 == id
-			|| plate.portion8 == id
-			|| plate.portion9 == id) {
-		checked = 'checked="checked"';		
-	}
 	//debug only:
 	//if (id == 37) {
 	//	alert("plateslate getChecked banana (37) checked " + checked);
@@ -2778,7 +2417,6 @@ function markCheckedPortions() {
 	}	
 }
 
-//tjs 110811
 function addToFood(slate) {
 	//("plateslate addToFood slate id " + slate.id);
 	
@@ -2796,7 +2434,6 @@ function addToFood(slate) {
 				var dinnerPortions = new Array();
 				
 				//alert("plateslate addToFood result.rows.length " + result.rows.length);
-				//tjs 110812
 				for (var i = 0; i < result.rows.length; i++) {
 					var row = result.rows.item(i);
 					var type = row.type;
@@ -2831,11 +2468,9 @@ function addToFood(slate) {
 		);
 	}
 	);
-	//return id;
 }
 
 function appendFood(loadSlatesCallback, count, length, slate) {
-	// tjs 110817
 	if (slate.id == 0) {
 		alert("plateslate appendFood slate id is zero!");
 	}
@@ -2845,7 +2480,6 @@ function appendFood(loadSlatesCallback, count, length, slate) {
 	
 	var id = 0;
 			transaction.executeSql(
-			//'SELECT cart_sess, cart_sku,  cart_item_name, cart_qty, cart_price FROM shopcart where cart_sess=? and cart_sku=?;',[sid, sku],
 					'SELECT id, slate, type, portion, master, isInactive FROM food where slate=?;',[slate.id],
 
 			function (transaction, result) {
@@ -2858,10 +2492,8 @@ function appendFood(loadSlatesCallback, count, length, slate) {
 					slate.dinnerPortions.length = 0;
 				
 				//alert("plateslate appendFood result.rows.length " + result.rows.length);
-				//tjs 110812
 				for (var i = 0; i < result.rows.length; i++) {
 					var row = result.rows.item(i);
-					//tjs 110816
 					var isInactive = row.isInactive;
 					if (isInactive > 0)
 						continue;
@@ -2878,7 +2510,6 @@ function appendFood(loadSlatesCallback, count, length, slate) {
 				}
 				//alert("plateslate appendFood breakfastPortions len " + slate.breakfastPortions.length + " lunchPortions len  " + slate.lunchPortions.length + " dinnerPortions len  " + slate.dinnerPortions.length);
 				
-				//tjs 110815 use callback
 				if (length - count == 1) {
 					//alert("plateslate appendFood callback breakfastPortions len " + slate.breakfastPortions.length + " lunchPortions len  " + slate.lunchPortions.length + " dinnerPortions len  " + slate.dinnerPortions.length);
 					loadSlatesCallback(true);
@@ -2895,18 +2526,14 @@ function appendFood(loadSlatesCallback, count, length, slate) {
 		);
 			}
 	);
-
-	//return id;
 }
 
 function insertFood(slate, plate) {
 	
 	//alert("plateslate insertFood slate id " + slate.id + " plate id " + plate.id + " plate type " + plate.type);
 	var foods = new Array();
-	//var type = plate.type;
 	var portionId = plate.portion1;
 	if (!isNaN(portionId)) {
-		//tjs 110809
 		if (portionId > 0) {
 			foods.push(portionId);
 			//alert("plateslate getRandomPlate plate name " + selectedPlate.name + " portionId #1 " + portionId);
@@ -2916,7 +2543,6 @@ function insertFood(slate, plate) {
 			
 	portionId = plate.portion2;
 	if (!isNaN(portionId)) {
-		//tjs 110809
 		if (portionId > 0) {
 			foods.push(portionId);
 			//alert("plateslate getRandomPlate plate name " + selectedPlate.name + " portionId #1 " + portionId);
@@ -2924,10 +2550,8 @@ function insertFood(slate, plate) {
 		}
 	}
 	//alert("plateslate getRandomPlate portionId #2 " + portionId);
-	//insertFoodPortion(slate.id, plate.type, portionId, 0);
 	portionId = plate.portion3;
 	if (!isNaN(portionId)) {
-		//tjs 110809
 		if (portionId > 0) {
 			foods.push(portionId);
 			//alert("plateslate getRandomPlate plate name " + selectedPlate.name + " portionId #1 " + portionId);
@@ -2935,10 +2559,8 @@ function insertFood(slate, plate) {
 		}
 	}
 	//alert("plateslate getRandomPlate portionId #3 " + portionId);
-	//insertFoodPortion(slate.id, plate.type, portionId, 0);
 	portionId = plate.portion4;
 	if (!isNaN(portionId)) {
-		//tjs 110809
 		if (portionId > 0) {
 			foods.push(portionId);
 			//alert("plateslate getRandomPlate plate name " + selectedPlate.name + " portionId #1 " + portionId);
@@ -2946,10 +2568,8 @@ function insertFood(slate, plate) {
 		}
 	}
 	//alert("plateslate getRandomPlate portionId #4 " + portionId);
-	//insertFoodPortion(slate.id, plate.type, portionId, 0);
 	portionId = plate.portion5;
 	if (!isNaN(portionId)) {
-		//tjs 110809
 		if (portionId > 0) {
 			foods.push(portionId);
 			//alert("plateslate getRandomPlate plate name " + selectedPlate.name + " portionId #1 " + portionId);
@@ -2957,47 +2577,38 @@ function insertFood(slate, plate) {
 		}
 	}
 	//alert("plateslate getRandomPlate portionId #5 " + portionId);
-	//insertFoodPortion(slate.id, plate.type, portionId, 0);
 	portionId = plate.portion6;
 	if (!isNaN(portionId)) {
-		//tjs 110809
 		if (portionId > 0) {
 			foods.push(portionId);
 			//alert("plateslate getRandomPlate plate name " + selectedPlate.name + " portionId #1 " + portionId);
 			insertFoodPortion(slate.id, plate.type, portionId, 0);
 		}
 	}
-	//insertFoodPortion(slate.id, plate.type, portionId, 0);
 	portionId = plate.portion7;
 	if (!isNaN(portionId)) {
-		//tjs 110809
 		if (portionId > 0) {
 			foods.push(portionId);
 			//alert("plateslate getRandomPlate plate name " + selectedPlate.name + " portionId #1 " + portionId);
 			insertFoodPortion(slate.id, plate.type, portionId, 0);
 		}
 	}
-	//insertFoodPortion(slate.id, plate.type, portionId, 0);
 	portionId = plate.portion8;
 	if (!isNaN(portionId)) {
-		//tjs 110809
 		if (portionId > 0) {
 			foods.push(portionId);
 			//alert("plateslate getRandomPlate plate name " + selectedPlate.name + " portionId #1 " + portionId);
 			insertFoodPortion(slate.id, plate.type, portionId, 0);
 		}
 	}
-	//insertFoodPortion(slate.id, plate.type, portionId, 0);
 	portionId = plate.portion9;
 	if (!isNaN(portionId)) {
-		//tjs 110809
 		if (portionId > 0) {
 			foods.push(portionId);
 			//alert("plateslate getRandomPlate plate name " + selectedPlate.name + " portionId #1 " + portionId);
 			insertFoodPortion(slate.id, plate.type, portionId, 0);
 		}
 	}
-	//insertFoodPortion(slate.id, plate.type, portionId, 0);
 	// NB slice forces deep copy...
 	if (plate.type == "Breakfast") {
 		slate.breakfastPortions = foods.slice(0);
@@ -3014,18 +2625,15 @@ function insertSlateFood(loadSlatesCallback, torf, slate, plate) {
 	var foods = new Array();
 	var portionId = plate.portion1;
 	if (!isNaN(portionId)) {
-		//tjs 110809
 		if (portionId > 0) {
 			foods.push(portionId);
 			//alert("plateslate insertSlateFood plate name " + selectedPlate.name + " portionId #1 " + portionId);
-			//insertSlateFoodPortion(transaction, slate.id, plate.type, portionId, 0);
 			insertSlateFoodPortion(slate.id, plate.type, portionId, 0);
 		}
 	}
 			
 	portionId = plate.portion2;
 	if (!isNaN(portionId)) {
-		//tjs 110809
 		if (portionId > 0) {
 			foods.push(portionId);
 			//alert("plateslate insertSlateFood plate name " + selectedPlate.name + " portionId #1 " + portionId);
@@ -3033,10 +2641,8 @@ function insertSlateFood(loadSlatesCallback, torf, slate, plate) {
 		}
 	}
 	//alert("plateslate insertSlateFood portionId #2 " + portionId);
-	//insertFoodPortion(slate.id, plate.type, portionId, 0);
 	portionId = plate.portion3;
 	if (!isNaN(portionId)) {
-		//tjs 110809
 		if (portionId > 0) {
 			foods.push(portionId);
 			//alert("plateslate insertSlateFood plate name " + selectedPlate.name + " portionId #1 " + portionId);
@@ -3044,10 +2650,8 @@ function insertSlateFood(loadSlatesCallback, torf, slate, plate) {
 		}
 	}
 	//alert("plateslate insertSlateFood portionId #3 " + portionId);
-	//insertFoodPortion(slate.id, plate.type, portionId, 0);
 	portionId = plate.portion4;
 	if (!isNaN(portionId)) {
-		//tjs 110809
 		if (portionId > 0) {
 			foods.push(portionId);
 			//alert("plateslate insertSlateFood plate name " + selectedPlate.name + " portionId #1 " + portionId);
@@ -3055,10 +2659,8 @@ function insertSlateFood(loadSlatesCallback, torf, slate, plate) {
 		}
 	}
 	//alert("plateslate insertSlateFood portionId #4 " + portionId);
-	//insertFoodPortion(slate.id, plate.type, portionId, 0);
 	portionId = plate.portion5;
 	if (!isNaN(portionId)) {
-		//tjs 110809
 		if (portionId > 0) {
 			foods.push(portionId);
 			//alert("plateslate insertSlateFood plate name " + selectedPlate.name + " portionId #1 " + portionId);
@@ -3066,47 +2668,38 @@ function insertSlateFood(loadSlatesCallback, torf, slate, plate) {
 		}
 	}
 	//alert("plateslate getRandomPlate portionId #5 " + portionId);
-	//insertFoodPortion(slate.id, plate.type, portionId, 0);
 	portionId = plate.portion6;
 	if (!isNaN(portionId)) {
-		//tjs 110809
 		if (portionId > 0) {
 			foods.push(portionId);
 			//alert("plateslate insertSlateFood plate name " + selectedPlate.name + " portionId #1 " + portionId);
 			insertSlateFoodPortion(slate.id, plate.type, portionId, 0);
 		}
 	}
-	//insertFoodPortion(slate.id, plate.type, portionId, 0);
 	portionId = plate.portion7;
 	if (!isNaN(portionId)) {
-		//tjs 110809
 		if (portionId > 0) {
 			foods.push(portionId);
 			//alert("plateslate insertSlateFood plate name " + selectedPlate.name + " portionId #1 " + portionId);
 			insertSlateFoodPortion(slate.id, plate.type, portionId, 0);
 		}
 	}
-	//insertFoodPortion(slate.id, plate.type, portionId, 0);
 	portionId = plate.portion8;
 	if (!isNaN(portionId)) {
-		//tjs 110809
 		if (portionId > 0) {
 			foods.push(portionId);
 			//alert("plateslate insertSlateFood plate name " + selectedPlate.name + " portionId #1 " + portionId);
 			insertSlateFoodPortion(slate.id, plate.type, portionId, 0);
 		}
 	}
-	//insertFoodPortion(slate.id, plate.type, portionId, 0);
 	portionId = plate.portion9;
 	if (!isNaN(portionId)) {
-		//tjs 110809
 		if (portionId > 0) {
 			foods.push(portionId);
 			//alert("plateslate insertSlateFood plate name " + selectedPlate.name + " portionId #1 " + portionId);
 			insertSlateFoodPortion(slate.id, plate.type, portionId, 0);
 		}
 	}
-	//insertFoodPortion(slate.id, plate.type, portionId, 0);
 	// NB slice forces deep copy...
 	if (plate.type == "Breakfast") {
 		//slate.breakfastPortions = foods.slice(0);
@@ -3137,8 +2730,6 @@ function insertSlateFood(loadSlatesCallback, torf, slate, plate) {
 function insertSlateFoods(loadSlatesCallback, torf, slate) {
 	
 	//alert("plateslate insertSlateFoods slate id " + slate.id + " torf " + torf);
-	//var type = plate.type;
-	
 	if (slate.breakfastPortions.length > 0)
 		slate.breakfastPortions.length = 0;
 	if (slate.lunchPortions.length > 0)
@@ -3166,9 +2757,7 @@ function insertSlateFoods(loadSlatesCallback, torf, slate) {
 		//alert("plateslate insertSlateFoods slate id " + slate.id + " plate id " + plate.id + " plate type " + plate.type);
 		var portionId = plate.portion1;
 		if (!isNaN(portionId)) {
-			//tjs 110809
 			if (portionId > 0) {
-				//foods.push(portionId);
 				switch (i) {
 				case 0:	// breakfast
 					slate.breakfastPortions.push(portionId);
@@ -3183,16 +2772,13 @@ function insertSlateFoods(loadSlatesCallback, torf, slate) {
 					break;
 				}
 				//alert("plateslate insertSlateFood plate name " + selectedPlate.name + " portionId #1 " + portionId);
-				//insertSlateFoodPortion(transaction, slate.id, plate.type, portionId, 0);
 				insertSlateFoodPortion(slate.id, plate.type, portionId, 0);
 			}
 		}
 				
 		portionId = plate.portion2;
 		if (!isNaN(portionId)) {
-			//tjs 110809
 			if (portionId > 0) {
-				//foods.push(portionId);
 				switch (i) {
 				case 0:	// breakfast
 					slate.breakfastPortions.push(portionId);
@@ -3211,12 +2797,9 @@ function insertSlateFoods(loadSlatesCallback, torf, slate) {
 			}
 		}
 		//alert("plateslate insertSlateFood portionId #2 " + portionId);
-		//insertFoodPortion(slate.id, plate.type, portionId, 0);
 		portionId = plate.portion3;
 		if (!isNaN(portionId)) {
-			//tjs 110809
 			if (portionId > 0) {
-				//foods.push(portionId);
 				switch (i) {
 				case 0:	// breakfast
 					slate.breakfastPortions.push(portionId);
@@ -3235,12 +2818,9 @@ function insertSlateFoods(loadSlatesCallback, torf, slate) {
 			}
 		}
 		//alert("plateslate insertSlateFood portionId #3 " + portionId);
-		//insertFoodPortion(slate.id, plate.type, portionId, 0);
 		portionId = plate.portion4;
 		if (!isNaN(portionId)) {
-			//tjs 110809
 			if (portionId > 0) {
-				//foods.push(portionId);
 				switch (i) {
 				case 0:	// breakfast
 					slate.breakfastPortions.push(portionId);
@@ -3259,12 +2839,9 @@ function insertSlateFoods(loadSlatesCallback, torf, slate) {
 			}
 		}
 		//alert("plateslate insertSlateFood portionId #4 " + portionId);
-		//insertFoodPortion(slate.id, plate.type, portionId, 0);
 		portionId = plate.portion5;
 		if (!isNaN(portionId)) {
-			//tjs 110809
 			if (portionId > 0) {
-				//foods.push(portionId);
 				switch (i) {
 				case 0:	// breakfast
 					slate.breakfastPortions.push(portionId);
@@ -3283,10 +2860,8 @@ function insertSlateFoods(loadSlatesCallback, torf, slate) {
 			}
 		}
 		//alert("plateslate getRandomPlate portionId #5 " + portionId);
-		//insertFoodPortion(slate.id, plate.type, portionId, 0);
 		portionId = plate.portion6;
 		if (!isNaN(portionId)) {
-			//tjs 110809
 			if (portionId > 0) {
 				//foods.push(portionId);
 				switch (i) {
@@ -3306,12 +2881,9 @@ function insertSlateFoods(loadSlatesCallback, torf, slate) {
 				insertSlateFoodPortion(slate.id, plate.type, portionId, 0);
 			}
 		}
-		//insertFoodPortion(slate.id, plate.type, portionId, 0);
 		portionId = plate.portion7;
 		if (!isNaN(portionId)) {
-			//tjs 110809
 			if (portionId > 0) {
-				//foods.push(portionId);
 				switch (i) {
 				case 0:	// breakfast
 					slate.breakfastPortions.push(portionId);
@@ -3329,12 +2901,9 @@ function insertSlateFoods(loadSlatesCallback, torf, slate) {
 				insertSlateFoodPortion(slate.id, plate.type, portionId, 0);
 			}
 		}
-		//insertFoodPortion(slate.id, plate.type, portionId, 0);
 		portionId = plate.portion8;
 		if (!isNaN(portionId)) {
-			//tjs 110809
 			if (portionId > 0) {
-				//foods.push(portionId);
 				switch (i) {
 				case 0:	// breakfast
 					slate.breakfastPortions.push(portionId);
@@ -3352,12 +2921,9 @@ function insertSlateFoods(loadSlatesCallback, torf, slate) {
 				insertSlateFoodPortion(slate.id, plate.type, portionId, 0);
 			}
 		}
-		//insertFoodPortion(slate.id, plate.type, portionId, 0);
 		portionId = plate.portion9;
 		if (!isNaN(portionId)) {
-			//tjs 110809
 			if (portionId > 0) {
-				//foods.push(portionId);
 				switch (i) {
 				case 0:	// breakfast
 					slate.breakfastPortions.push(portionId);
@@ -3376,7 +2942,6 @@ function insertSlateFoods(loadSlatesCallback, torf, slate) {
 			}
 		}
 	}
-	//viewSlate("INSERTSLATEFOODS", slate);
 	//alert("plateslate insertSlateFood breakfastPortions len " + slate.breakfastPortions.length + " lunchPortions len  " + slate.lunchPortions.length + " dinnerPortions len  " + slate.dinnerPortions.length);
 	if (torf == true) {
 		//alert("plateslate insertSlateFood final breakfastPortions len " + slate.breakfastPortions.length + " lunchPortions len  " + slate.lunchPortions.length + " dinnerPortions len  " + slate.dinnerPortions.length);
@@ -3386,15 +2951,11 @@ function insertSlateFoods(loadSlatesCallback, torf, slate) {
 
 function insertFoodPortion(slateId, type, portionId, master) {
 	if (!isNaN(portionId)) {
-		//tjs 110809
 		if (portionId == 0)
 			return;
 		if (slateId == 0)
 			return;
-
 		//alert("plateslate insertFoodPortion slate id " + slateId + " portion id " + portionId + " plate type " + type);
-
-	//datab = openDatabase(shortName, version, displayName, maxSize);
 
 	systemDB.transaction(
 			function(transaction) {
@@ -3402,7 +2963,6 @@ function insertFoodPortion(slateId, type, portionId, master) {
 			'INSERT INTO food (slate, type,  portion, master, isInactive) VALUES (?,?,?,?,?);',
 			[slateId, type, portionId, master, 0],
 			function(){
-				//trxDone('add');
 				//alert("plateslate addToPortion added: type " + portion.type + " name " + portion.name + " desc " + portion.description + " master " + portion.master + " isInactive? " + portion.isInactive);
 			},
 			displayerrormessage
@@ -3413,9 +2973,7 @@ function insertFoodPortion(slateId, type, portionId, master) {
 }
 
 function insertSlateFoodPortion(slateId, type, portionId, master) {
-//function insertSlateFoodPortion(transaction, slateId, type, portionId, master) {
 		if (!isNaN(portionId)) {
-			//tjs 110809
 			if (portionId == 0) {
 				alert("insertSlateFoodPortion portionId is zero!");
 				return;
@@ -3426,8 +2984,6 @@ function insertSlateFoodPortion(slateId, type, portionId, master) {
 				return;				
 			}
 			//alert("plateslate insertSlateFoodPortion slate id " + slateId + " portion id " + portionId + " plate type " + type);
-
-		//datab = openDatabase(shortName, version, displayName, maxSize);
 
 			systemDB.transaction(
 					function(transaction) {
@@ -3445,16 +3001,13 @@ function insertSlateFoodPortion(slateId, type, portionId, master) {
 		}
 	}
 
-// tjs 120106
 function getFoodPortions(slate, plate) {
-//function getFoodPortions(slate, plate, slateRandomlyGenerated) {
 	//alert("plateslate getFoodPortions slate id " + slate.id + " plate id " + plate.id + " plate type " + plate.type);
 	var foodPortions;
 	if (plate.type == "Breakfast") {
 		if (typeof(slate.breakfastPortions === 'undefined')) {
 			//alert("plateslate getFoodPortions breakfast undefined!");			
 		} 			
-
 		foodPortions = slate.breakfastPortions;
 	}  else if (plate.type == "Lunch") {
 		foodPortions = slate.lunchPortions;
@@ -3466,8 +3019,6 @@ function getFoodPortions(slate, plate) {
 	if (foodPortions.length > 0) {
 		for (var i = 0; i < foodPortions.length; i++) {
 			portionId = foodPortions[i];
-			// tjs 111228
-			//(portionId);
 			appendPortion(plate, portionId, 0, true);
 		}
 	} 
@@ -3478,7 +3029,6 @@ function deactivateFoodPortions(slateId, type) {
 	systemDB.transaction(
 			function(transaction) {
 				transaction.executeSql(
-				//'SELECT cart_sess, cart_sku,  cart_item_name, cart_qty, cart_price FROM shopcart where cart_sess=? and cart_sku=?;',[sid, sku],
 						'SELECT id, slate, type, portion, master, isInactive FROM food where slate=? and type=?;',[slateId, type],
 
 				function (transaction, result) {
@@ -3510,7 +3060,6 @@ function deactivateFoodComplement(slateId, type, typePortions) {
 	systemDB.transaction(
 			function(transaction) {
 				transaction.executeSql(
-				//'SELECT cart_sess, cart_sku,  cart_item_name, cart_qty, cart_price FROM shopcart where cart_sess=? and cart_sku=?;',[sid, sku],
 						'SELECT id, slate, type, portion, master, isInactive FROM food where slate=? and type=?;',[slateId, type],
 
 				function (transaction, result) {
@@ -3544,36 +3093,8 @@ function deactivateFoodComplement(slateId, type, typePortions) {
 			}
 			);
 		}
-		);
-	
-}
-
-//must ensure row exists and is active
-// tjs 110825
-/*function updateFood(slateId, type, portion) {
-
-	systemDB.transaction(
-			function(transaction) {
-				transaction.executeSql(
-				//'SELECT cart_sess, cart_sku,  cart_item_name, cart_qty, cart_price FROM shopcart where cart_sess=? and cart_sku=?;',[sid, sku],
-						'SELECT id, slate, type, portion, master, isInactive FROM food where slate=? and type=? and portion=?;',[slateId, type, portion],
-
-				function (transaction, result) {
-				if (result.rows.length >0) {
-					//alert("plateslate addToFood result.rows.length " + result.rows.length);
-					var row = result.rows.item(0);
-					var isInactive=parseInt(row.isInactive);
-					if (isInactive == 1) {
-						makeFoodPortionActive(slateId, type, portion);
-					} 
-				} else {
-					insertFoodPortion(slateId, type, portion, 0);
-				}
-			}
-			);
-		}
 		);	
-}*/
+}
 
 function makeFoodPortionInactive(slateId, type, portion) {
 	//alert("plateslate makeFoodPortionInactive slateId " + slateId + " type " + type + " portion " + portion);
@@ -3581,7 +3102,6 @@ function makeFoodPortionInactive(slateId, type, portion) {
 	systemDB.transaction(
 			function(transaction) {
 				transaction.executeSql(
-				//'SELECT cart_sess, cart_sku,  cart_item_name, cart_qty, cart_price FROM shopcart where cart_sess=? and cart_sku=?;',[sid, sku],
 						'Update food set isInactive = 1 where slate=? and type=? and portion=?;',[slateId, type, portion],
 
 				function (transaction, result) {
@@ -3597,7 +3117,6 @@ function makeFoodPortionActive(slateId, type, portion) {
 	systemDB.transaction(
 			function(transaction) {
 				transaction.executeSql(
-				//'SELECT cart_sess, cart_sku,  cart_item_name, cart_qty, cart_price FROM shopcart where cart_sess=? and cart_sku=?;',[sid, sku],
 						'Update food set isInactive = 0 where slate=? and type=? and portion=?;',[slateId, type, portion],
 
 				function (transaction, result) {
@@ -3613,20 +3132,16 @@ function refreshPortionCache(slate, type) {
 	if (slate.id == 0)
 		return;
 	
-	//var plateId;
 	var plate;
 	if (type == "Breakfast") {
-		//plateId = slate.breakfastId;
 		slate.breakfastPortions.length = 0;
 		refreshSlateFoodsCache(slate, 0);
 		
 	} else if (type == "Lunch") {
-		//plateId = slate.lunchId;
 		slate.lunchPortions.length = 0;
 		refreshSlateFoodsCache(slate, 1);
 		
 	} else if (type == "Dinner") {
-		//plateId = slate.dinnerId;
 		slate.dinnerPortions.length = 0;
 		refreshSlateFoodsCache(slate, 2);		
 	}
@@ -3638,7 +3153,6 @@ function refreshSlateFoodsCache(slate, typeNumber) {
 	var plateId;
 	var plate;
 	
-	//for (var i = 0; i < 3; i++) {
 		switch (typeNumber) {
 		case 0:	// breakfast
 			plateId = slate.breakfastId;
@@ -3656,7 +3170,6 @@ function refreshSlateFoodsCache(slate, typeNumber) {
 		//alert("plateslate insertSlateFoods slate id " + slate.id + " plate id " + plate.id + " plate type " + plate.type);
 		var portionId = plate.portion1;
 		if (!isNaN(portionId)) {
-			//tjs 110809
 			if (portionId > 0) {
 				//foods.push(portionId);
 				switch (typeNumber) {
@@ -3678,9 +3191,7 @@ function refreshSlateFoodsCache(slate, typeNumber) {
 				
 		portionId = plate.portion2;
 		if (!isNaN(portionId)) {
-			//tjs 110809
 			if (portionId > 0) {
-				//foods.push(portionId);
 				switch (typeNumber) {
 				case 0:	// breakfast
 					slate.breakfastPortions.push(portionId);
@@ -3698,12 +3209,9 @@ function refreshSlateFoodsCache(slate, typeNumber) {
 			}
 		}
 		//alert("plateslate insertSlateFood portionId #2 " + portionId);
-		//insertFoodPortion(slate.id, plate.type, portionId, 0);
 		portionId = plate.portion3;
 		if (!isNaN(portionId)) {
-			//tjs 110809
 			if (portionId > 0) {
-				//foods.push(portionId);
 				switch (typeNumber) {
 				case 0:	// breakfast
 					slate.breakfastPortions.push(portionId);
@@ -3721,12 +3229,9 @@ function refreshSlateFoodsCache(slate, typeNumber) {
 			}
 		}
 		//alert("plateslate insertSlateFood portionId #3 " + portionId);
-		//insertFoodPortion(slate.id, plate.type, portionId, 0);
 		portionId = plate.portion4;
 		if (!isNaN(portionId)) {
-			//tjs 110809
 			if (portionId > 0) {
-				//foods.push(portionId);
 				switch (typeNumber) {
 				case 0:	// breakfast
 					slate.breakfastPortions.push(portionId);
@@ -3744,12 +3249,9 @@ function refreshSlateFoodsCache(slate, typeNumber) {
 			}
 		}
 		//alert("plateslate insertSlateFood portionId #4 " + portionId);
-		//insertFoodPortion(slate.id, plate.type, portionId, 0);
 		portionId = plate.portion5;
 		if (!isNaN(portionId)) {
-			//tjs 110809
 			if (portionId > 0) {
-				//foods.push(portionId);
 				switch (typeNumber) {
 				case 0:	// breakfast
 					slate.breakfastPortions.push(portionId);
@@ -3767,12 +3269,9 @@ function refreshSlateFoodsCache(slate, typeNumber) {
 			}
 		}
 		//alert("plateslate getRandomPlate portionId #5 " + portionId);
-		//insertFoodPortion(slate.id, plate.type, portionId, 0);
 		portionId = plate.portion6;
 		if (!isNaN(portionId)) {
-			//tjs 110809
 			if (portionId > 0) {
-				//foods.push(portionId);
 				switch (typeNumber) {
 				case 0:	// breakfast
 					slate.breakfastPortions.push(portionId);
@@ -3789,12 +3288,9 @@ function refreshSlateFoodsCache(slate, typeNumber) {
 				//alert("plateslate insertSlateFood plate name " + selectedPlate.name + " portionId #1 " + portionId);
 			}
 		}
-		//insertFoodPortion(slate.id, plate.type, portionId, 0);
 		portionId = plate.portion7;
 		if (!isNaN(portionId)) {
-			//tjs 110809
 			if (portionId > 0) {
-				//foods.push(portionId);
 				switch (typeNumber) {
 				case 0:	// breakfast
 					slate.breakfastPortions.push(portionId);
@@ -3811,12 +3307,9 @@ function refreshSlateFoodsCache(slate, typeNumber) {
 				//alert("plateslate insertSlateFood plate name " + selectedPlate.name + " portionId #1 " + portionId);
 			}
 		}
-		//insertFoodPortion(slate.id, plate.type, portionId, 0);
 		portionId = plate.portion8;
 		if (!isNaN(portionId)) {
-			//tjs 110809
 			if (portionId > 0) {
-				//foods.push(portionId);
 				switch (typeNumber) {
 				case 0:	// breakfast
 					slate.breakfastPortions.push(portionId);
@@ -3833,12 +3326,9 @@ function refreshSlateFoodsCache(slate, typeNumber) {
 				//alert("plateslate insertSlateFood plate name " + selectedPlate.name + " portionId #1 " + portionId);
 			}
 		}
-		//insertFoodPortion(slate.id, plate.type, portionId, 0);
 		portionId = plate.portion9;
 		if (!isNaN(portionId)) {
-			//tjs 110809
 			if (portionId > 0) {
-				//foods.push(portionId);
 				switch (typeNumber) {
 				case 0:	// breakfast
 					slate.breakfastPortions.push(portionId);
@@ -3883,17 +3373,14 @@ function syncSlateFoodsCache(slate, typeNumber) {
 	for (var i = 0; i < typePortions.length; i++) {
 		var portion = typePortions[i];
 		updateFood(slateId, type, portion, 0, 0);
-	}
-	
+	}	
 }
 
 function updateFood(slateId, type, portion, master, isInactive) {
-	//function updateFood(plate) {
 		
 		systemDB.transaction(
 				function(transaction) {
 					transaction.executeSql(
-					//'SELECT cart_sess, cart_sku,  cart_item_name, cart_qty, cart_price FROM shopcart where cart_sess=? and cart_sku=?;',[sid, sku],
 							'SELECT id, slate, type, portion, master, isInactive FROM food where slate=? and type=? and portion=?;',[slateId, type, portion],
 
 					function (transaction, result) {
@@ -3941,7 +3428,6 @@ function updateFood(slateId, type, portion, master, isInactive) {
 function copySlate(source) {
 	// id, offset, date, name, description, breakfastId, lunchId, dinnerId, breakfastPortions, lunchPortions, dinnerPortions, isInactive
 	var target = new Slate(source.id, source.offset, source.date, source.name, source.description, source.breakfastId, source.lunchId, source.dinnerId, null, null, null, source.isInactive);
-	//target = new Slate(source.id, source.offset, source.date, source.name, source.description, source.breakfastId, source.lunchId, source.dinnerId, null, null, null, source.isInactive);
     if (typeof(source.breakfastPortions !== 'undefined')) {
     	if (source.breakfastPortions.length > 0) {
     	   	if (target.breakfastPortions.length > 0)
@@ -4005,53 +3491,25 @@ function viewSlate(location, slate) {
     	if (slate.dinnerPortions.length > 0) {
     		dlen = slate.dinnerPortions.length;
     	}    	
-    }
-	
-	alert("plateslate viewSlate " + location + " id " + slate.id + " offset " + slate.offset +  " name "  + slate.name + " bid " + slate.breakfastId + " lid " + slate.lunchId + " did " + slate.dinnerId + " blen " + blen + " llen " + llen + " dlen " + dlen);
-	
+    }	
+	alert("plateslate viewSlate " + location + " id " + slate.id + " offset " + slate.offset +  " name "  + slate.name + " bid " + slate.breakfastId + " lid " + slate.lunchId + " did " + slate.dinnerId + " blen " + blen + " llen " + llen + " dlen " + dlen);	
 }
 
-/* tjs 111228
-var authenticated = false;
-
-function doLogin() {
-//alert("index doLogin");
-	$("#plateSlateLoginDialog").dialog("open");
-}
-*/
-
-//function processLoginForm(name, pword) {
 function processLoginForm() {
 	var name = document.loginForm.name.value;
 	var pword = document.loginForm.pword.value;
 	// use loginForm
 	//alert("plateslate  processLoginForm name " + name + " password " + pword);
 
-    // tjs 111229
-	/*$.ajax({
-        //type: "POST",
-        type: "GET",
-        //url: "http://10.0.2.2/mobileajax/callajax.php",
-        url: "login4app.php",
-        //data: ({name: theName}),
-        data: { "name": name,
-      	  "pword": pword },  
-        cache: false,
-        dataType: "text",
-        success: onSuccess
-      });*/
-
     $.ajax({  
         //type: "POST",  
       type: "GET",
-      //url: "login4app.php",  
       url: "login4app.php",  
       data: { "name": name,
     	  "pword": pword },  
       success: function(msg) {
           //alert("plateslate processLoginForm success msg " + msg + " len " + msg.length);
           var tempMsg = msg;
-    	  // tjs 110831         
     		JSON.parse(tempMsg, function (key, value) {
     			//alert("plateslate processLoginForm key " + key + " value " + value);
     			if (key =='id') {
@@ -4070,18 +3528,10 @@ function processLoginForm() {
     		  authenticated = true;
     		  loginAccountNumber = accountId;
     		  //alert("plateslate processLoginForm success  authenticated " + authenticated + " loginAccountNumber " + loginAccountNumber);
-    		  // tjs 111228
-    		  //$('#login').removeClass('showButton').addClass('hideButton');
-    		  //$('#logout').removeClass('hideButton').addClass('showButton');
-    		  //alert("plateslate processLoginForm success closing dialog...");
-    		  //$("#plateSlateLoginDialog").dialog("close");
-    		  setLogoutButton();
+     		  //alert("plateslate processLoginForm success closing dialog...");
+     		  setLogoutButton();
     		  $("#login-dial").dialog("close");
-    		  //$.mobile.changePage("#home-page");
     	  } else {
-    		  // tjs 111229
-	          //$("label#submit_error").show();  
-	          //$("input#name").focus(); 
     		  alert("Login failed!");
     	  }
       }  
@@ -4091,24 +3541,12 @@ function processLoginForm() {
     return false;  
 }
 
-/*
-$("#resultLog").ajaxError(function(event, request, settings, exception) {
-    $("#resultLog").html("Error Calling: " + settings.url + "<br />HTPP Code: " + request.status);
-  });
-
-  function onSuccess(data)
-  {
-      $("#resultLog").html("Result: " + data);
-  }
-*/
-
 function doLogout() {
 	//alert("plateslate   doLogout");
     var dataString = '';  
 	    $.ajax({  
 	        //type: "POST",  
       type: "GET",  
-      //url: "../plateslate/logout4app.php",  
       url: "logout4app.php",  
       data: dataString,  
       success: function(msg) {
@@ -4117,27 +3555,20 @@ function doLogout() {
     		  authenticated = false;
     		  loginAccountNumber = 0;
     		  //alert("plateslate handleLogout success  authenticated " + authenticated);
-    		  //$('#logout').removeClass('showButton').addClass('hideButton');
-    		  //$('#login').removeClass('hideButton').addClass('showButton');
-    	  }
+     	  }
       }  
     });  
 }
 
-// tjs 120103
-//function showPlaceSetting() {
 function hijaxPreferencesPage() {
 	//TODO
 	//open page with bfast|lunch|dinner pref
 	//pref checkboc states meals planned (e.g. just dinner)
 //pref - setting reset would re-activitate inactibe plates
 
-//function showPlaceSetting(slateOffset) {
 	//alert("plateslate showPlaceSetting slateOffset " + slateOffset);
 	// cf <div data-role="page" data-add-back-btn="true" id="report-page" data-title="Report">
-	//var newPageHtml = '<div data-role="page" data-add-back-btn="true" id="preferences-page" data-title="Preferences" class="type-interior" data-theme="b" data-dom-cache="true">';
 	var newPageHtml = '<div data-role="page" data-add-back-btn="true" id="preferences-page" data-title="Preferences">';
-	//newPageHtml += '<div data-role="header"><h1>Preferences</h1></div>';
 	newPageHtml += '<div data-role="header" data-theme="f" data-position="fixed">';
 	newPageHtml += '<a href="index.html" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-left jqm-home">Home</a>';
 	newPageHtml += '<h1>Preferences</h1>';
@@ -4192,7 +3623,6 @@ function hijaxPreferencesPage() {
 	newPageHtml += '<script type="text/javascript"></script></div>'; // preferences-page
 
 	//alert("plateSlateCellApp hijaxPreferencesPage newPageHtml " + newPageHtml);
-	//$("#placeSettingDialog").dialog("open");
 	var newPage = $(newPageHtml);
 	//add new dialog to page container
 	newPage.appendTo($.mobile.pageContainer);
@@ -4205,10 +3635,8 @@ function hijaxPreferencesPage() {
 	            plateSelectionRandom = false;
 	            plateSelectionSeasonal = false;
 	            plateSelectionShared = false;
-	            // tjs 120103
 	            slateMealPlansForDinnerOnly = false;
 	            // placeSettingContents
-	        	//var prefsChecked = $("#placeSettingDialog input:checked");
 	        	var prefsChecked = $("#placeSettingContents input:checked");
 	        	var len = prefsChecked.length;
 	        	var pref;
@@ -4240,14 +3668,11 @@ function hijaxPreferencesPage() {
 	        	//alert("plateslate showPlaceSetting placeSettingPrefButton click preferences persisted" );
 	        	
 	        	//alert("index prefs plateSelectionRandom " + plateSelectionRandom + " plateSelectionSeasonal " + plateSelectionSeasonal + " plateSelectionShared " + plateSelectionShared);
-	        	//$("#placeSettingDialog").dialog("close");
-	        	//$('#preferences-page').dialog('close');
 	      });  
 		//alert("plateSlateCellApp hijaxPreferencesPage dom tweaked...");
 
 	// enhance and open the new page
     $.mobile.changePage(newPage);
-	//$.mobile.changePage(newPage, {reloadPage: true });
 	//alert("plateSlateCellApp hijaxPreferencesPage page changed...");
 }
 
@@ -4267,10 +3692,6 @@ function hijaxPreferencesPage() {
 */
 
 function hijaxReportPage() {
-	//if (!authenticated)	{
-	//	alert("You must login before using this feature!");
-	//	return;
-	//}
 	var newPageHtml = '<div data-role="page" data-add-back-btn="true" id="report-page" data-title="Report">';
 	//newPageHtml += '<div data-role="header"><h1>Meal Plan Report</h1></div>';
 	newPageHtml += '<div data-role="header" data-theme="f" data-position="fixed">';
@@ -4328,7 +3749,6 @@ function hijaxScreenReportPage() {
 		gridClass += 'd';
 	var columnClass = 'ui-block-';
 	var newPageHtml = '<div data-role="page" data-add-back-btn="true" id="screen-report-page" data-title="Report">';
-	//newPageHtml += '<div data-role="header"><h1>Meal Plan Report</h1></div>';
 	newPageHtml += '<div data-role="header" data-theme="f" data-position="fixed">';
 	newPageHtml += '<a href="index.html" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-left jqm-home">Home</a>';
 	newPageHtml += '<h1>Report</h1>';
@@ -4489,13 +3909,10 @@ function doReport() {
 		return;
 	}
 	//alert("plateSlateCellApp doReport authenticated " + authenticated);
-	//var xml = getReportXml(info[0], info[1]);
-	//var thresholdOffset = offset + slateOffsetThreshold;
 	var thresholdOffset = slateOffsetThreshold;
 	var xml = getReportXml('Meal Plan Report', thresholdOffset);
 	$.post("../plateslate/storeSlates.php", { xml: xml }, function(msg) {		
 		var len = msg.length;
-		// tjs 110830
 		// need to chop off the %20 chars that were placed onto the msg in lieu of the new line    		
 		var crop = len - 4;
 		var path = new String(msg);
@@ -4507,7 +3924,6 @@ function doReport() {
 		windowName = msg.match(patt1);
 		//alert("plateslate click url " + url + " windowName " + windowName);
 		window.open(url, windowName, 'resizable,scrollbars');
-    	//$("#placeSettingDialog").dialog("close");
 	});
 }
 
@@ -4519,10 +3935,6 @@ function getReportXml(name, offset) {
 	var slate;
 	var count = 0;
 	var maxCount = 7;
-	// tjs 110831
-	//var xml = '<slates>';
-	// tjs 110901
-	//var xml = '<slates accountId="' + loginInfo.id + '" share="' + plateSelectionShared + '">';
 	var xml = '<slates accountId="' + loginInfo.id + '" userName="' + loginInfo.userName + '" firstName="' + loginInfo.firstName + '" lastName="' + loginInfo.lastName + '" share="' + plateSelectionShared + '">';
 	while (count < maxCount) {
 		//alert("plateslate getReportXml count " + count + " cursor " + cursor + " slate name " + slates[cursor].name);
@@ -4556,9 +3968,6 @@ function getReportXml(name, offset) {
 
 function getXml(slate) {
 	//alert("plateslate getXml slate name " + slate.name + " id " + slate.id + " breakfast id " + slate.breakfastId);
-	//var xml = '<slate name="' + slate.name + '">';
-	// tjs 110901
-	//var xml = '<slate name="' + slate.name + '" id="' + slate.id + '"><plates>';
 	var xml = '<slate name="' + slate.name + '" dow="' + slate.description + '" id="' + slate.id + '"><plates>';
 	var plateId = slate.breakfastId;
 	var plate = plates[plateId];
@@ -4567,7 +3976,6 @@ function getXml(slate) {
 	var portionsLen;
 	portionsLen = slate.breakfastPortions.length;
 	//alert("plateslate getXml plate name " + plate.name + " id " + plate.id + " portionsLen " + portionsLen);
-	//xml += '<plate name="' + plate.name + '" type="Breakfast" description="' + plate.description + '">';
 	xml += '<plate name="' + plate.name + '" type="Breakfast" description="' + plate.description + '"><portions>';
 	//alert("index getXml portionsLen " + portionsLen);
 	for (var i = 0; i < portionsLen; i++) {
@@ -4578,7 +3986,6 @@ function getXml(slate) {
 	}
 	plateId = slate.lunchId;
 	plate = plates[plateId];
-	//xml += '</plate><plate name="' + plate.name + '" type="Lunch" description="' + plate.description + '">';
 	xml += '</portions></plate><plate name="' + plate.name + '" type="Lunch" description="' + plate.description + '"><portions>';
 	portionsLen = slate.lunchPortions.length;
 	for (var i = 0; i < portionsLen; i++) {
@@ -4588,7 +3995,6 @@ function getXml(slate) {
 	}
 	plateId = slate.dinnerId;
 	plate = plates[plateId];
-	//xml += '</plate><plate name="' + plate.name + '" type="Dinner" description="' + plate.description + '">';
 	xml += '</portions></plate><plate name="' + plate.name + '" type="Dinner" description="' + plate.description + '"><portions>';
 	portionsLen = slate.dinnerPortions.length;
 	for (var i = 0; i < portionsLen; i++) {
@@ -4596,7 +4002,6 @@ function getXml(slate) {
 		portion = portions[portionId];
 		xml += '<portion type="' + portion.type + '">' + portion.name + '</portion>';
 	}
-	//xml += '</plate></slate>';
 	xml += '</portions></plate></plates></slate>';
 	//alert("plateslate getXml slate name " + slate.name + " xml " + xml);
 	return xml;
@@ -4606,7 +4011,6 @@ function getReportGridArrays(offset) {
 	//alert("plateslate getReportGridArrays name " + name + " offset " + offset);
 	//use cache for the report.
 	var cursor = offset;
-	//var backwardsCursor = offset - 1;
 	var slate;
 	var count = 0;
 	var maxCount = 5;
@@ -4654,12 +4058,10 @@ function loadPreferences() {
 		preferences.plateSelectionRandom = tempPreferences.plateSelectionRandom;
 		preferences.plateSelectionSeasonal = tempPreferences.plateSelectionSeasonal;
 		preferences.plateSelectionShared = tempPreferences.plateSelectionShared;
-		// tjs 120103
 		preferences.slateMealPlansForDinnerOnly = tempPreferences.slateMealPlansForDinnerOnly;
 		plateSelectionRandom = preferences.plateSelectionRandom;
 		plateSelectionSeasonal = preferences.plateSelectionSeasonal;
 		plateSelectionShared = preferences.plateSelectionShared;
-		// tjs 120103
 		slateMealPlansForDinnerOnly = preferences.slateMealPlansForDinnerOnly;
 	}
 	//alert("plateslate end loadPreferences preferences.plateSelectionRandom " + preferences.plateSelectionRandom + " preferences.plateSelectionSeasonal " + preferences.plateSelectionSeasonal + " preferences.plateSelectionShared " + preferences.plateSelectionShared);
@@ -4691,13 +4093,10 @@ function hijaxBreakfastPage(direction) {
     var mealHtml = getSlateView(offset, mealName);
 
     // create page markup
-    // tjs 120109
-	//var newPageHtml = '<div data-role="page" id="breakfast-page" data-title="Breakfast" class="type-interior" data-theme="b" data-dom-cache="true">';
 	var newPageHtml = '<div data-role="page" id="breakfast-page" data-title="Breakfast" class="type-interior" data-theme="b" data-dom-cache="false">';
 	newPageHtml += '<div data-role="header" data-theme="f" data-position="fixed">';
 	newPageHtml += '<a href="index.html" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-left jqm-home">Home</a>';
 	newPageHtml += '<h1>Breakfast</h1>';
-	//newPageHtml += '</div><div data-role="content"><div class="content-primary"><div id="breakfastList"></div></div></div>';
 	newPageHtml += '</div><div data-role="content"><div class="content-primary">';
 	newPageHtml += mealHtml;
 	newPageHtml += '</div></div>';
@@ -4713,23 +4112,8 @@ function hijaxBreakfastPage(direction) {
 	newPage.appendTo($.mobile.pageContainer);
 	
 	// tweak the new page just added into the dom
-	/*
-    var offset = color/20;
-    //TODO fix
-    var mealName = "Breakfast";
-    //alert("breakfast ready color " + color + " offset " + offset);
-    var html = getSlateView(offset, mealName);
-    //alert("hijaxBreakfastPage ready html " + html);
-    //$(html).insertAfter('#breakfastList').listView();
-    $('#breakfastList').empty();
-    $('#breakfastList').append($(html));
-    */
 // enhance and open the new page
-    //$.mobile.changePage(newPage);
-	// tjs 120106
-    //$.mobile.changePage(newPage, {reloadPage: true });
-    $.mobile.changePage(newPage, {transition: transition, reverse: reverse });
-			
+     $.mobile.changePage(newPage, {transition: transition, reverse: reverse });			
 }
 
 function hijaxLunchPage(direction) {
@@ -4753,7 +4137,6 @@ function hijaxLunchPage(direction) {
 	newPageHtml += '<div data-role="header" data-theme="f" data-position="fixed">';
 	newPageHtml += '<h1>Lunch</h1>';
 	newPageHtml += '<a href="index.html" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-left jqm-home">Home</a>';
-	//newPageHtml += '</div><div data-role="content"><div class="content-primary"><div id="lunchList"></div></div></div>';
 	newPageHtml += '</div><div data-role="content"><div class="content-primary">';
 	newPageHtml += mealHtml;
 	newPageHtml += '</div></div>';
@@ -4771,9 +4154,7 @@ function hijaxLunchPage(direction) {
 	// tweak the new page just added into the dom
     */
 // enhance and open the new page
-    //$.mobile.changePage(newPage);
-    $.mobile.changePage(newPage, {transition: transition, reverse: reverse });
-			
+     $.mobile.changePage(newPage, {transition: transition, reverse: reverse });			
 }
 
 function hijaxDinnerPage(direction) {
@@ -4797,7 +4178,6 @@ function hijaxDinnerPage(direction) {
 	newPageHtml += '<div data-role="header" data-theme="f" data-position="fixed">';
 	newPageHtml += '<h1>Dinner</h1>';
 	newPageHtml += '<a href="index.html" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-left jqm-home">Home</a>';
-	//newPageHtml += '</div><div data-role="content"><div class="content-primary"><div id="dinnerList"></div></div></div>';
 	newPageHtml += '</div><div data-role="content"><div class="content-primary">';
 	newPageHtml += mealHtml;
 	newPageHtml += '</div></div>';
@@ -4811,11 +4191,10 @@ function hijaxDinnerPage(direction) {
 	var newPage = $(newPageHtml);
 	//add new page to page container
 	newPage.appendTo($.mobile.pageContainer);
-	/*
+	
 	// tweak the new page just added into the dom
-    */
+    
 // enhance and open the new page
-    //$.mobile.changePage(newPage);			
     $.mobile.changePage(newPage, {transition: transition, reverse: reverse });
 }
 
@@ -4879,7 +4258,6 @@ function processAddNewPortionForm(portionType) {
 	var optionValue = portionSelection.options[portionSelection.selectedIndex].value;
 	//alert("plateslate processAddNewPortionForm offset " + offset + " mealName " + mealName + " optionValue " + optionValue);
 
-	// tjs 120102
 	if (offset < 1000) { // i.e. if working with slate edits of portions
 		var thresholdOffset = offset + slateOffsetThreshold;
 		//alert("plateslate processAddNewPortionForm thresholdOffset " + thresholdOffset);
@@ -4890,7 +4268,6 @@ function processAddNewPortionForm(portionType) {
 		updateFood(slateId, mealName, optionValue, 0, 0);
 	} else { // i.e. working with plate edits of portions
 		//alert("plateslate processAddNewPortionForm offset " + offset + " mealName " + mealName + " optionValue " + optionValue);
-		//var index = offset%1000;
 		var index = offset - 1000;
 		var dish = plates[index];
 		var existingPortions = new Array();
@@ -4958,8 +4335,6 @@ function processAddNewPortionForm(portionType) {
 		}
 	}
 	
-	// tjs 120107
-	
 	var chalkColor = 0;
 	var portionName;
 	var newPortionHtml;
@@ -4967,7 +4342,6 @@ function processAddNewPortionForm(portionType) {
 	if (offset < 1000) {
 		chalkColor = makeColor(color);
 		portionName = portions[optionValue].name;
-		//partialNewPortionHtml = '<a href="javascript:dropPortion(0 , ' + "'" + mealName + "'" + ', ' + optionValue + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk" style="color:' + chalkColor + '">' + portionName + '</span></a></li>';
 		partialNewPortionHtml = '<a href="javascript:dropPortion(0 , ' + "'" + mealName + "'" + ', ' + optionValue + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk" style="color:' + chalkColor + '">' + portionName + '</span></a>';
 		aHref = 'href="javascript:dropPortion(0 , ' + "'" + mealName + "'" + ', ' + optionValue + ');"';
 		spanStyle = 'color:' + chalkColor;
@@ -4975,52 +4349,13 @@ function processAddNewPortionForm(portionType) {
 
 	if (portionType == "grain") {
 		$('#grain-portion-dial').dialog('close');
-		/*
-		// tjs 120107
 		if (offset < 1000){
-			newPortionHtml = '<li  class="grainPortion">' + partialNewPortionHtml;
-			//alert("plateSlateCellApp processAddNewPortionForm mealName " + mealName + " newPortionHtml " + newPortionHtml);
-			if  (mealName == "Breakfast") {
-				//$('#breakfast-page .grainPortion').append(newPortionHtml);
-				//$('#breakfast-page ul').append(newPortionHtml);
-				//$('#breakfast-page ul').append(newPortionHtml).listview('refresh');
-				//$('#breakfast-page ul').append(newPortionHtml).listview("refresh");
-				$('#breakfast-page ul').append(newPortionHtml);
-				//alert("plateSlateCellApp processAddNewPortionForm appended new list item...");
-				//alert("plateSlateCellApp processAddNewPortionForm appended new list item, then refreshed listview...");
-				//$('#breakfast-page ul').listview('refresh');
-				//$('ul').listview('refresh');
-				//alert("plateSlateCellApp processAddNewPortionForm refreshed list...");
-				$('#grain-portion-dial').dialog('close');
-				// tried this see flashed page (without new item added) then home page!
-				//hijaxBreakfastPage('fade');
-				// tjs 120109
-				try {
-					$('#breakfast-page ul').listview('refresh');
-				} catch (e) {
-					$('#breakfast-page ul').listview();
-				}
-			} else if (mealName == "Lunch") {
-				$('#lunch-page ul').listview('refresh');
-			} else if (mealName == "Dinner") {
-				$('#dinner-page ul').listview('refresh');
-			}
-		} */
-		if (offset < 1000){
-			//var dividerId = 'grain' + mealName;
 			var dividerId = '#grain' + mealName;
 			if  (mealName == "Breakfast") {
 				newPortionHtml = '<li  class="grainPortion">' + partialNewPortionHtml;
 				//alert("plateSlateCellApp processAddNewPortionForm mealName " + mealName + " newPortionHtml " + newPortionHtml + " dividerId " + dividerId);
-				//$('#dividerId').append(newPortionHtml);
-				//$('#dividerId').after(newPortionHtml);
-				//$(dividerId).after(newPortionHtml);
-				//$(dividerId).after($(newPortionHtml));
 				//alert("plateSlateCellApp processAddNewPortionForm mealName " + mealName + " newPortionHtml added using dividerId " + dividerId);
-				//$(dividerId).after(function() {
 				//	alert("plateSlateCellApp processAddNewPortionForm mealName " + mealName + " newPortionHtml added using dividerId " + dividerId);
-				//	  return newPortionHtml;
-				//});
 				// per model
 				$(dividerId).after($('<li/>', {    //here after id'd 'li' and new `<li>`
 				    'class': "grainPortion"
@@ -5035,29 +4370,18 @@ function processAddNewPortionForm(portionType) {
 				}).append($(portionName)) // here appending text into the span
 				)));
 				//alert("plateSlateCellApp processAddNewPortionForm mealName " + mealName + " using dividerId " + dividerId + " href " + aHref + " name " + portionName);
-				//$('#breakfast-page').trigger('create');
 				//try {
 				//	$('#breakfast-page ul').listview('refresh');
 				//} catch (e) {
 				//	$('#breakfast-page ul').listview();
 				//}
-				// tjs 120109
-			    //$.mobile.changePage('#breakfast-page', {dataUrl: 'javascript:openSlatePlansPage();' });
 			} else if (mealName == "Lunch") {
 				$('#lunch-page ul').listview('refresh');
 			} else if (mealName == "Dinner") {
 				$('#dinner-page ul').listview('refresh');
 			}
 		}
-		//$('#grain-portion-dial').dialog('close');
 		//alert("plateSlateCellApp processAddNewPortionForm mealName " + mealName);
-		/*if (mealName == "Breakfast") {
-			$('#breakfast-page ul').listview('refresh');
-		} else if (mealName == "Lunch") {
-			$('#lunch-page ul').listview('refresh');
-		} else if (mealName == "Dinner") {
-			$('#dinner-page ul').listview('refresh');
-		}*/
 	} else if (portionType == "protein") {
 		$('#protein-portion-dial').dialog('close');
 	} else if (portionType == "vegetables") {
@@ -5074,10 +4398,6 @@ function cancelAddNewPortionForm(portionType) {
 	var offset;
 	var mealName;
 	if (portionType == "grain") {
-		//offset = document.newGrainPortionForm.slateOffset.value;
-		//alert("plateslate cancelAddNewPortionForm offset " + offset);
-		//mealName = document.newGrainPortionForm.mealName.value;
-		//alert("plateslate cancelAddNewPortionForm mealName " + mealName);
 		$('#grain-portion-dial').dialog('close');
 	} else if (portionType == "protein") {
 		$('#protein-portion-dial').dialog('close');
@@ -5091,7 +4411,6 @@ function cancelAddNewPortionForm(portionType) {
 }
 
 // TODO use html for each portion to build select via filtering out those in the lists
-//function derivePortionSelectionLists() {
 function derivePortionSelectionLists(slateTorf) {
 	grainPortionSelectListHtml = '<select name="portionSelection" class="Grain"><optgroup label="Grain">';
 	proteinPortionSelectListHtml = '<select name="portionSelection" class="Protein"><optgroup label="Protein">';
@@ -5101,7 +4420,6 @@ function derivePortionSelectionLists(slateTorf) {
 	
 	var len = portions.length;
 	if (len > 0) {
-		//var offset = 0;
 		for (var i = 0; i < len; i++) {
 			//alert("plateslate populatePlateMenus i " + i);
 			var currentPortion = portions[i];
@@ -5130,51 +4448,9 @@ function derivePortionSelectionLists(slateTorf) {
 	//alert("plateslate derivePortionSelectionLists grainPortionSelectListHtml " + grainPortionSelectListHtml);
 }
 
-/*
-function newGrainSelectionHtmlTest(offset, mealName, portionType) {
-	//alert("plateSlateCellApp newGrainSelectionHtmlTest");
-	//alert("plateSlateCellApp newGrainSelectionHtmlTest offset " + offset + " mealName " + mealName);
-	alert("plateSlateCellApp newGrainSelectionHtmlTest offset " + offset + " mealName " + mealName + " portionType " + portionType);
-}
-*/
-/*
-function newGrainSelectionHtml(offset, mealName) {
-	//alert("plateSlateCellApp newGrainSelectionHtml offset " + offset + " mealName " + mealName);
-	grainPortionSelectListHtml = '<select name="portionSelection" class="Grain" onchange="javascript:processAddNewPortion(' + offset  + ', ' + "'" + mealName + "'" + ', ' + "'grain', " + 'this.options[this.selectedIndex].value);"><optgroup label="Grain">';
-	var len = portions.length;
-	//alert("plateSlateCellApp newGrainSelectionHtml len " + len);
-	if (len > 0) {
-		//var offset = 0;
-		for (var i = 0; i < len; i++) {
-			//alert("plateslate populatePlateMenus i " + i);
-			var currentPortion = portions[i];
-			if (currentPortion != null) {
-				//TODO if (currentPlate.master == 1)
-				//alert("plateslate updatePortionsDialogs portion type " + currentPortion.type + " portion name " + currentPortion.name);
-				if (currentPortion.type == "Grain") {
-					grainPortionSelectListHtml += '<option value ="' + currentPortion.id + '">' + currentPortion.name + '</option>';
-				} else if (currentPortion.type == "Protein") {
-					proteinPortionSelectListHtml += '<option value ="' + currentPortion.id +'">' + currentPortion.name + '</option>';
-				} else if (currentPortion.type == "Vegetables") {
-					vegetablesPortionSelectListHtml += '<option value ="' + currentPortion.id +'">' + currentPortion.name + '</option>';
-				} else if (currentPortion.type == "Fruits") {
-					fruitsPortionSelectListHtml += '<option value ="' + currentPortion.id +'">' + currentPortion.name + '</option>';
-				} else if (currentPortion.type == "Dairy") {
-					dairyPortionSelectListHtml += '<option value ="' + currentPortion.id +'">' + currentPortion.name + '</option>';
-				}
-			}
-		}
-		grainPortionSelectListHtml += '</optgroup></select>';
-	}
-	//alert("plateslate newGrainSelectionHtml offset " + offset + " mealName " + mealName + " grainPortionSelectListHtml " + grainPortionSelectListHtml);
-	return grainPortionSelectListHtml;
-
-}*/
-
 function processAddNewPortion(offset, mealName, portionType, optionValue) {
 	//alert("plateslate processAddNewPortion offset " + offset + " mealName " + mealName + " portionType " + portionType + " optionValue " + optionValue);
 
-	// tjs 120102
 	var slate;
 	var slateId;	
 	if (offset < 1000) { // i.e. if working with slate edits of portions
@@ -5187,7 +4463,6 @@ function processAddNewPortion(offset, mealName, portionType, optionValue) {
 		updateFood(slateId, mealName, optionValue, 0, 0);
 	} else { // i.e. working with plate edits of portions
 		//alert("plateslate processAddNewPortionForm offset " + offset + " mealName " + mealName + " optionValue " + optionValue);
-		//var index = offset%1000;
 		var index = offset - 1000;
 		var dish = plates[index];
 		var existingPortions = new Array();
@@ -5296,15 +4571,12 @@ function refreshSlatePortionCache(slate, mealName, optionValue) {
 function hijaxGrainSelectionDial(offset, mealName) {
 	//alert("plateslate hijaxGrainSelectionDial offset " + offset + " mealName " + mealName);
 	//alert("plateslate hijaxGrainSelectionDial offset " + offset + " mealName " + mealName + " grainPortionSelectListHtml " + grainPortionSelectListHtml);
-// tjs 120109
-	//var newDialHtml = '<div data-role="dialog" id="grain-portion-dial"><div data-role="header">';
 	var newDialHtml = '<div data-role="dialog" id="grain-portion-dial" data-rel="dialog"><div data-role="header">';
 	newDialHtml += '<h1>Add New Grain Portion</h1></div>';	
 	newDialHtml += '<div data-role="content" data-theme="c">';	
 	newDialHtml += '<form name="newGrainPortionForm"><input type="hidden" name="slateOffset" /><input type="hidden" name="portionName" />';
 	newDialHtml += '<p>Add New Grain Portion...</p><p/>';
 	newDialHtml += '<p><label for="mealName">Meal:</label><input type="text" name="mealName" id="name" readonly="readonly" data-theme="d"/></p>';
-	//newDialHtml += '<p><label for="name">Grain:</label><div ' + grainPortionSelectListHtml + '></div></p>';
 	newDialHtml += '<p><label for="name">Grain:</label>' + grainPortionSelectListHtml + '</p>';
 	newDialHtml += '</form><br><br><a href="javascript:cancelAddNewPortionForm(' + "'grain'" + ');" data-role="button" data-inline="true" data-theme="a">Cancel</a>';		
 	newDialHtml += '<a href="javascript:processAddNewPortionForm(' + "'grain'" + ');" data-role="button" data-inline="true">Add New Portion</a>';
@@ -5318,9 +4590,7 @@ function hijaxGrainSelectionDial(offset, mealName) {
 	document.newGrainPortionForm.mealName.value = mealName;
    
 	// enhance and open the new dialog
-	// tjs 120107
     $.mobile.changePage(newDial);
-    //$.mobile.changePage(newDial,'pop',false,true);
 }
 
 function hijaxProteinSelectionDial(offset, mealName) {
@@ -5416,8 +4686,6 @@ function hijaxDairySelectionDial(offset, mealName) {
     $.mobile.changePage(newDial);
 }
 
-// tjs 120102
-//function dropPortion(mealName, portionId) {
 function dropPortion(plateIndex, mealName, portionId) {
 	//alert("plateslate dropPortion mealName " + mealName + " portionId " + portionId);
 	if (plateIndex == 0) {
@@ -5448,45 +4716,33 @@ function dropPortion(plateIndex, mealName, portionId) {
 		else if (dish.portion9 == portionId)
 			dish.portion9 = 0;
 		addToPlate(dish);
-		//$('ul').listview("refresh");
-		//$('#edit-plate-dial ul').listview("refresh");
 		$('#edit-plate-dial').dialog('close');
 	}
 }
 
-//function showPlatesList() {
 function hijaxPlatesPage() {
 	if (!authenticated)	{
 		alert("You must login before using this feature!");
 		return;
 	}
-	//donationHtml = '<ul data-role="listview" id="charities-list" data-filter="true" data-filter-placeholder="Search..." data-split-icon="refresh" data-split-theme="d">';
-	//donationHtml += '<li id="' + charityId + '"><a href="javascript:addDonation(' + memberId + ', ' + charityId + ', 0)">' + charityName + '</a><a class="ui-icon-nonprofit" href="javascript:addSolicitation(' + memberId + ', ' + charityId + ', 0)" data-role="button">Zero Donation</a></li>';
 	//alert("plateSlateCellApp hijaxPlatesPage...");
 	  // create page markup
-	//var newPageHtml = '<div data-role="page" id="breakfast-page" data-title="Plates" class="type-interior" data-theme="b" data-dom-cache="true">';
 	var newPageHtml = '<div data-role="page" id="plates-page" data-title="Plates" class="type-interior" data-theme="b" data-dom-cache="true">';
 	newPageHtml += '<div data-role="header" data-theme="f" data-position="fixed">';
 	newPageHtml += '<a href="index.html" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-left jqm-home">Home</a>';
 	newPageHtml += '<h1>Plates</h1>';
-	//newPageHtml += '</div><div data-role="content"><div class="content-primary"><div id="breakfastList"></div></div></div>';
 	newPageHtml += '</div>';
-	//newPageHtml += '<div data-role="content"><div class="content-primary">';
 	newPageHtml += '<div data-role="content">';
 	newPageHtml += '<div class="content-primary">';
-	//newPageHtml += mealHtml;
-	//newPageHtml += '</div></div>';
 	newPageHtml += '<ul data-role="listview" id="plates-list" data-filter="true" data-filter-placeholder="Search..." data-split-icon="delete" data-split-theme="d">';
 	//alert("plateSlateCellApp hijaxPlatesPage plates.length " + plates.length);
 	for (var i = 0; i < plates.length; i++) {
 	    if (typeof(plates[i]) !== 'undefined') {
 
 		var plate = plates[i];
-		//var plateId = plate.id;
 		var plateName = plate.name;
 		//if (i%5 == 0)
 		//	alert("plateSlateCellApp hijaxPlatesPage plate name " + plateName);
-		//var plateType = plate.type;
 		newPageHtml += '<li><a href="javascript:editPlate(' + i + ')">' + plateName + '</a><a href="javascript:inactivatePlate(' + i + ')" data-role="button">Remove Plate</a></li>';
 	    }
 	}
@@ -5520,7 +4776,6 @@ function editPlate(index) {
 	var indexOffset = 1000 + index;
 	var plate = plates[index];
 	var mealName = plate.type;
-	//derivePortionSelectionLists();
 	derivePortionSelectionLists(false);
 	plateGrainsHtml = '<li/>';
 	plateProteinHtml = '<li/>';
@@ -5554,22 +4809,18 @@ function editPlate(index) {
 	newDialHtml += '</div></li>';
 	newDialHtml += plateGrainsHtml;
 	newDialHtml += '<li data-role="list-divider" data-theme="b"><div data-type="horizontal">';
-	//html += '<a href="#protein-portion-dial" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Protein</a>';
 	newDialHtml += '<a href="javascript:hijaxProteinSelectionDial(' + indexOffset + ",'" + mealName + "'" + ');" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Protein</a>';
 	newDialHtml += '</div></li>';
 	newDialHtml += plateProteinHtml;
 	newDialHtml += '<li data-role="list-divider" data-theme="b"><div data-type="horizontal">';
-	//html += '<a href="#vegetables-portion-dial" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Vegetables</a>';
 	newDialHtml += '<a href="javascript:hijaxVegetablesSelectionDial(' + indexOffset + ",'" + mealName + "'" + ');" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Vegetables</a>';
 	newDialHtml += '</div></li>';
 	newDialHtml += plateVegetablesHtml;
 	newDialHtml += '<li data-role="list-divider" data-theme="b"><div data-type="horizontal">';
-	//html += '<a href="#fruits-portion-dial" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Fruits</a>';
 	newDialHtml += '<a href="javascript:hijaxFruitsSelectionDial(' + indexOffset + ",'" + mealName + "'" + ');" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Fruits</a>';
 	newDialHtml += '</div></li>';
 	newDialHtml += plateFruitsHtml;
 	newDialHtml += '<li data-role="list-divider" data-theme="b"><div data-type="horizontal">';
-	//html += '<a href="#dairy-portion-dial" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Dairy</a>';
 	newDialHtml += '<a href="javascript:hijaxDairySelectionDial(' + indexOffset + ",'" + mealName + "'" + ');" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Dairy</a>';
 	newDialHtml += '</div></li>';
 	newDialHtml += plateDairyHtml;
@@ -5611,7 +4862,6 @@ function processAddPlateForm() {
 	}
 	if (!plateExists) {
 		var index = i++;	
-		//dish = new Plate(index, optionValue,  + plateName, plateDescription, 0, null, null, null, null, null, null, null, null, null, 0);
 		dish = new Plate(index, optionValue, plateName, plateDescription, 0, null, null, null, null, null, null, null, null, null, 0);
 		addToPlate(dish);
 		plates[index] = dish;
@@ -5678,10 +4928,6 @@ function editPortion(index) {
 	var portionName = portion.name;
 	var portionDescription = portion.description;
 	var portionType = portion.type;
-	/*
-	 * 	
-			
-	 */
 	var newDialHtml = '<div data-role="dialog" id="edit-portion-dial"><div data-role="header">';
 	newDialHtml += '<h1>Edit Portion</h1></div>';	
 	newDialHtml += '<div data-role="content" data-theme="c">';
@@ -5763,14 +5009,7 @@ function processAddPortionForm() {
 		var index = i++;
 		portion = new Portion(index, optionValue, portionName, portionDescription, 0, 0);
 		portions[index] = portion;
-		/*
-		//dish = new Plate(index, optionValue,  + plateName, plateDescription, 0, null, null, null, null, null, null, null, null, null, 0);
-		dish = new Plate(index, optionValue, plateName, plateDescription, 0, null, null, null, null, null, null, null, null, null, 0);
-		addToPlate(dish);
-		plates[index] = dish;
-		*/
 		// use plate edit dialog...
-		//editPortion(index);
 		addToPortion(portion);
 		$('#add-portion-dial').dialog('close');
 	} else {
