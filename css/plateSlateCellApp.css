@@ -32,7 +32,19 @@ $LastChangedDate:: 2012-01-03 14:44:48#$: Date of last commit
 p.dividerIcon {
 	font-size: 150%;
 	}
-	
+
+/* tjs 120113 */
+#screen-report-page .ui-content {
+    background: #333333;
+   /* transparent url('../images/chalkboard.png');
+    width: 100%;
+    height:auto;
+    top: 0px;
+    left: 0px;
+    z-index: -1;
+    position: absolute;*/
+}
+
 /* tjs 111222
 #plateEditDialog { background-color: white; }
 

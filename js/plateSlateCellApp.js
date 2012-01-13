@@ -56,6 +56,20 @@ weekday[4]="Thursday";
 weekday[5]="Friday";
 weekday[6]="Saturday";
 
+// tjs 120113
+var screenReportFontColors = new Array(10);
+screenReportFontColors[0] = 0;
+screenReportFontColors[1] = 20;
+screenReportFontColors[2] = 40;
+screenReportFontColors[3] = 60;
+screenReportFontColors[4] = 80;
+screenReportFontColors[5] = 100;
+screenReportFontColors[6] = 120;
+screenReportFontColors[7] = 140;
+screenReportFontColors[8] = 160;
+screenReportFontColors[9] = 180;
+
+
 var systemDB;
 
 function Portion(id, type, name, description, master, isInactive) {
@@ -3729,6 +3743,14 @@ function hijaxScreenReportPage() {
 
 	 */
 	var thresholdOffset = slateOffsetThreshold;
+	//var chalkColor = makeRandomScreenReportColor();
+	//var divStyle = 'color:' + chalkColor;
+	//var chalkColors = makeRandomScreenReportColors(3);
+	var chalkColors = getScreenReportHues(3);
+	var divHeaderStyle = 'color:' + makeColor(chalkColors[0]);
+	var divLabelStyle = 'color:' + makeColor(chalkColors[1]);
+	var divDataStyle = 'color:' + makeColor(chalkColors[2]);
+	
 	var results = getReportGridArrays(thresholdOffset);
 //	alert("plateSlateCellApp hijaxScreenReportPage results.length " + results.length);
 	var dows = results[0];
@@ -3755,6 +3777,9 @@ function hijaxScreenReportPage() {
 	newPageHtml += '</div>';
 	newPageHtml += '<div data-role="content">';
 	newPageHtml += '<div class="' + gridClass + '" style="text-align: center;">';
+	//newPageHtml += '<div class="chalk" style="' + divStyle + ';">';
+	newPageHtml += '<div class="chalk">';
+	newPageHtml += '<div style="' + divHeaderStyle + ';">';
 	// grid headers (dow)
 	for (var i = 0; i < len; i++) {
 		switch (i) {
@@ -3775,6 +3800,8 @@ function hijaxScreenReportPage() {
 			break;			
 		}			
 	}
+	newPageHtml += '</div>';
+	newPageHtml += '<div style="' + divLabelStyle + ';">';
 	// breakfast headers
 	for (var i = 0; i < len; i++) {
 		switch (i) {
@@ -3795,6 +3822,8 @@ function hijaxScreenReportPage() {
 			break;			
 		}			
 	}
+	newPageHtml += '</div>';
+	newPageHtml += '<div style="' + divDataStyle + ';">';
 	// breakfast plates
 	for (var i = 0; i < len; i++) {
 		switch (i) {
@@ -3815,6 +3844,8 @@ function hijaxScreenReportPage() {
 			break;			
 		}			
 	}
+	newPageHtml += '</div>';
+	newPageHtml += '<div style="' + divLabelStyle + ';">';
 	// lunch headers
 	for (var i = 0; i < len; i++) {
 		switch (i) {
@@ -3835,6 +3866,8 @@ function hijaxScreenReportPage() {
 			break;			
 		}			
 	}
+	newPageHtml += '</div>';
+	newPageHtml += '<div style="' + divDataStyle + ';">';
 	// lunch plates
 	for (var i = 0; i < len; i++) {
 		switch (i) {
@@ -3855,6 +3888,8 @@ function hijaxScreenReportPage() {
 			break;			
 		}			
 	}
+	newPageHtml += '</div>';
+	newPageHtml += '<div style="' + divLabelStyle + ';">';
 	// dinner headers
 	for (var i = 0; i < len; i++) {
 		switch (i) {
@@ -3875,6 +3910,8 @@ function hijaxScreenReportPage() {
 			break;			
 		}			
 	}
+	newPageHtml += '</div>';
+	newPageHtml += '<div style="' + divDataStyle + ';">';
 	// dinner plates
 	for (var i = 0; i < len; i++) {
 		switch (i) {
@@ -3895,6 +3932,8 @@ function hijaxScreenReportPage() {
 			break;			
 		}			
 	}
+	newPageHtml += '</div>';
+	newPageHtml += '</div>';
 	newPageHtml += '</div></div><script type="text/javascript"></script></div>';
 	var newPage = $(newPageHtml);
 	//add new dialog to page container
@@ -4041,6 +4080,34 @@ function getReportGridArrays(offset) {
 			//alert("plateslate createReport next cursor " + cursor + " count " + count + " today onwards xml " + xml);
 		}		
 	}
+	cursor = offset - 1;
+	if (count < maxCount) {
+		// grab one more day from past
+		maxCount = count + 1;
+		while (count < maxCount) {
+			//alert("plateslate createReport count " + count + " cursor " + cursor + " slate name " + slates[cursor].name);
+			//alert("plateslate createReport backwards count " + count + " cursor " + cursor);
+		    if (typeof(slates[cursor]) === 'undefined') {
+		    	break;
+		    } else {
+		    	slate = slates[cursor--];
+		    	count++;
+		    	// TODO label one or the other
+		    	dows.unshift("Yesterday/Prior Day");
+		    	plateId = slate.breakfastId;
+		    	plate = plates[plateId];
+		    	breakfastPlates.unshift(plate.name);
+		    	plateId = slate.lunchId;
+		    	plate = plates[plateId];
+		    	lunchPlates.unshift(plate.name);
+		    	plateId = slate.dinnerId;
+		    	plate = plates[plateId];
+		    	dinnerPlates.unshift(plate.name);				
+				//alert("plateslate createReport next cursor " + cursor + " count " + count + " today backwards xml " + xml);
+			}		
+		}
+	}
+
 	var results = new Array();
 	results.push(dows);
 	results.push(breakfastPlates);
@@ -5040,4 +5107,24 @@ function processEditPortionForm() {
 
 function makeColor(hue) {
     return "hsl(" + hue + ", 100%, 50%)";
+}
+
+function makeRandomScreenReportColor() {
+	var selectedOption = Math.floor(Math.random()*(screenReportFontColors.length - 1));
+	//return "hsl(" + selectedOption + ", 100%, 50%)";
+	return makeColor(selectedOption);
+}
+
+function getScreenReportHues(len) {
+	var screenReportHues = new Array(len);
+	var selectedIndex = Math.floor(Math.random()*(screenReportFontColors.length - 1));
+	var selectedOption = screenReportFontColors[selectedIndex];
+	//alert("plateSlateCellApp getScreenReportHues selectedOption " + selectedOption);
+	for (var i = 0; i < len; i++) {
+		//screenReportHues.push(selectedOption);
+		screenReportHues[i] = selectedOption;
+		selectedOption += 40;
+	}
+	//alert("plateSlateCellApp getScreenReportHues screenReportHues: [0] " + screenReportHues[0] + " [1] "+ screenReportHues[1] + " [2] " + screenReportHues[2]);
+	return screenReportHues;
 }
