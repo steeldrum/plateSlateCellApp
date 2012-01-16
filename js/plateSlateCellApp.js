@@ -1869,8 +1869,8 @@ function getPortionSelections(offset, mealName, portionType) {
 	// consider that the slate already has portions assigned...
 	var thresholdOffset = offset + slateOffsetThreshold;
 	// tjs 120116
-	var foodPortions = getMealFoodPortions(thresholdOffset, mealName);
-	/*
+	//var foodPortions = getMealFoodPortions(thresholdOffset, mealName);
+	
 	var slate = slates[thresholdOffset];
 	var foodPortions;
 	if (mealName == "Breakfast") {
@@ -1880,7 +1880,7 @@ function getPortionSelections(offset, mealName, portionType) {
 	}  else if (mealName == "Dinner") {
 		foodPortions = slate.dinnerPortions;
 	}
-	*/
+	
 	//alert("plateSlateCellApp getPortionSelections offset " + offset + " mealName " + mealName);
 	portionSelectionsHtml = '<select name="portionSelection" class="' + portionType + '" onchange="javascript:processAddNewPortion(' + offset  + ', ' + "'" + mealName + "'" + ', ' + "'" + portionType + "', " + 'this.options[this.selectedIndex].value);"><optgroup label="' + portionType + '">';
 	var len = portions.length;
