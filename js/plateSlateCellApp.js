@@ -3037,9 +3037,10 @@ function getFoodPortions(slate, plate) {
 	//alert("plateslate getFoodPortions slate id " + slate.id + " plate id " + plate.id + " plate type " + plate.type);
 	var foodPortions;
 	if (plate.type == "Breakfast") {
-		if (typeof(slate.breakfastPortions === 'undefined')) {
+		// tjs 120117
+		//if (typeof(slate.breakfastPortions === 'undefined')) {
 			//alert("plateslate getFoodPortions breakfast undefined!");			
-		} 			
+		//} 			
 		foodPortions = slate.breakfastPortions;
 	}  else if (plate.type == "Lunch") {
 		foodPortions = slate.lunchPortions;
