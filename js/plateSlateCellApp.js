@@ -3049,10 +3049,22 @@ function getFoodPortions(slate, plate) {
 	}
 	//alert("plateslate getFoodPortions slate id " + slate.id + " plate id " + plate.id + " plate type " + plate.type + " foodPortions length " + foodPortions.length);
 	//alert("plateslate getFoodPortions foodPortions length " + foodPortions.length);
+	// tjs 120117
+	var portionsAppended = new Array();
 	if (foodPortions.length > 0) {
 		for (var i = 0; i < foodPortions.length; i++) {
 			portionId = foodPortions[i];
-			appendPortion(plate, portionId, 0, true);
+			var appended = false;
+			for (var j = 0; j < portionsAppended.length; j++) {
+				if (portionId == portionsAppended[j]) {
+					appended = true;
+					break;
+				}
+			}
+			if (!appended) {
+				appendPortion(plate, portionId, 0, true);
+				portionsAppended.push(portionId);
+			}
 		}
 	} 
 	//tjs 110812 rewrite
