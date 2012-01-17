@@ -22,6 +22,17 @@ $LastChangedDate:: 2012-01-03 14:44:48#$: Date of last commit
 	color: white;
 }
 
+/* tjs 120117 */
+@font-face {
+	font-family: Felttip;
+	src: local('Felttip'), url('../fonts/felttip.ttf') format('truetype');
+}
+
+.felt {
+	font-family: Felttip, sans-serif;
+	color: white;
+}
+
 .segmented-control { text-align:center;}
 .segmented-control .ui-controlgroup { margin: 0.2em; }
 .ui-control-active, .ui-control-inactive { border-style: solid; border-color: gray; }
@@ -34,7 +45,8 @@ p.dividerIcon {
 	}
 
 /* tjs 120113 */
-#screen-report-page .ui-content {
+/* tjs 120117 */
+#slate-of-plates-report-page .ui-content {
     background: #333333;
    /* transparent url('../images/chalkboard.png');
     width: 100%;
@@ -43,6 +55,16 @@ p.dividerIcon {
     left: 0px;
     z-index: -1;
     position: absolute;*/
+}
+/* tjs 120117 */
+#dinner-slate-report-page .ui-content {
+    background: #333333;
+}
+#dinner-portions-slate-report-page .ui-content {
+    background: #333333;
+}
+#kitchen-portions-whiteboard-report-page .ui-content {
+    background: #ffffff;
 }
 
 /* tjs 111222
