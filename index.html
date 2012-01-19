@@ -60,7 +60,8 @@ $LastChangedDate:: 2012-01-03 14:44:48#$: Date of last commit
 			//function to execute when doc ready
 			$(function() {
 				readPortions();
-				setLoginButton();
+				// tjs 120119
+				//setLoginButton();
 				// tjs 111228
 				//derivePortionSelectionLists();
 				
@@ -129,7 +130,25 @@ $LastChangedDate:: 2012-01-03 14:44:48#$: Date of last commit
 				    	//alert( "plateslate bindSelectionsHandlers breakfastSelectionId " + breakfastSelectionId + " value " + optionValue);
 				    	// tjs 110819
 				    	return false;
-					}); 				
+					}); 
+				
+				// tjs 120119
+			    $('.loginLogout').bind('click', function () {
+			    	//alert("index Login/Logout button clicked...");
+			        //var label =  $(this).siblings('.ui-btn-inner').children('.ui-btn-text').text();
+			        var label =  $(this).children('.ui-btn-inner').children('.ui-btn-text').text();
+			        //alert("index Login/Logout button text " + label);
+			        if (label == "Login") {
+			        	//alert("index Login/Logout button text " + label);
+			            //$(this).children('.ui-btn-inner').children('.ui-btn-text').text("Logout");
+			            //alert("index Login/Logout login being called...");
+			            login();
+			        } else {
+			            $(this).children('.ui-btn-inner').children('.ui-btn-text').text("Login");
+			            logout();
+			        }
+			    });
+				
 			});
 			});
 
@@ -185,9 +204,12 @@ $LastChangedDate:: 2012-01-03 14:44:48#$: Date of last commit
 			doLogout();
 			authenticated = false;
 			loginAccountNumber = 0;
-			setLoginButton();
+			// tjs 120119
+			//setLoginButton();
 		}
 		
+		// tjs 120119
+		/*
 		function setLoginButton() {
 			var buttonHtml = '<input type="button" value="Login" onclick="javascript:login();" data-icon="arrow-l" class="ui-btn-right"/>';
 			$('#loginLogoutButton').empty();
@@ -198,7 +220,7 @@ $LastChangedDate:: 2012-01-03 14:44:48#$: Date of last commit
 			var buttonHtml = '<input type="button" value="Logout" onclick="javascript:logout();" data-icon="arrow-l" class="ui-btn-right"/>';
 			$('#loginLogoutButton').empty();
 			$('#loginLogoutButton').append($(buttonHtml));
-		}
+		}*/
 
 	</script>
 	<script src="js/jquery.mobile-1.0.min.js"></script>
@@ -210,9 +232,10 @@ $LastChangedDate:: 2012-01-03 14:44:48#$: Date of last commit
 <div data-role="page" id="home-page" data-title="Home" data-dom-cache="false">
 	<div data-role="header">
 		<h1>Plate Slate</h1>
-		<div id="loginLogoutButton">
+		<!--  div id="loginLogoutButton" -->
 		<!-- a href="#login-dial" data-icon="arrow-r" class="ui-btn-right">Login</a -->
-		</div>
+		<a href="#" data-role="button" data-inline="true" class="loginLogout ui-btn-right">Login</a>
+		<!--  /div -->
 		
 	</div>
 

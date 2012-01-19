@@ -3359,7 +3359,9 @@ function processLoginForm() {
     		  loginAccountNumber = accountId;
     		  //alert("plateslate processLoginForm success  authenticated " + authenticated + " loginAccountNumber " + loginAccountNumber);
      		  //alert("plateslate processLoginForm success closing dialog...");
-     		  setLogoutButton();
+    		  // tjs 120119
+     		  //setLogoutButton();
+    		  $('.loginLogout').children('.ui-btn-inner').children('.ui-btn-text').text("Logout");
     		  $("#login-dial").dialog("close");
     	  } else {
     		  alert("Login failed!");
