@@ -1076,7 +1076,9 @@ function loadSlates()
 		// tjs 110816
 		for (var i = 0; i < slates.length; i++) {
 			//tjs 110819
-			if (typeof(slates[i] !== 'undefined')) {
+			// tjs 120119
+			//if (typeof(slates[i] !== 'undefined')) {
+			if (typeof(slates[i]) !== 'undefined') {
 				// tjs 110819
 				destroySlate(slates[i]);
 			}
@@ -2059,236 +2061,6 @@ function compareTimes(a, b) {
 	return a.time - b.time;
 }
 
-function updatePlate(offset, type) {
-	//alert( "plateslate updatePlate...");
-	var slate = slates[offset];
-	var slateId = slate.id;
-	//alert( "plateslate updatePlate slate id " + slateId);
-	var typePortions;
-	var plateId;
-	if (type == "Breakfast") {
-		plateId = slate.breakfastId;
-		typePortions = slate.breakfastPortions;
-	} else if (type == "Lunch") {
-			plateId = slate.lunchId;
-			typePortions = slate.lunchPortions;
-	} else if (type == "Dinner") {
-		plateId = slate.dinnerId;
-		typePortions = slate.dinnerPortions;
-	}
-	
-	var plate = plates[plateId];
-	//alert( "plateslate start updatePlate id " + plateId + " portions.length " + typePortions.length);
-	if (portions.length > 0) {
-		var fruits = new Array();
-		var grains = new Array();
-		var vegetables = new Array();
-		var protein = new Array();
-		var dairy = new Array();
-		for (var i = 0; i < portions.length; i++) {
-			if (typeof(portions[i]) === 'undefined') 
-				continue;
-			var portion = portions[i];
-			if (portion == null)
-				continue;
-			//alert( "plateslate updatePlate type " + portion.type + " portion name " + portion.name);
-			var portionType = portion.type;
-			//alert( "plateslate updatePlate type " + portionType + " portion name " + portion.name);
-			if (portionType == 'Fruits')
-				fruits.push(portion);
-			else if (portionType == 'Grain')
-				grains.push(portion);
-			else if (portionType == 'Vegetables')
-				vegetables.push(portion);
-			else if (portionType == 'Protein')
-				protein.push(portion);
-			else if (portionType == 'Dairy')
-				dairy.push(portion);
-		}
-		//alert( "plateslate updatePlate fruits.length " + fruits.length + " grains.length " + grains.length  + " vegetables.length " + vegetables.length + " protein.length " + protein.length + " dairy.length " + dairy.length);
-		var html = '';
-		var fruitOffset = 0;
-		var grainOffset = 0;
-		var vegetableOffset = 0;
-		var proteinOffset = 0;
-		var dairyOffset = 0;
-		var portion;
-		$("#plateEditDialog").empty();
-		for (var i = 1; i <= 7; i++) {
-			html += '<div class="flexbox-holder-row' + i + '">';
-			switch (i) {
-			case 1:
-				//3 fruits, 4 grains
-				portion = fruits[fruitOffset++];
-				html += '<div class="flex" type="fruit"><input name="' + portion.name + '" type="checkbox" ' + getChecked(slateId, plate, portion.id, typePortions) + ' value="' + portion.id + '">' + portion.name + '</input></div>';
-				portion = fruits[fruitOffset++];
-				html += '<div class="flex" type="fruit"><input name="' + portion.name + '" type="checkbox" ' + getChecked(slateId, plate, portion.id, typePortions) + ' value="' + portion.id + '">' + portion.name + '</input></div>';
-				portion = fruits[fruitOffset++];
-				html += '<div class="flex" type="fruit"><input name="' + portion.name + '" type="checkbox" ' + getChecked(slateId, plate, portion.id, typePortions) + ' value="' + portion.id + '">' + portion.name + '</input></div>';
-				portion = grains[grainOffset++];
-				html += '<div class="flex" type="grains"><input name="' + portion.name + '" type="checkbox" ' + getChecked(slateId, plate, portion.id, typePortions) + ' value="' + portion.id + '">' + portion.name + '</input></div>';
-				portion = grains[grainOffset++];
-				html += '<div class="flex" type="grains"><input name="' + portion.name + '" type="checkbox" ' + getChecked(slateId, plate, portion.id, typePortions) + ' value="' + portion.id + '">' + portion.name + '</input></div>';
-				portion = grains[grainOffset++];
-				html += '<div class="flex" type="grains"><input name="' + portion.name + '" type="checkbox" ' + getChecked(slateId, plate, portion.id, typePortions) + ' value="' + portion.id + '">' + portion.name + '</input></div>';
-				portion = grains[grainOffset++];
-				html += '<div class="flex" type="grains"><input name="' + portion.name + '" type="checkbox" ' + getChecked(slateId, plate, portion.id, typePortions) + ' value="' + portion.id + '">' + portion.name + '</input></div>';
-				break;
-
-			case 2:
-				//3 fruits, 4 grains
-				portion = fruits[fruitOffset++];
-				html += '<div class="flex" type="fruit"><input name="' + portion.name + '" type="checkbox" ' + getChecked(slateId, plate, portion.id, typePortions) + ' value="' + portion.id + '">' + portion.name + '</input></div>';
-				portion = fruits[fruitOffset++];
-				html += '<div class="flex" type="fruit"><input name="' + portion.name + '" type="checkbox" ' + getChecked(slateId, plate, portion.id, typePortions) + ' value="' + portion.id + '">' + portion.name + '</input></div>';
-				portion = fruits[fruitOffset++];
-				html += '<div class="flex" type="fruit"><input name="' + portion.name + '" type="checkbox" ' + getChecked(slateId, plate, portion.id, typePortions) + ' value="' + portion.id + '">' + portion.name + '</input></div>';
-				portion = grains[grainOffset++];
-				html += '<div class="flex" type="grains"><input name="' + portion.name + '" type="checkbox" ' + getChecked(slateId, plate, portion.id, typePortions) + ' value="' + portion.id + '">' + portion.name + '</input></div>';
-				portion = grains[grainOffset++];
-				html += '<div class="flex" type="grains"><input name="' + portion.name + '" type="checkbox" ' + getChecked(slateId, plate, portion.id, typePortions) + ' value="' + portion.id + '">' + portion.name + '</input></div>';
-				portion = grains[grainOffset++];
-				html += '<div class="flex" type="grains"><input name="' + portion.name + '" type="checkbox" ' + getChecked(slateId, plate, portion.id, typePortions) + ' value="' + portion.id + '">' + portion.name + '</input></div>';
-				portion = grains[grainOffset++];
-				html += '<div class="flex" type="grains"><input name="' + portion.name + '" type="checkbox" ' + getChecked(slateId, plate, portion.id, typePortions) + ' value="' + portion.id + '">' + portion.name + '</input></div>';
-				break;
-
-			case 3:
-				//3 fruits, 4 grains
-				portion = fruits[fruitOffset++];
-				html += '<div class="flex" type="fruit"><input name="' + portion.name + '" type="checkbox" ' + getChecked(slateId, plate, portion.id, typePortions) + ' value="' + portion.id + '">' + portion.name + '</input></div>';
-				portion = fruits[fruitOffset++];
-				html += '<div class="flex" type="fruit"><input name="' + portion.name + '" type="checkbox" ' + getChecked(slateId, plate, portion.id, typePortions) + ' value="' + portion.id + '">' + portion.name + '</input></div>';
-				portion = fruits[fruitOffset++];
-				html += '<div class="flex" type="fruit"><input name="' + portion.name + '" type="checkbox" ' + getChecked(slateId, plate, portion.id, typePortions) + ' value="' + portion.id + '">' + portion.name + '</input></div>';
-				portion = grains[grainOffset++];
-				html += '<div class="flex" type="grains"><input name="' + portion.name + '" type="checkbox" ' + getChecked(slateId, plate, portion.id, typePortions) + ' value="' + portion.id + '">' + portion.name + '</input></div>';
-				portion = grains[grainOffset++];
-				html += '<div class="flex" type="grains"><input name="' + portion.name + '" type="checkbox" ' + getChecked(slateId, plate, portion.id, typePortions) + ' value="' + portion.id + '">' + portion.name + '</input></div>';
-				portion = grains[grainOffset++];
-				html += '<div class="flex" type="grains"><input name="' + portion.name + '" type="checkbox" ' + getChecked(slateId, plate, portion.id, typePortions) + ' value="' + portion.id + '">' + portion.name + '</input></div>';
-				portion = grains[grainOffset++];
-				html += '<div class="flex" type="grains"><input name="' + portion.name + '" type="checkbox" ' + getChecked(slateId, plate, portion.id, typePortions) + ' value="' + portion.id + '">' + portion.name + '</input></div>';
-				break;
-
-			case 4:
-				//3 vegetables, 1 fruits, 3 dairy
-				portion = vegetables[vegetableOffset++];
-				html += '<div class="flex" type="vegetables"><input name="' + portion.name + '" type="checkbox" ' + getChecked(slateId, plate, portion.id, typePortions) + ' value="' + portion.id + '">' + portion.name + '</input></div>';
-				portion = vegetables[vegetableOffset++];
-				html += '<div class="flex" type="vegetables"><input name="' + portion.name + '" type="checkbox" ' + getChecked(slateId, plate, portion.id, typePortions) + ' value="' + portion.id + '">' + portion.name + '</input></div>';
-				portion = vegetables[vegetableOffset++];
-				html += '<div class="flex" type="vegetables"><input name="' + portion.name + '" type="checkbox" ' + getChecked(slateId, plate, portion.id, typePortions) + ' value="' + portion.id + '">' + portion.name + '</input></div>';
-				portion = fruits[fruitOffset++];
-				html += '<div class="flex" type="fruit"><input name="' + portion.name + '" type="checkbox" ' + getChecked(slateId, plate, portion.id, typePortions) + ' value="' + portion.id + '">' + portion.name + '</input></div>';
-				portion = dairy[dairyOffset++];
-				html += '<div class="flex" type="dairy"><input name="' + portion.name + '" type="checkbox" ' + getChecked(slateId, plate, portion.id, typePortions) + ' value="' + portion.id + '">' + portion.name + '</input></div>';
-				portion = dairy[dairyOffset++];
-				html += '<div class="flex" type="dairy"><input name="' + portion.name + '" type="checkbox" ' + getChecked(slateId, plate, portion.id, typePortions) + ' value="' + portion.id + '">' + portion.name + '</input></div>';
-				portion = dairy[dairyOffset++];
-				html += '<div class="flex" type="dairy"><input name="' + portion.name + '" type="checkbox" ' + getChecked(slateId, plate, portion.id, typePortions) + ' value="' + portion.id + '">' + portion.name + '</input></div>';
-				break;
-
-			case 5:
-				//4 vegetables, 1 dairy, 2 protein
-				portion = vegetables[vegetableOffset++];
-				html += '<div class="flex" type="vegetables"><input name="' + portion.name + '" type="checkbox" ' + getChecked(slateId, plate, portion.id, typePortions) + ' value="' + portion.id + '">' + portion.name + '</input></div>';
-				portion = vegetables[vegetableOffset++];
-				html += '<div class="flex" type="vegetables"><input name="' + portion.name + '" type="checkbox" ' + getChecked(slateId, plate, portion.id, typePortions) + ' value="' + portion.id + '">' + portion.name + '</input></div>';
-				portion = vegetables[vegetableOffset++];
-				html += '<div class="flex" type="vegetables"><input name="' + portion.name + '" type="checkbox" ' + getChecked(slateId, plate, portion.id, typePortions) + ' value="' + portion.id + '">' + portion.name + '</input></div>';
-				portion = vegetables[vegetableOffset++];
-				html += '<div class="flex" type="vegetables"><input name="' + portion.name + '" type="checkbox" ' + getChecked(slateId, plate, portion.id, typePortions) + ' value="' + portion.id + '">' + portion.name + '</input></div>';
-				portion = dairy[dairyOffset++];
-				html += '<div class="flex" type="dairy"><input name="' + portion.name + '" type="checkbox" ' + getChecked(slateId, plate, portion.id, typePortions) + ' value="' + portion.id + '">' + portion.name + '</input></div>';
-				portion = protein[proteinOffset++];
-				html += '<div class="flex" type="protein"><input name="' + portion.name + '" type="checkbox" ' + getChecked(slateId, plate, portion.id, typePortions) + ' value="' + portion.id + '">' + portion.name + '</input></div>';
-				portion = protein[proteinOffset++];
-				html += '<div class="flex" type="protein"><input name="' + portion.name + '" type="checkbox" ' + getChecked(slateId, plate, portion.id, typePortions) + ' value="' + portion.id + '">' + portion.name + '</input></div>';
-				break;
-
-			case 6:
-				//4 vegetables, 3 protein
-				portion = vegetables[vegetableOffset++];
-				html += '<div class="flex" type="vegetables"><input name="' + portion.name + '" type="checkbox" ' + getChecked(slateId, plate, portion.id, typePortions) + ' value="' + portion.id + '">' + portion.name + '</input></div>';
-				portion = vegetables[vegetableOffset++];
-				html += '<div class="flex" type="vegetables"><input name="' + portion.name + '" type="checkbox" ' + getChecked(slateId, plate, portion.id, typePortions) + ' value="' + portion.id + '">' + portion.name + '</input></div>';
-				portion = vegetables[vegetableOffset++];
-				html += '<div class="flex" type="vegetables"><input name="' + portion.name + '" type="checkbox" ' + getChecked(slateId, plate, portion.id, typePortions) + ' value="' + portion.id + '">' + portion.name + '</input></div>';
-				portion = vegetables[vegetableOffset++];
-				html += '<div class="flex" type="vegetables"><input name="' + portion.name + '" type="checkbox" ' + getChecked(slateId, plate, portion.id, typePortions) + ' value="' + portion.id + '">' + portion.name + '</input></div>';
-				portion = protein[proteinOffset++];
-				html += '<div class="flex" type="protein"><input name="' + portion.name + '" type="checkbox" ' + getChecked(slateId, plate, portion.id, typePortions) + ' value="' + portion.id + '">' + portion.name + '</input></div>';
-				portion = protein[proteinOffset++];
-				html += '<div class="flex" type="protein"><input name="' + portion.name + '" type="checkbox" ' + getChecked(slateId, plate, portion.id, typePortions) + ' value="' + portion.id + '">' + portion.name + '</input></div>';
-				portion = protein[proteinOffset++];
-				html += '<div class="flex" type="protein"><input name="' + portion.name + '" type="checkbox" ' + getChecked(slateId, plate, portion.id, typePortions) + ' value="' + portion.id + '">' + portion.name + '</input></div>';
-				break;
-
-			case 7:
-				//4 vegetables, 2 protein, 1 none
-				portion = vegetables[vegetableOffset++];
-				html += '<div class="flex" type="vegetables"><input name="' + portion.name + '" type="checkbox" ' + getChecked(slateId, plate, portion.id, typePortions) + ' value="' + portion.id + '">' + portion.name + '</input></div>';
-				portion = vegetables[vegetableOffset++];
-				html += '<div class="flex" type="vegetables"><input name="' + portion.name + '" type="checkbox" ' + getChecked(slateId, plate, portion.id, typePortions) + ' value="' + portion.id + '">' + portion.name + '</input></div>';
-				portion = vegetables[vegetableOffset++];
-				html += '<div class="flex" type="vegetables"><input name="' + portion.name + '" type="checkbox" ' + getChecked(slateId, plate, portion.id, typePortions) + ' value="' + portion.id + '">' + portion.name + '</input></div>';
-				portion = vegetables[vegetableOffset++];
-				html += '<div class="flex" type="vegetables"><input name="' + portion.name + '" type="checkbox" ' + getChecked(slateId, plate, portion.id, typePortions) + ' value="' + portion.id + '">' + portion.name + '</input></div>';
-				portion = protein[proteinOffset++];
-				html += '<div class="flex" type="protein"><input name="' + portion.name + '" type="checkbox" ' + getChecked(slateId, plate, portion.id, typePortions) + ' value="' + portion.id + '">' + portion.name + '</input></div>';
-				portion = protein[proteinOffset++];
-				html += '<div class="flex" type="protein"><input name="' + portion.name + '" type="checkbox" ' + getChecked(slateId, plate, portion.id, typePortions) + ' value="' + portion.id + '">' + portion.name + '</input></div>';
-				html += '<div class="flex" type="none">Save To:<button id="overridePortions" type="button">Plate</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button id="savePortions" type="submit">Slate</button></div>';
-				break;
-
-			}
-			html += '</div>';
-		}
-		$('#plateEditDialog').append($(html));
-		markCheckedPortions();
-
-		$("input[type='checkbox']").click(function() {
-			var checked = $(this).get(0).checked;
-			//alert("plateslatematrix checked " + checked);
-			if (checked) {
-				//$(this).parent().css('background-color', 'red');
-				$(this).parent().css('background-color', 'white');		
-			} else {
-				var type = $(this).parent().attr("type");
-				//alert("plateslatematrix type " + type);
-				var color = 'mediumpurple';
-				if (type == 'fruit')
-					color = 'crimson';
-				else if (type == 'grains')
-					color = 'sandybrown';
-				else if (type == 'vegetables')
-					color = 'mediumseagreen';
-				else if (type == 'dairy')
-					color = 'cornflowerblue';
-				$(this).parent().css('background-color', color);
-			}
-			$('#savePortions').attr('disabled', '');
-			// tjs 110816
-			$('#overridePortions').attr('disabled', '');
-		});
-
-		$('#savePortions').click(function() {
-			processPlateEdit(slateId, plate, typePortions, false);
-		});
-		$('#overridePortions').click(function() {
-			processPlateEdit(slateId, plate, typePortions, true);
-		});
-	}
-
-	//var titleString = plate.name + "          ";
-	var titleString = plate.name + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-	$("#plateEditDialog").dialog( "option", "title", titleString);
-
-	$("#plateEditDialog").dialog("open");
-	//alert( "plateslate end updatePlate id " + id);
-}
-
 function processPlateEdit(slateId, plate, typePortions, override) {
 	//alert( "plateslate processPlateEdit...");
 	//alert( "plateslate processPlateEdit name " + plate.name + " id " + plate.id + " portion1 " + plate.portion1 + " portion2 " + plate.portion2 + " portion3 " + plate.portion3);
@@ -2307,7 +2079,9 @@ function processPlateEdit(slateId, plate, typePortions, override) {
 
 	//alert( "plateslate processPlateEdit clear typePortions...");
 	// refresh cache...
-    if (typeof(typePortions !== 'undefined')) {
+	// tjs 120119
+    //if (typeof(typePortions !== 'undefined')) {
+    if (typeof(typePortions) !== 'undefined') {
     	if (typePortions.length > 0) {
     		//alert( "plateslate processPlateEdit typePortions.length " + typePortions.length);
     		typePortions.length = 0;
@@ -2323,7 +2097,8 @@ function processPlateEdit(slateId, plate, typePortions, override) {
 		var inputElm = portionsChecked[i];
 		portion = inputElm.value;
 		// continue refresh of cache...
-	    if (typeof(typePortions !== 'undefined')) {
+	    //if (typeof(typePortions !== 'undefined')) {
+	    if (typeof(typePortions) !== 'undefined') {
 	    	typePortions.push(portion);
 	    }		
 		if (override) {
@@ -2385,86 +2160,6 @@ function processPlateEdit(slateId, plate, typePortions, override) {
 	$("#plateEditDialog").dialog("close");
 	
 	view.sendEvent();
-}
-
-function getChecked(slateId, plate, id, typePortions) {
-	//alert("plateslate getChecked slate id " + slateId + " portion id " + id + " plate type " + plate.type);
-	var checked = '';
-
-	// first use the cache (typePortions)
-    if (typeof(typePortions !== 'undefined')) {
-    	if (typePortions.length > 0) {
-    		//alert("plateslate getChecked slateId " + slateId + " portion id " + id + " plate type " + plate.type + " typePortions.length " + typePortions.length);
-    		for (var i = 0; i < typePortions.length; i++) {
-    			if (typePortions[i] == id) {
-    				checked = 'checked="checked"';
-    				break;
-    			}
-    		}
-    		return checked;
-    	}
-    }
-    
-    // no cache ...
-	systemDB.transaction(
-			function(transaction) {
-				transaction.executeSql(
-						'SELECT id, slate, type, portion, master, isInactive FROM food where slate=? and type=? and portion=?;',[slateId, plate.type, id],
-
-				function (transaction, result) {
-				if (result.rows.length >0) {
-					//alert("plateslate addToFood result.rows.length " + result.rows.length);
-					var row = result.rows.item(0);
-					isInactive=parseInt(row.id);
-					if (isInactive == 1) {
-						return checked;
-					} else {
-						checked = 'checked="checked"';		
-						return checked;
-					}
-				} else {
-					//alert("plateslate addToPlate inserting: type " + plate.type + " name " + plate.name + " desc " + plate.description + " master " + plate.master + " isInactive? " + plate.isInactive + " portion #1 " + plate.portion1);
-					if (plate.portion1 == id 
-							|| plate.portion2 == id
-							|| plate.portion3 == id
-							|| plate.portion4 == id
-							|| plate.portion5 == id
-							|| plate.portion6 == id
-							|| plate.portion7 == id
-							|| plate.portion8 == id
-							|| plate.portion9 == id) {
-						checked = 'checked="checked"';		
-					}
-					//debug only:
-					//if (id == 37) {
-					//	alert("plateslate getChecked banana (37) checked " + checked);
-					//}
-					return checked;	
-				}
-			}
-			);
-		}
-		);
-	/*
-	//debug only:
-	//if (id == 37) {
-	//	alert("plateslate getChecked banana (37) plate.portion1 " + plate.portion1);
-	//}
-	//debug only:
-	//if (id == 37) {
-	//	alert("plateslate getChecked banana (37) checked " + checked);
-	//}
-	return checked;
-	*/
-}
-
-function markCheckedPortions() {
-	var portionsChecked = $("#plateEditDialog input:checked");
-	var len = portionsChecked.length;
-	for (var i = 0; i < len; i++) {
-		var inputElm = portionsChecked[i];
-		$(inputElm).parent().css('background-color', 'white');
-	}	
 }
 
 function addToFood(slate) {
@@ -3220,7 +2915,7 @@ function refreshSlateFoodsCache(slate, typeNumber) {
 		case 0:	// breakfast
 			plateId = slate.breakfastId;
 			// tjs 120119
-			if (typeof(slate.breakfastPortions) == 'defined') {
+			if ((typeof(slate.breakfastPortions) !== 'undefined')) {
 				slate.breakfastPortions.length = 0;
 			} else {
 				slate.breakfastPortions = new Array();
@@ -3229,7 +2924,7 @@ function refreshSlateFoodsCache(slate, typeNumber) {
 			
 		case 1:	// lunch
 			plateId = slate.lunchId;
-			if (typeof(slate.lunchPortions) == 'defined') {
+			if (typeof(slate.lunchPortions) !== 'undefined') {
 				slate.lunchPortions.length = 0;
 			} else {
 				slate.lunchPortions = new Array();
@@ -3238,7 +2933,7 @@ function refreshSlateFoodsCache(slate, typeNumber) {
 
 		case 2:	// dinner
 			plateId = slate.dinnerId;
-			if (typeof(slate.dinnerPortions) == 'defined') {
+			if (typeof(slate.dinnerPortions) !== 'undefined') {
 				slate.dinnerPortions.length = 0;
 			} else {
 				slate.dinnerPortions = new Array();
@@ -3548,7 +3243,9 @@ function updateFood(slateId, type, portion, master, isInactive) {
 function copySlate(source) {
 	// id, offset, date, name, description, breakfastId, lunchId, dinnerId, breakfastPortions, lunchPortions, dinnerPortions, isInactive
 	var target = new Slate(source.id, source.offset, source.date, source.name, source.description, source.breakfastId, source.lunchId, source.dinnerId, null, null, null, source.isInactive);
-    if (typeof(source.breakfastPortions !== 'undefined')) {
+// tjs 120119
+	//if (typeof(source.breakfastPortions !== 'undefined')) {
+    if (typeof(source.breakfastPortions) !== 'undefined') {
     	if (source.breakfastPortions.length > 0) {
     	   	if (target.breakfastPortions.length > 0)
     	   		target.breakfastPortions.length = 0;
@@ -3559,7 +3256,7 @@ function copySlate(source) {
     	}    	
     }
 
-    if (typeof(source.lunchPortions !== 'undefined')) {
+    if (typeof(source.lunchPortions) !== 'undefined') {
     	if (source.lunchPortions.length > 0) {
     	   	if (target.lunchPortions.length > 0)
     	   		target.lunchPortions.length = 0;
@@ -3570,7 +3267,7 @@ function copySlate(source) {
     	}    	
     }
 
-    if (typeof(source.dinnerPortions !== 'undefined')) {
+    if (typeof(source.dinnerPortions) !== 'undefined') {
     	if (source.dinnerPortions.length > 0) {
     	   	if (target.dinnerPortions.length > 0)
     	   		target.dinnerPortions.length = 0;
@@ -3606,19 +3303,21 @@ function viewSlate(location, slate) {
 	var blen = 0;
 	var llen = 0;
 	var dlen = 0;
-    if (typeof(slate.breakfastPortions !== 'undefined')) {
+	// tjs 120119
+    //if (typeof(slate.breakfastPortions !== 'undefined')) {
+    if (typeof(slate.breakfastPortions) !== 'undefined') {
     	if (slate.breakfastPortions.length > 0) {
     		blen = slate.breakfastPortions.length;
     	}    	
     }
 
-    if (typeof(slate.lunchPortions !== 'undefined')) {
+    if (typeof(slate.lunchPortions) !== 'undefined') {
     	if (slate.lunchPortions.length > 0) {
     		llen = slate.lunchPortions.length;
     	}    	
     }
 
-    if (typeof(slate.dinnerPortions !== 'undefined')) {
+    if (typeof(slate.dinnerPortions) !== 'undefined') {
     	if (slate.dinnerPortions.length > 0) {
     		dlen = slate.dinnerPortions.length;
     	}    	
@@ -5246,7 +4945,9 @@ function getReportGridArrays(thresholdOffset, plateCount, plateHistory) {
 function loadPreferences() {
 	//alert("plateslate start loadPreferences preferences.plateSelectionRandom " + preferences.plateSelectionRandom + " preferences.plateSelectionSeasonal " + preferences.plateSelectionSeasonal + " preferences.plateSelectionShared " + preferences.plateSelectionShared);
 	var tempPreferences = JSON.parse(localStorage.getItem('preferences'));
-	if (typeof(tempPreferences !== 'undefined')  && tempPreferences != null) {
+	//if (typeof(tempPreferences !== 'undefined')  && tempPreferences != null) {
+	// tjs 120119
+	if (typeof(tempPreferences) !== 'undefined'  && tempPreferences != null) {
 		//alert("plateslate loadPreferences tempPreferences.plateSelectionRandom " + tempPreferences.plateSelectionRandom + " tempPreferences.plateSelectionSeasonal " + tempPreferences.plateSelectionSeasonal + " tempPreferences.plateSelectionShared " + tempPreferences.plateSelectionShared);
 		preferences.plateSelectionRandom = tempPreferences.plateSelectionRandom;
 		preferences.plateSelectionSeasonal = tempPreferences.plateSelectionSeasonal;
