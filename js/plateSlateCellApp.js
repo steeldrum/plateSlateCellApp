@@ -1426,7 +1426,11 @@ function getSlateView(offset, mealName) {
     var slateRandomlyGenerated = false;
     // tjs 110818
     var plateType;
-    
+	// tjs 120119
+	var breakfastPortions;
+	var lunchPortions;
+	var dinnerPortions;    		
+   
     //alert("plateslate getSlateView offset " + offset + " thresholdOffset " + thresholdOffset + " slates len " + slates.length + " dow " + dow);
     if (slates.length == 0) {
         var nextDate = new Date();
@@ -1435,10 +1439,17 @@ function getSlateView(offset, mealName) {
 		lunchPlate = getRandomPlate("Lunch", thresholdOffset);
 		dinnerPlate = getRandomPlate("Dinner", thresholdOffset);
 		//alert("plateslate getSlateView breakfastPlate.id " + breakfastPlate.id + " lunchPlate.id " + lunchPlate.id + " dinnerPlate.id " + dinnerPlate.id);
-		slate = new Slate(0, thresholdOffset, nextDate, nextDate.toLocaleDateString(), nextDateWeekdayName, breakfastPlate.id, lunchPlate.id, dinnerPlate.id, null, null, null, 0);
+		// tjs 120119
+		breakfastPortions = getPlatePortions(breakfastPlate);
+		lunchPortions = getPlatePortions(lunchPlate);
+		dinnerPortions = getPlatePortions(dinnerPlate);    		
+		slate = new Slate(0, thresholdOffset, nextDate, nextDate.toLocaleDateString(), nextDateWeekdayName, breakfastPlate.id, lunchPlate.id, dinnerPlate.id, breakfastPortions, lunchPortions, dinnerPortions, 0);
+		//slate = new Slate(0, thresholdOffset, nextDate, nextDate.toLocaleDateString(), nextDateWeekdayName, breakfastPlate.id, lunchPlate.id, dinnerPlate.id, null, null, null, 0);
 		slates[thresholdOffset] = slate;
    		addToSlate(slate);
     	//alert("plateslate getSlateView (zero length) thresholdOffset " + thresholdOffset + " slate name " + slate.name + " id " + slate.id); 
+   		// tjs 120119
+		slateRandomlyGenerated = true;
    	}
     if (typeof(slates[thresholdOffset]) === 'undefined') {
         //alert("plateslate getSlateView undefined offset " + offset + " thresholdOffset " + thresholdOffset + " slates len " + slates.length + " dow " + dow);
@@ -1482,9 +1493,10 @@ function getSlateView(offset, mealName) {
     		lunchPlate = getRandomPlate("Lunch", thresholdOffset);
     		dinnerPlate = getRandomPlate("Dinner", thresholdOffset);
     		//alert("plateslate getSlateView breakfastPlate.id " + breakfastPlate.id + " lunchPlate.id " + lunchPlate.id + " dinnerPlate.id " + dinnerPlate.id);
-    		var breakfastPortions = getPlatePortions(breakfastPlate);
-    		var lunchPortions = getPlatePortions(lunchPlate);
-    		var dinnerPortions = getPlatePortions(dinnerPlate);    		
+    		// tjs 120119
+    		breakfastPortions = getPlatePortions(breakfastPlate);
+    		lunchPortions = getPlatePortions(lunchPlate);
+    		dinnerPortions = getPlatePortions(dinnerPlate);    		
     		slate = new Slate(0, thresholdOffset, nextDate, nextDate.toLocaleDateString(), nextDateWeekdayName, breakfastPlate.id, lunchPlate.id, dinnerPlate.id, breakfastPortions, lunchPortions, dinnerPortions, 0);
     		//insert the new slate...
     		slates[thresholdOffset] = slate;
@@ -1497,6 +1509,12 @@ function getSlateView(offset, mealName) {
     if (typeof(slates[thresholdOffset]) !== 'undefined') {
         //alert("plateslate getSlateView defined offset " + offset + " thresholdOffset " + thresholdOffset + " slates len " + slates.length + " dow " + dow);
     	slate = slates[thresholdOffset];
+    	
+    	// tjs 120119
+    	if (slateRandomlyGenerated) {
+    		addToFood(slate);
+    	}
+    	
     	//viewSlate("GETSLATEVIEW", slate);
         var name = slate.name;
     	html = '<ul data-role="listview" data-divider-theme="b">';
@@ -3201,14 +3219,30 @@ function refreshSlateFoodsCache(slate, typeNumber) {
 		switch (typeNumber) {
 		case 0:	// breakfast
 			plateId = slate.breakfastId;
+			// tjs 120119
+			if (typeof(slate.breakfastPortions) == 'defined') {
+				slate.breakfastPortions.length = 0;
+			} else {
+				slate.breakfastPortions = new Array();
+			}
 			break;
 			
 		case 1:	// lunch
 			plateId = slate.lunchId;
+			if (typeof(slate.lunchPortions) == 'defined') {
+				slate.lunchPortions.length = 0;
+			} else {
+				slate.lunchPortions = new Array();
+			}
 			break;
 
 		case 2:	// dinner
 			plateId = slate.dinnerId;
+			if (typeof(slate.dinnerPortions) == 'defined') {
+				slate.dinnerPortions.length = 0;
+			} else {
+				slate.dinnerPortions = new Array();
+			}
 			break;
 		}
 		plate = plates[plateId];
@@ -3219,14 +3253,17 @@ function refreshSlateFoodsCache(slate, typeNumber) {
 				//foods.push(portionId);
 				switch (typeNumber) {
 				case 0:	// breakfast
-					slate.breakfastPortions.push(portionId);
+					//if (!isPortionInCache(slate.breakfastPortions, portionId))
+						slate.breakfastPortions.push(portionId);
 					break;
 					
 				case 1:	// lunch
+					//if (!isPortionInCache(slate.lunchPortions, portionId))
 					slate.lunchPortions.push(portionId);
 					break;
 	
 				case 2:	// dinner
+					//if (!isPortionInCache(slate.dinnerPortions, portionId))
 					slate.dinnerPortions.push(portionId);
 					break;
 				}
@@ -3239,14 +3276,17 @@ function refreshSlateFoodsCache(slate, typeNumber) {
 			if (portionId > 0) {
 				switch (typeNumber) {
 				case 0:	// breakfast
+					//if (!isPortionInCache(slate.breakfastPortions, portionId))
 					slate.breakfastPortions.push(portionId);
 					break;
 					
 				case 1:	// lunch
+					//if (!isPortionInCache(slate.lunchPortions, portionId))
 					slate.lunchPortions.push(portionId);
 					break;
 	
 				case 2:	// dinner
+					//if (!isPortionInCache(slate.dinnerPortions, portionId))
 					slate.dinnerPortions.push(portionId);
 					break;
 				}
@@ -3259,14 +3299,17 @@ function refreshSlateFoodsCache(slate, typeNumber) {
 			if (portionId > 0) {
 				switch (typeNumber) {
 				case 0:	// breakfast
+					//if (!isPortionInCache(slate.breakfastPortions, portionId))
 					slate.breakfastPortions.push(portionId);
 					break;
 					
 				case 1:	// lunch
+					//if (!isPortionInCache(slate.lunchPortions, portionId))
 					slate.lunchPortions.push(portionId);
 					break;
 	
 				case 2:	// dinner
+					//if (!isPortionInCache(slate.dinnerPortions, portionId))
 					slate.dinnerPortions.push(portionId);
 					break;
 				}
@@ -3279,14 +3322,17 @@ function refreshSlateFoodsCache(slate, typeNumber) {
 			if (portionId > 0) {
 				switch (typeNumber) {
 				case 0:	// breakfast
+					//if (!isPortionInCache(slate.breakfastPortions, portionId))
 					slate.breakfastPortions.push(portionId);
 					break;
 					
 				case 1:	// lunch
+					//if (!isPortionInCache(slate.lunchPortions, portionId))
 					slate.lunchPortions.push(portionId);
 					break;
 	
 				case 2:	// dinner
+					//if (!isPortionInCache(slate.dinnerPortions, portionId))
 					slate.dinnerPortions.push(portionId);
 					break;
 				}
@@ -3299,14 +3345,17 @@ function refreshSlateFoodsCache(slate, typeNumber) {
 			if (portionId > 0) {
 				switch (typeNumber) {
 				case 0:	// breakfast
+					//if (!isPortionInCache(slate.breakfastPortions, portionId))
 					slate.breakfastPortions.push(portionId);
 					break;
 					
 				case 1:	// lunch
+					//if (!isPortionInCache(slate.lunchPortions, portionId))
 					slate.lunchPortions.push(portionId);
 					break;
 	
 				case 2:	// dinner
+					//if (!isPortionInCache(slate.dinnerPortions, portionId))
 					slate.dinnerPortions.push(portionId);
 					break;
 				}
@@ -3319,14 +3368,17 @@ function refreshSlateFoodsCache(slate, typeNumber) {
 			if (portionId > 0) {
 				switch (typeNumber) {
 				case 0:	// breakfast
+					//if (!isPortionInCache(slate.breakfastPortions, portionId))
 					slate.breakfastPortions.push(portionId);
 					break;
 					
 				case 1:	// lunch
+					//if (!isPortionInCache(slate.lunchPortions, portionId))
 					slate.lunchPortions.push(portionId);
 					break;
 	
 				case 2:	// dinner
+					//if (!isPortionInCache(slate.dinnerPortions, portionId))
 					slate.dinnerPortions.push(portionId);
 					break;
 				}
@@ -3338,14 +3390,17 @@ function refreshSlateFoodsCache(slate, typeNumber) {
 			if (portionId > 0) {
 				switch (typeNumber) {
 				case 0:	// breakfast
+					//if (!isPortionInCache(slate.breakfastPortions, portionId))
 					slate.breakfastPortions.push(portionId);
 					break;
 					
 				case 1:	// lunch
+					//if (!isPortionInCache(slate.lunchPortions, portionId))
 					slate.lunchPortions.push(portionId);
 					break;
 	
 				case 2:	// dinner
+					//if (!isPortionInCache(slate.dinnerPortions, portionId))
 					slate.dinnerPortions.push(portionId);
 					break;
 				}
@@ -3357,14 +3412,17 @@ function refreshSlateFoodsCache(slate, typeNumber) {
 			if (portionId > 0) {
 				switch (typeNumber) {
 				case 0:	// breakfast
+					//if (!isPortionInCache(slate.breakfastPortions, portionId))
 					slate.breakfastPortions.push(portionId);
 					break;
 					
 				case 1:	// lunch
+					//if (!isPortionInCache(slate.lunchPortions, portionId))
 					slate.lunchPortions.push(portionId);
 					break;
 	
 				case 2:	// dinner
+					//if (!isPortionInCache(slate.dinnerPortions, portionId))
 					slate.dinnerPortions.push(portionId);
 					break;
 				}
@@ -3376,14 +3434,17 @@ function refreshSlateFoodsCache(slate, typeNumber) {
 			if (portionId > 0) {
 				switch (typeNumber) {
 				case 0:	// breakfast
+					//if (!isPortionInCache(slate.breakfastPortions, portionId))
 					slate.breakfastPortions.push(portionId);
 					break;
 					
 				case 1:	// lunch
+					//if (!isPortionInCache(slate.lunchPortions, portionId))
 					slate.lunchPortions.push(portionId);
 					break;
 	
 				case 2:	// dinner
+					//if (!isPortionInCache(slate.dinnerPortions, portionId))
 					slate.dinnerPortions.push(portionId);
 					break;
 				}
@@ -3392,6 +3453,19 @@ function refreshSlateFoodsCache(slate, typeNumber) {
 		}
 		syncSlateFoodsCache(slate, typeNumber);
 }
+
+// tjs 120119
+/*
+function isPortionInCache(foodPortions, portionId) {
+	var torf = false;
+	for (var i = 0; i < foodPortions.length; i++) {
+		if (foodPortions[i] == portionId) {
+			torf = true;
+			break;
+		}
+	}
+	return torf;
+}*/
 
 function syncSlateFoodsCache(slate, typeNumber) {
 	var type;
