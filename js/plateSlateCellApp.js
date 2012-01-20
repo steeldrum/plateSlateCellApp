@@ -3585,8 +3585,11 @@ function hijaxSlateOfPlatesPage() {
 	var lunchPlates = results[2];
 	var dinnerPlates = results[3];
 	var len = dows.length;
-	if (len < 2)
+	// tjs 120120
+	if (len < 2) {
+		$.mobile.changePage("#insufficient-data-dial");
 		return;
+	}
 	var gridClass = 'ui-grid-';
 	if (len < 3)
 		gridClass += 'a';
@@ -3806,8 +3809,13 @@ function hijaxDinnerSlatePage() {
 	var lunchPlates = results[2]; // not used here
 	var dinnerPlates = results[3];
 	var len = dows.length;
-	if (len < 3)
+	// tjs 120120
+	if (len < 3) {
+		$.mobile.changePage("#insufficient-data-dial");
 		return;
+	}
+	//if (len < 3)
+	//	return;
 	//alert("plateSlateCellApp hijaxDinnerSlatePage len " + len);
 	// three column report
 	var gridClass = 'ui-grid-b';
@@ -3938,8 +3946,13 @@ Dairy			4c98d0		8cc7eb
 	// tjs 120116
 	var dinnerPortions = results[6];
 	var len = dows.length;
-	if (len < 2)
+	// tjs 120120
+	if (len < 2) {
+		$.mobile.changePage("#insufficient-data-dial");
 		return;
+	}
+	//if (len < 2)
+	//	return;
 	var gridClass = 'ui-grid-';
 	if (len < 3)
 		gridClass += 'b';
@@ -4206,8 +4219,13 @@ Dairy			4c98d0		8cc7eb
 	var lunchPortions = results[5];
 	var dinnerPortions = results[6];
 	var len = dows.length;
-	if (len < 2)
+	// tjs 120120
+	if (len < 2) {
+		$.mobile.changePage("#insufficient-data-dial");
 		return;
+	}
+	//if (len < 2)
+	//	return;
 	var gridClass = 'ui-grid-';
 	if (len < 3)
 		gridClass += 'a';
@@ -4510,224 +4528,6 @@ Dairy			4c98d0		8cc7eb
 	newPage.appendTo($.mobile.pageContainer);
 	// enhance and open the new page
     $.mobile.changePage(newPage);
-
- /*   
-    if (len < 3)
-		gridClass += 'b';
-	else if (len < 4)
-		gridClass += 'c';
-	else if (len < 5)
-		gridClass += 'd';
-
-	var columnClass = 'ui-block-';
-	var newPageHtml = '<div data-role="page" data-add-back-btn="true" id="dinner-portions-slate-report-page" data-title="Dinner Portions Slate">';
-	newPageHtml += '<div data-role="header" data-theme="f" data-position="fixed">';
-	newPageHtml += '<a href="index.html" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-left jqm-home">Home</a>';
-	newPageHtml += '<h1>Dinner Portions Slate</h1>';
-	newPageHtml += '</div>';
-	newPageHtml += '<div data-role="content">';
-	newPageHtml += '<div class="' + gridClass + '" style="text-align: center;">';
-	//newPageHtml += '<div class="chalk" style="' + divStyle + ';">';
-	newPageHtml += '<div class="chalk">';
-	newPageHtml += '<div style="' + divHeaderStyle + ';">';
-	newPageHtml += '<div class="' + columnClass + 'a">&nbsp;</div>';
-	// grid headers (dow)
-	for (var i = 0; i < len; i++) {
-		switch (i) {
-		case 0:
-			newPageHtml += '<div class="' + columnClass + 'b"><strong>'+ dows[i] + '</strong></div>';
-			break;
-		case 1:
-			newPageHtml += '<div class="' + columnClass + 'c"><strong>'+ dows[i] + '</strong></div>';
-			break;
-		case 2:
-			newPageHtml += '<div class="' + columnClass + 'd"><strong>'+ dows[i] + '</strong></div>';
-			break;
-		case 3:
-			newPageHtml += '<div class="' + columnClass + 'e"><strong>'+ dows[i] + '</strong></div>';
-			break;		
-		}			
-	}
-	newPageHtml += '</div>';
-	
-	newPageHtml += '<div style="' + divLabelStyle + ';">';
-	newPageHtml += '<div class="' + columnClass + 'a">Dinner</div>';
-	// grid headers (dow)
-	for (var i = 0; i < len; i++) {
-		switch (i) {
-		case 0:
-			newPageHtml += '<div class="' + columnClass + 'b"><strong>'+ dinnerPlates[i].name + '</strong></div>';
-			break;
-		case 1:
-			newPageHtml += '<div class="' + columnClass + 'c"><strong>'+ dinnerPlates[i].name + '</strong></div>';
-			break;
-		case 2:
-			newPageHtml += '<div class="' + columnClass + 'd"><strong>'+ dinnerPlates[i].name + '</strong></div>';
-			break;
-		case 3:
-			newPageHtml += '<div class="' + columnClass + 'e"><strong>'+ dinnerPlates[i].name + '</strong></div>';
-			break;		
-		}			
-	}
-	newPageHtml += '</div>';
-
-	newPageHtml += '<div style="' + divDataStyle + ';">';
-	newPageHtml += '<div class="' + columnClass + 'a"><span style="color: #dd7d22;">Grain</span></div>';
-	// grain portions
-	for (var i = 0; i < len; i++) {
-		var typePortions = dinnerPortions[i];
-		var typePortion = '&nbsp;';
-		for (j = 0; j < typePortions.length; j++) {
-			var portion = portions[typePortions[j]];
-			if (portion.type == "Grain") 
-				typePortion += portion.name + '&nbsp;';
-		}
-		switch (i) {
-		case 0:
-			newPageHtml += '<div class="' + columnClass + 'b">'+ typePortion + '</div>';
-			break;
-		case 1:
-			newPageHtml += '<div class="' + columnClass + 'c">'+ typePortion + '</div>';
-			break;
-		case 2:
-			newPageHtml += '<div class="' + columnClass + 'd">'+ typePortion + '</div>';
-			break;
-		case 3:
-			newPageHtml += '<div class="' + columnClass + 'e">'+ typePortion + '</div>';
-			break;
-		case 4:
-			break;			
-		}			
-	}
-	newPageHtml += '</div>';
-
-	newPageHtml += '<div style="' + divDataStyle + ';">';
-	newPageHtml += '<div class="' + columnClass + 'a"><span style="color: #705b9b;">Protein</span></div>';
-	// protein portions
-	for (var i = 0; i < len; i++) {
-		var typePortions = dinnerPortions[i];
-		var typePortion = '&nbsp;';
-		for (j = 0; j < typePortions.length; j++) {
-			var portion = portions[typePortions[j]];
-			if (portion.type == "Protein") 
-				typePortion += portion.name + '&nbsp;';
-		}
-		switch (i) {
-		case 0:
-			newPageHtml += '<div class="' + columnClass + 'b">'+ typePortion + '</div>';
-			break;
-		case 1:
-			newPageHtml += '<div class="' + columnClass + 'c">'+ typePortion + '</div>';
-			break;
-		case 2:
-			newPageHtml += '<div class="' + columnClass + 'd">'+ typePortion + '</div>';
-			break;
-		case 3:
-			newPageHtml += '<div class="' + columnClass + 'e">'+ typePortion + '</div>';
-			break;
-		case 4:
-			break;			
-		}			
-	}
-	newPageHtml += '</div>';
-	
-	newPageHtml += '<div style="' + divDataStyle + ';">';
-	newPageHtml += '<div class="' + columnClass + 'a"><span style="color: #00b65b;">Vegetable</span></div>';
-	// vegetable portions
-	for (var i = 0; i < len; i++) {
-		var typePortions = dinnerPortions[i];
-		var typePortion = '&nbsp;';
-		for (j = 0; j < typePortions.length; j++) {
-			var portion = portions[typePortions[j]];
-			if (portion.type == "Vegetables") 
-				typePortion += portion.name + '&nbsp;';
-		}
-		switch (i) {
-		case 0:
-			newPageHtml += '<div class="' + columnClass + 'b">'+ typePortion + '</div>';
-			break;
-		case 1:
-			newPageHtml += '<div class="' + columnClass + 'c">'+ typePortion + '</div>';
-			break;
-		case 2:
-			newPageHtml += '<div class="' + columnClass + 'd">'+ typePortion + '</div>';
-			break;
-		case 3:
-			newPageHtml += '<div class="' + columnClass + 'e">'+ typePortion + '</div>';
-			break;
-		case 4:
-			break;			
-		}			
-	}
-	newPageHtml += '</div>';
-	
-	newPageHtml += '<div style="' + divDataStyle + ';">';
-	newPageHtml += '<div class="' + columnClass + 'a"><span style="color: #dc332e;">Fruit</span></div>';
-	// fruit portions
-	for (var i = 0; i < len; i++) {
-		var typePortions = dinnerPortions[i];
-		var typePortion = '&nbsp;';
-		for (j = 0; j < typePortions.length; j++) {
-			var portion = portions[typePortions[j]];
-			if (portion.type == "Fruits") 
-				typePortion += portion.name + '&nbsp;';
-		}
-		switch (i) {
-		case 0:
-			newPageHtml += '<div class="' + columnClass + 'b">'+ typePortion + '</div>';
-			break;
-		case 1:
-			newPageHtml += '<div class="' + columnClass + 'c">'+ typePortion + '</div>';
-			break;
-		case 2:
-			newPageHtml += '<div class="' + columnClass + 'd">'+ typePortion + '</div>';
-			break;
-		case 3:
-			newPageHtml += '<div class="' + columnClass + 'e">'+ typePortion + '</div>';
-			break;
-		case 4:
-			break;			
-		}			
-	}
-	newPageHtml += '</div>';
-	
-	newPageHtml += '<div style="' + divDataStyle + ';">';
-	newPageHtml += '<div class="' + columnClass + 'a"><span style="color: #4c98d0;">Dairy</span></div>';
-	// dairy portions
-	for (var i = 0; i < len; i++) {
-		var typePortions = dinnerPortions[i];
-		var typePortion = '&nbsp;';
-		for (j = 0; j < typePortions.length; j++) {
-			var portion = portions[typePortions[j]];
-			if (portion.type == "Dairy") 
-				typePortion += portion.name + '&nbsp;';
-		}
-		switch (i) {
-		case 0:
-			newPageHtml += '<div class="' + columnClass + 'b">'+ typePortion + '</div>';
-			break;
-		case 1:
-			newPageHtml += '<div class="' + columnClass + 'c">'+ typePortion + '</div>';
-			break;
-		case 2:
-			newPageHtml += '<div class="' + columnClass + 'd">'+ typePortion + '</div>';
-			break;
-		case 3:
-			newPageHtml += '<div class="' + columnClass + 'e">'+ typePortion + '</div>';
-			break;
-		case 4:
-			break;			
-		}			
-	}
-	newPageHtml += '</div>';
-
-	newPageHtml += '</div>';
-	newPageHtml += '</div></div><script type="text/javascript"></script></div>';
-	var newPage = $(newPageHtml);
-	//add new dialog to page container
-	newPage.appendTo($.mobile.pageContainer);
-	// enhance and open the new page
-    $.mobile.changePage(newPage);*/
 }
 
 function doReport() {
@@ -5620,7 +5420,9 @@ function dropPortion(plateIndex, mealName, portionId) {
 
 function hijaxPlatesPage() {
 	if (!authenticated)	{
-		alert("You must login before using this feature!");
+		// tjs 120120
+		$.mobile.changePage("#prerequisite-dial");
+		//alert("You must login before using this feature!");
 		return;
 	}
 	//alert("plateSlateCellApp hijaxPlatesPage...");
@@ -5775,7 +5577,9 @@ function processAddPlateForm() {
 function hijaxPortionsPage() {
 	// for debug comment out this...
 	if (!authenticated)	{
-		alert("You must login before using this feature!");
+		// tjs 120120
+		$.mobile.changePage("#prerequisite-dial");
+		//alert("You must login before using this feature!");
 		return;
 	}
 	  // create page markup
