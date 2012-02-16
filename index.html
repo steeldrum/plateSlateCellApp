@@ -204,7 +204,11 @@ $LastChangedDate:: 2012-01-03 14:44:48#$: Date of last commit
 			//alert("logout");
 			//handleLogout();
 			// tjs 120209
-			if (backupDataToServer) {
+			// tjs 120216
+			//if (backupDataToServer) {
+			//alert("index logout backupDataToServer " + backupDataToServer);
+			if (backupDataToServer == true) {
+				//alert("index logout backupDataToServer " + backupDataToServer + " hyjaxLogoutDial...");
 				hyjaxLogoutDial();
 			} else {
 				doLogout();

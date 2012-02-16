@@ -3753,12 +3753,14 @@ function hyjaxLogoutDial() {
 	newDialHtml += '<div data-role="content" data-theme="c">';	
 	newDialHtml += '<form name="logoutForm"><p>Plate Slate logout...</p><p/>';
 	newDialHtml += '<p><fieldset data-role="fieldcontain"><label for="backup">Backup client data to server</label>';  
-	newDialHtml += '<input type="checkbox" name="backup" id="backup" size="30" ';  
-	if (backupDataToServer) {
-		newPageHtml += ' value="backup" checked="checked" ';
-	} else {
-		newPageHtml += ' value="" ';
-	}
+	newDialHtml += '<input type="checkbox" name="backup" id="backup" size="30" value="backup" '; 
+	// tjs 120216
+	//if (backupDataToServer) {
+	if (backupDataToServer == true) {
+		newDialHtml += ' checked="checked" ';
+	}// else {
+		//newDialHtml += ' value="" ';
+	//}
 	newDialHtml += ' data-theme="d"/></fieldset></p>';
 	newDialHtml += '</form><br/><br/><a href="#home-page" data-role="button" data-inline="true" data-rel="back" data-theme="a">Cancel</a>';		
 	newDialHtml += '<a href="javascript:doLogout();" data-role="button" data-inline="true">Logout</a><div id ="resultLog"></div>';
@@ -3780,13 +3782,37 @@ function doLogout() {
 	// tjs 120203
 	//doClientBackup();
 	// tjs 120209
-	if (backupDataToServer) {
-		var confirmBackup = document.logoutForm.backup.value;
-		if (confirmBackup == 'backup') {
-			doClientBackup();
-		}
+	// tjs 120216
+	//if (backupDataToServer) {
+	var isBackupStarted = false;
+	if (backupDataToServer == true) {
+		// tjs 120216
+		//var confirmBackup = document.logoutForm.backup.value;
+		//var confirmBackup = $('#backup').get(0).value;
+		//alert("plateSlateCellApp doLogout confirmBackup " + confirmBackup);
+		//if (confirmBackup == 'backup') {
+		//	doClientBackup();
+		//}
+    	var fieldsChecked = $("#logout-dial input:checked");
+    	var len = fieldsChecked.length;
+    	//alert("plateSlateCellApp hyjaxPreferencesPage len " + len);
+    	var field;
+    	for (var i = 0; i < len; i++) {
+    		var inputElm = fieldsChecked[i];
+    		field = inputElm.value;
+        	//alert("plateSlateCellApp hyjaxPreferencesPage pref " + pref);
+    		if (field == "backup") {
+    			isBackupStarted = true;
+    			doClientBackup();
+    		}
+    	}
 	}
-	
+	if (!isBackupStarted) {
+		if (backupDataToServer == true)
+			$("#logout-dial").dialog("close");
+		finishLogout();
+	}
+	/*
     var dataString = '';  
 	    $.ajax({  
 	        //type: "POST",  
@@ -3801,7 +3827,26 @@ function doLogout() {
     		  //alert("plateslate handleLogout success  authenticated " + authenticated);
      	  }
       }  
-    });  
+    }); 
+	    */
+}
+
+function finishLogout() {
+    var dataString = '';  
+    $.ajax({  
+        //type: "POST",  
+  type: "GET",  
+  url: "logout4app.php",  
+  data: dataString,  
+  success: function(msg) {
+      //alert("plateslate processLoginForm success  msg " + msg);
+	  if (msg == "false") {
+		  authenticated = false;
+		  loginAccountNumber = 0;
+		  //alert("plateslate handleLogout success  authenticated " + authenticated);
+ 	  }
+  }  
+}); 	
 }
 
 function hijaxPreferencesPage() {
@@ -3851,7 +3896,7 @@ function hijaxPreferencesPage() {
 	newPageHtml += '<p>NOTE: For each Plate Slate registered member just ONE device should have the following option enabled!</p>';  
 	newPageHtml += '<p>If checked, then you will be prompted for a confirmation to start the backup as you logout from the server.</p>';  
 	newPageHtml += '<label for="backupToServer" id="backupMethod_label">Backup <strong>all</strong> client data to server (from this mobile device or computer).</label>';  
-	newPageHtml += '<input type="checkbox" name="backupToServer" id="backupToServer" size="30" value="backupToServer" ';  
+	newPageHtml += '<input type="checkbox" name="backupToServer" id="backupToServer" size="30" value="bud" ';  
 	if (backupDataToServer) {
 		newPageHtml += ' checked="checked" ';
 	}
@@ -3859,7 +3904,7 @@ function hijaxPreferencesPage() {
 	newPageHtml += '<p>NOTE: For each Plate Slate registered member any device could have the following option enabled!</p>';  
 	newPageHtml += '<p>If checked, then it becomes the default confirmation setting to start the restoration of client data as you login to the server.</p>';  
 	newPageHtml += '<label for="restoreFromServer" id="restoreMethod_label">Restore <strong>all</strong> client data from server (refreshes this mobile device or computer with data backed up from another device).</label>';  
-	newPageHtml += '<input type="checkbox" name="restoreFromServer" id="restoreFromServer" size="30" value="restoreFromServer" ';  
+	newPageHtml += '<input type="checkbox" name="restoreFromServer" id="restoreFromServer" size="30" value="res" ';  
 	if (refreshDataFromServerDefault) {
 		newPageHtml += ' checked="checked" ';
 	}
@@ -3893,17 +3938,22 @@ function hijaxPreferencesPage() {
 	// tweak the new page just added into the dom
 	   $(".placeSettingPrefButton").click(function() {  
 	        // validate and process form here  
-	            plateSelectionRandom = false;
-	            plateSelectionSeasonal = false;
-	            plateSelectionShared = false;
-	            slateMealPlansForDinnerOnly = false;
+	            var plateSelectionRandom = false;
+	            var plateSelectionSeasonal = false;
+	            var plateSelectionShared = false;
+	            var slateMealPlansForDinnerOnly = false;
+	            // tjs 120216
+	            var backupDataToServer = false;
+	            var refreshDataFromServerDefault = false;
 	            // placeSettingContents
 	        	var prefsChecked = $("#placeSettingContents input:checked");
 	        	var len = prefsChecked.length;
+	        	//alert("plateSlateCellApp hyjaxPreferencesPage len " + len);
 	        	var pref;
 	        	for (var i = 0; i < len; i++) {
 	        		var inputElm = prefsChecked[i];
 	        		pref = inputElm.value;
+		        	//alert("plateSlateCellApp hyjaxPreferencesPage pref " + pref);
 	        		if (pref == "random") {
 	        			plateSelectionRandom = true;
 	        		}
@@ -3917,10 +3967,10 @@ function hijaxPreferencesPage() {
 	        			slateMealPlansForDinnerOnly = true;
 	        		}
 	        		// tjs 120209
-	        		if (pref == "backupToServer") {
+	        		if (pref == "bud") {
 	        			backupDataToServer = true;
 	        		}
-	        		if (pref == "restoreFromServer" && !backupDataToServer) {
+	        		if (pref == "res" && !backupDataToServer) {
 	        			refreshDataFromServerDefault = true;
 	        		}
 	        	}
@@ -3936,7 +3986,12 @@ function hijaxPreferencesPage() {
 	        	//alert("plateslate showPlaceSetting placeSettingPrefButton click preferences.plateSelectionRandom " + preferences.plateSelectionRandom + " preferences.plateSelectionSeasonal " + preferences.plateSelectionSeasonal + " preferences.plateSelectionShared " + preferences.plateSelectionShared);
 	        	localStorage.setItem('preferences', JSON.stringify(preferences));	// persists above cached data
 	        	//alert("plateslate showPlaceSetting placeSettingPrefButton click preferences persisted" );
-	        	
+	        	//loadPreferences();
+				setTimeout(function() {
+					//alert('hello');
+					loadPreferences();
+					},1000);							
+
 	        	//alert("index prefs plateSelectionRandom " + plateSelectionRandom + " plateSelectionSeasonal " + plateSelectionSeasonal + " plateSelectionShared " + plateSelectionShared);
 	      });  
 		//alert("plateSlateCellApp hijaxPreferencesPage dom tweaked...");
@@ -5182,6 +5237,7 @@ function getReportGridArrays(thresholdOffset, plateCount, plateHistory) {
 	return results;
 }
 
+// tjs 120216
 function loadPreferences() {
 	//alert("plateslate start loadPreferences preferences.plateSelectionRandom " + preferences.plateSelectionRandom + " preferences.plateSelectionSeasonal " + preferences.plateSelectionSeasonal + " preferences.plateSelectionShared " + preferences.plateSelectionShared);
 	var tempPreferences = JSON.parse(localStorage.getItem('preferences'));
@@ -5193,12 +5249,24 @@ function loadPreferences() {
 		preferences.plateSelectionSeasonal = tempPreferences.plateSelectionSeasonal;
 		preferences.plateSelectionShared = tempPreferences.plateSelectionShared;
 		preferences.slateMealPlansForDinnerOnly = tempPreferences.slateMealPlansForDinnerOnly;
+		//if (typeof(tempPreferences.refreshDataFromServerDefault) !== 'undefined'  && tempPreferences.refreshDataFromServerDefault != null) {
+			preferences.refreshDataFromServerDefault = tempPreferences.refreshDataFromServerDefault;
+		//} else {
+		//	preferences.refreshDataFromServerDefault = false;	
+		//}
+		//if (typeof(tempPreferences.backupDataToServer) !== 'undefined'  && tempPreferences.backupDataToServer != null) {
+			preferences.backupDataToServer = tempPreferences.backupDataToServer;
+		//} else {
+		//	preferences.backupDataToServer = false;	
+		//}
 		plateSelectionRandom = preferences.plateSelectionRandom;
 		plateSelectionSeasonal = preferences.plateSelectionSeasonal;
 		plateSelectionShared = preferences.plateSelectionShared;
 		slateMealPlansForDinnerOnly = preferences.slateMealPlansForDinnerOnly;
+		refreshDataFromServerDefault = preferences.refreshDataFromServerDefault;
+		backupDataToServer = preferences.backupDataToServer;
 	}
-	//alert("plateslate end loadPreferences preferences.plateSelectionRandom " + preferences.plateSelectionRandom + " preferences.plateSelectionSeasonal " + preferences.plateSelectionSeasonal + " preferences.plateSelectionShared " + preferences.plateSelectionShared);
+	//alert("plateslate end loadPreferences preferences.plateSelectionRandom " + preferences.plateSelectionRandom + " preferences.plateSelectionSeasonal " + preferences.plateSelectionSeasonal + " preferences.plateSelectionShared " + preferences.plateSelectionShared + " preferences.slateMealPlansForDinnerOnly " + preferences.slateMealPlansForDinnerOnly + " preferences.refreshDataFromServerDefault " + preferences.refreshDataFromServerDefault + " preferences.backupDataToServer " + preferences.backupDataToServer);
 }
 
 function openSlatePlansPage() {
@@ -6267,6 +6335,9 @@ function doClientBackup() {
 		$.get("../plateslate/clientXml2RDBMS.php", { xmlPath: path }, function(msg) {		
 			//$.post("../plateslate/clientXml2RDBMS.php", { xml: xml }, function(msg) {		
 				var len = msg.length;
+				// tjs 120216
+				$("#logout-dial").dialog("close");
+				finishLogout();
 		});
 	});
 }
