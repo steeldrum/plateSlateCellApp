@@ -194,14 +194,22 @@ $LastChangedDate:: 2012-01-03 14:44:48#$: Date of last commit
 			//});
 
 		function login() {
-			$.mobile.changePage("#login-dial");
+			// tjs 120209
+			//$.mobile.changePage("#login-dial");
+			hyjaxLoginDial();
 		}
 
 		function logout() {
 			// process button action...
 			//alert("logout");
 			//handleLogout();
-			doLogout();
+			// tjs 120209
+			if (backupDataToServer) {
+				hyjaxLogoutDial();
+			} else {
+				doLogout();
+			}
+			//doLogout();
 			authenticated = false;
 			loginAccountNumber = 0;
 			// tjs 120119
@@ -350,37 +358,6 @@ served over time.</p>
 	<script type="text/javascript">
 		/* Page specific scripts here. */
 	</script>	
-</div>
-
-<!-- Login Page/Dialog -->
-<div data-role="dialog" id="login-dial">
-	<div data-role="header">
-		<h1>Login</h1>
-	</div>
-	
-	<div data-role="content" data-theme="c">	
-			<form name="loginForm">
-				<p>
-				Plate Slate login...
-				</p>
-				<p/>
-		<p>	
-	    <label for="name">Username:</label>
-	    <input type="text" name="name" id="name" value="" placeholder="username" data-theme="d"/>
-	    </p>
-		<p>	
-	    <label for="password">Password:</label>
-	    <input type="password" name="pword" id="pword" value="" placeholder="" data-theme="d"/>
-	    </p>
-			</form>
-		<br><br>
-		<a href="#home-page" data-role="button" data-inline="true" data-rel="back" data-theme="a">Cancel</a>		
-		<a href="javascript:processLoginForm();" data-role="button" data-inline="true">Login</a>
-		<div id ="resultLog"></div>
-	</div>
-	<script>
-
-	</script>
 </div>
 
 <!-- Add Plate/Dialog -->

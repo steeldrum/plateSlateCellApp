@@ -12,6 +12,9 @@ var slates = new Array();
 var slateOffsetThreshold = 100;
 var isPlateMasterDataInserted = 0;
 
+// tjs 120216
+var portionNames = new Array();
+
 //global set as side effect for random choice of a plate
 var plateSelectionsHtml;
 var plateGrainsHtml;
@@ -32,12 +35,17 @@ var plateSelectionReport = 'slate';
 //open page with bfast|lunch|dinner pref
 //pref - setting reset would re-activitate inactibe plates
 var slateMealPlansForDinnerOnly = false;
+// tjs 120209 additional preferences
+var refreshDataFromServerDefault = false;
+var backupDataToServer = false;
 
 var preferences = {
 	plateSelectionRandom: true,
 	plateSelectionSeasonal: true,
 	plateSelectionShared: false,
-	slateMealPlansForDinnerOnly: false
+	slateMealPlansForDinnerOnly: false,
+	refreshDataFromServerDefault: false,
+	backupDataToServer: false
 };
 
 var loginInfo = {
@@ -69,6 +77,8 @@ screenReportFontColors[7] = 140;
 screenReportFontColors[8] = 160;
 screenReportFontColors[9] = 180;
 
+// tjs 120216
+var debugLoopCount = 0;
 
 var systemDB;
 
@@ -208,10 +218,13 @@ function readPortions()
 	
 	//ensure tables are populated with master data...
 	//when fully populated database then loads local cache array portions[]
-	loadPortions();
+	// tjs 120210
+	loadPortions(true, null);
 }
 
-function loadPortions()
+// tjs 120211
+//function loadPortions(isStatic)
+function loadPortions(isStatic, xml)
 {
 /*	
 	var datab;var shortName = 'plateSlate';
@@ -226,7 +239,9 @@ function loadPortions()
 	var name;
 	var description;
 	var master;
+	var isMaster;
 	var isInactive;
+	
 	systemDB.transaction(
 			function(transaction) {
 				transaction.executeSql(
@@ -237,8 +252,21 @@ function loadPortions()
 					if (result.rows.length <=0) {
 						isPortionMasterDataInserted = false;
 						//alert("plateslate loadPortions isPortionMasterDataInserted " + isPortionMasterDataInserted);
-						populatePortion();
+						// tjs 120214
+						if (isStatic == true) {
+							populatePortion();
+						} else { // wait for the transactions...
+							setTimeout(function() {
+								//alert('hello');
+								loadPortions(isStatic, xml);
+								},1250);
+						}						
 					} else {
+						// tjs 120216
+						if (isStatic == false) {
+							portionNames.length = 0;
+						}
+						
 						//alert("plateslate loadPortions result.rows.length " + result.rows.length);
 						for (var i=0; i < result.rows.length; i++) {
 							var row = result.rows.item(i);
@@ -252,13 +280,109 @@ function loadPortions()
 							//e.g. 48 test portions
 							//alert("plateslate loadPortions for id " + id + " have portion name " + portion.name);
 							portions[id] = portion;
+							if (isStatic == false) {
+								portionNames[name] = id;
+							}
 						}
 						isPortionMasterDataInserted = true;
 						//e.g. 49
-						//alert("plateslate loadPortions isPortionMasterDataInserted " + isPortionMasterDataInserted + " portions length " + portions.length);
+						//alert("plateslate loadPortions isPortionMasterDataInserted " + isPortionMasterDataInserted + " portions length " + portions.length + " isStatic " + isStatic);
 						//now that the dependent portions are stored in the database
 						//and available in the cache array, portions[], load the plates that use portions...
-						loadPlates();						
+						if (isStatic == true) {
+							// tjs 120214
+							//loadPlates(true);
+							loadPlates(true, null);
+						} else {
+							// tjs 120211
+							//alert("plateslate loadPortions xml length " + xml.length);
+							// we are doing a restore from the server...
+							// e.g. <dish type="Dinner" name="Pizza and Salad" description="BGE smoked" isMaster="0" isInactive="0">
+					         //<segments><segment type="Grain" description="Irish Bread" isMaster="1" isInactive="0">Irish Bread</segment></segments>
+								//var dishes = new Array();
+								var dish;
+								var index = 0;
+								$(xml).find('dish').each(function() {
+									var dish = $(this);
+									type = dish.attr('type');
+									name = dish.attr('name');
+									description = dish.attr('description');
+									isMaster = dish.attr('isMaster');
+									isInactive = dish.attr('isInactive');
+									var portion1 = null;
+									var portion2 = null;
+									var portion3 = null;
+									var portion4 = null;
+									var portion5 = null;
+									var portion6 = null;
+									var portion7 = null;
+									var portion8 = null;
+									var portion9 = null;
+									//if (index == 0)
+										//alert("plateslate loadPortions dish type " + type + " name " + name + " description " + description);
+									// e.g. dish type Dinner name Pizza and Salad description BGE smoked
+									//var segments = new Array();
+									//var segment;
+									//var children = dish.children();
+									//$(children).find('segment').each(function() {
+									var index2 = 0;
+									$(this).find('segment').each(function() {
+										var segmantType = $(this).attr('type');
+										//var segmentName = segment.attr('name');
+										var segmentDescription = $(this).attr('description');
+										//var segmentIsMaster = $(this).attr('isMaster');
+										//var segmentIsInactive = $(this).attr('isInactive');
+										var segmentName = $(this).text();
+										//if (index2 == 0)
+											//alert("plateslate loadPortions segment type " + segmantType + " name " + segmentName + " description " + segmentDescription);
+										//segments.push(getPortionByName(segmentName));
+										// tjs 120214
+										//var portion = getPortionByName(segmentName);
+										var portionId = portionNames[segmentName];
+										//if (index2 == 0)
+											//alert("plateslate loadPortions portionId " + portionId);
+										switch (index2++) {
+										case 0:
+											portion1 = portionId;
+											break;
+										case 1:
+											portion2 = portionId;
+											break;
+										case 2:
+											portion3 = portionId;
+											break;
+										case 3:
+											portion4 = portionId;
+											break;
+										case 4:
+											portion5 = portionId;
+											break;
+										case 5:
+											portion6 = portionId;
+											break;
+										case 6:
+											portion7 = portionId;
+											break;
+										case 7:
+											portion8 = portionId;
+											break;
+										case 8:
+											portion9 = portionId;
+											break;
+										}
+									});
+									//var plate = new Plate(index++, type, name, description, isMaster, portion1.id, portion2.id, portion3.id, portion4.id, portion5.id, portion6.id, portion7.id, portion8.id, portion9.id, isInactive);
+									var plate = new Plate(index++, type, name, description, isMaster, portion1, portion2, portion3, portion4, portion5, portion6, portion7, portion8, portion9, isInactive);
+									plates.push(plate);
+
+									//var portion = new Portion(null, type, name, description, isMaster, isInactive);
+									//morsels.push(portion);
+							         //alert("plateslate doRestoreFromBackup preference type " + preferenceType + " preferenceName " + preferenceName + " preferenceValue " + preferenceValue);
+								});
+						         //alert("plateslate loadPortions plates length " + plates.length);
+						         insertPlateMasterData(false, xml);
+						         //alert("plateslate doRestoreFromBackup plates synchronized length " + plates.length);						         
+						}
 						//alert("plateslate loadPortions plates loaded... portions length " + portions.length);
 					}
 				},
@@ -442,11 +566,17 @@ function populatePortionMasterData() {
 	i++;
 	portly = new Portion(i, "Dairy", "Yogurt", "Yogurt", 1, 0);
 	portions.push(portly);
-		
-	insertPortionMasterData();
+	
+	// tjs 120210
+	//insertPortionMasterData();
+	// tjs 120216
+	insertPortionMasterData(true, null);
 }
 
-function insertPortionMasterData() {
+// tjs 120211
+//function insertPortionMasterData(isStaticData) {
+//function insertPortionMasterData(isStatic, xml) {
+function insertPortionMasterData(isStatic, xml) {
 	var len = portions.length;
 	var i = 0;
 	//alert("plateslate insertPortionMasterData len " + len);
@@ -454,8 +584,16 @@ function insertPortionMasterData() {
 		var portion = portions[i++];
 		addToPortion(portion);
 	}
+	/*
+	if (isStaticData) {
+		portions.length = 0;	
+		loadPortions(true);
+	}
+	*/
 	portions.length = 0;
-	loadPortions();
+	//loadPortions(isStaticData);
+	//alert ("insertPortionMasterData isStatic " + isStatic + " i " + i);
+	loadPortions(isStatic, xml);
 }
 
 function addToPortion(portion) {
@@ -517,7 +655,8 @@ function getPortionByName(name) {
 	return portion;
 }
 
-function loadPlates()
+// tjs 120211
+function loadPlates(isStatic, xml)
 {
 	var isPlateMasterDataInserted = false;
 	var id;
@@ -535,6 +674,8 @@ function loadPlates()
 	var portion8;
 	var portion9;
 	var isInactive;
+	// tjs 120213
+	var plateNames = new Array();
 	systemDB.transaction(
 			function(transaction) {
 				transaction.executeSql(
@@ -545,7 +686,15 @@ function loadPlates()
 					if (result.rows.length <=0) {
 						isPlateMasterDataInserted = false;
 						//alert("plateslate loadPlates isPlateMasterDataInserted " + isPlateMasterDataInserted);
-						populatePlate();
+						// tjs 120214
+						if (isStatic == true) {
+							populatePlate();
+						} else { // wait for the transactions...
+							setTimeout(function() {
+								//alert('hello');
+								loadPlates(isStatic, xml);
+								},1250);							
+						}
 						//e.g. test data 40 plates
 					} else {
 						for (var i=0; i < result.rows.length; i++) {
@@ -569,13 +718,115 @@ function loadPlates()
 							//alert("plateslate loadPlates for id " + id + " have plate name " + plate.name);
 							//alert("plateslate loadPlates for id " + id + " have plate name " + plate.name + " type " + type + " portion1 " + portion1);
 							plates[id] = plate;
+							// tjs 120213
+							if (isStatic == false) {
+								plateNames[plate.name] = id;
+							}
 						}
 						isPlateMasterDataInserted = true;
 						// e.g. 41
-						//alert("plateslate loadPlates isPlateMasterDataInserted " + isPlateMasterDataInserted + " plates len " + plates.length);
+						//alert("plateslate loadPlates isPlateMasterDataInserted " + isPlateMasterDataInserted + " plates len " + plates.length + " isStatic " + isStatic);
 						//now that the dependent plates are stored in the database
 						//and available in the cache array, plates[], load the slates that use plates...
-						truncateSlates();
+						if (isStatic == true) {
+							truncateSlates();
+						} else {
+							// tjs 120211
+							// we are doing a restore...
+					         // at this point portions and plates are restored.  The slated plates (i.e. menu plans) are empty
+					         // but the app could be used in the empty state and new slates can be added.
+							// TBD should this be a preference?
+							// we need to restore the slates at this point...
+							/*
+							 * e.g.
+							 *  <slates>
+								<slate name="February 6, 2012" dow="Monday" id="51">
+								<plates>
+								<plate name="Puffs-n-Stuff" type="Breakfast" description="Cereal, Fruit, etc.">
+								<portions>
+								<portion type="Grain">Puffs</portion>
+								<portion type="Fruits">Berries</portion>
+								<portion type="Dairy">Milk</portion>
+								<portion type="Grain">Muffins</portion>
+								</portions>
+								</plate>
+								...
+								</plates>
+								</slate>
+								...
+								</slates>
+							*/
+							//alert ("plateSlateCellApp loadPlates plateNames length " + plateNames.length);
+							var breakfastId;
+							var lunchId;
+							var dinnerId;
+							var breakfastPortions = new Array();
+							var lunchPortions = new Array();
+							var dinnerPortions = new Array();
+							$(xml).find('slate').each(function() {
+								var slate = $(this);
+								var slateName = slate.attr('name'); // e.g. February 6, 2012
+								var slateDescription = slate.attr('dow'); // description is the day of the week, e.g. Monday
+								var slateDate = new Date(slateName);
+								slateDate.setHours(0, 0, 0, 0);
+								breakfastPortions.length = 0;
+								lunchPortions.length = 0;
+								dinnerPortions.length = 0;
+								//alert ("plateSlateCellApp loadPlates slateName " + slateName + " date " + slateDate);
+						         //alert("plateslate loadPlates name " + date + " dow " + dow);
+								$(this).find('plate').each(function() {
+									var plate = $(this);
+									var name = plate.attr('name');
+									var type = plate.attr('type');
+									//alert ("plateSlateCellApp loadPlates plateName " + name + " type " + type);
+									//var description = plate.attr('description');
+									var plateId = plateNames[name];
+									//if (0 == debugLoopCount%10) {
+									//	alert ("plateSlateCellApp loadPlates debugLoopCount " + debugLoopCount + " plateId " + plateId + " slateName " + slateName);
+										// e.g. plateSlateCellApp loadPlates debugLoopCount 0 plateId 676 slateName January 14, 2012
+									//}
+									if (type == "Breakfast") {
+										breakfastId = plateId;
+									}
+									else if (type == "Lunch") {
+										lunchId = plateId;
+									}
+									else {
+										dinnerId = plateId;
+									}
+									$(this).find('portion').each(function() {
+										var portion = $(this);
+										//var portionType = portion.attr('type');
+										var portionName = $(this).text();
+										//var portion = getPortionByName(portionName);
+										//var portionId = portion.id;
+										//if (0 == debugLoopCount%10) {
+										//	alert ("plateSlateCellApp loadPlates debugLoopCount " + debugLoopCount + " portionName " + portionName);
+											// e.g. plateSlateCellApp loadPlates debugLoopCount 0 portionName Bran Flakes
+										//}
+										var portionId = portionNames[portionName];
+										//if (0 == debugLoopCount%10) {
+										//	alert ("plateSlateCellApp loadPlates debugLoopCount " + debugLoopCount + " plate name " + name + " portionId " + portionId + " slateName " + slateName);
+										//}
+										//debugLoopCount++;
+										if (type == "Breakfast") {
+											breakfastPortions.push(portionId);
+										}
+										else if (type == "Lunch") {
+											lunchPortions.push(portionId);
+										}
+										else {
+											dinnerPortions.push(portionId);
+										}
+									}); // end loop through portions
+								}); // end finding plates in the current slate to get plateIds
+								insertRestoredSlate(slateDate, slateName, slateDescription, breakfastId, lunchId, dinnerId, breakfastPortions, lunchPortions, dinnerPortions);
+							}); // end finding slates in the xml
+							setTimeout(function() {
+								//alert('hello');
+								restoreSlatesCompleted();
+								},1250);														
+						} // end not isStatic 
 						//alert("plateslate loadPlates slates loaded... plates len " + plates.length);
 					}
 				},
@@ -586,10 +837,65 @@ function loadPlates()
 	//alert("plateslate loadPlates isPlateMasterDataInserted " + isPlateMasterDataInserted);
 }
 
+// tjs 120214
+function insertRestoredSlate(slateDate, slateName, slateDescription, breakfastId, lunchId, dinnerId, breakfastPortions, lunchPortions, dinnerPortions) {
+	var slateId = 0;
+	alert ("plateSlateCellApp insertRestoredSlate slateName " + slateName + " date " + slateDate + " breakfastId " + breakfastId + " lunchId " + lunchId + " dinnerId " + dinnerId + " bportlen " + breakfastPortions.length  + " lportlen " + lunchPortions.length + " dportlen " + dinnerPortions.length);
+	systemDB.transaction(
+			function(transaction) {
+				transaction.executeSql(
+						'INSERT INTO slate (date, name,  description, breakfast, lunch, dinner, isInactive) VALUES (?,?,?,?,?,?,?);',
+						[slateDate, slateName, slateDescription, breakfastId, lunchId, dinnerId, 0],
+						//function(){
+			//trxDone('add');
+			//alert("plateslate addToPortion added: type " + portion.type + " name " + portion.name + " desc " + portion.description + " master " + portion.master + " isInactive? " + portion.isInactive);
+						//},
+						//displayerrormessage
+			            function (transaction, result) {
+			                if (!result.rowsAffected) {
+			                    // Previous insert failed. Bail.
+			                    alert('plateSlateCellApp insertRestoredSlate No rows affected!');
+			                    return false;
+			                }
+			                //id=parseInt(row.id);
+			                slateId = parseInt(result.insertId);
+			                alert('plateSlateCellApp insertRestoredSlate slateId ' + slateId);
+			                var type = "Breakfast";
+			                var portionId;
+			                for (var i = 0; i < breakfastPortions.length; i++) {
+			                	portionId = breakfastPortions[i];
+			                	insertSlateFoodPortion(slateId, type, portionId, 1);
+			                }
+			                type = "Lunch";
+			                for (var i = 0; i < lunchPortions.length; i++) {
+			                	portionId = lunchPortions[i];
+			                	insertSlateFoodPortion(slateId, type, portionId, 1);
+			                }
+			                type = "Dinner";
+			                for (var i = 0; i < dinnerPortions.length; i++) {
+			                	portionId = dinnerPortions[i];
+			                	insertSlateFoodPortion(slateId, type, portionId, 1);
+			                }
+						} // end function trx result
+				); //end trx sql
+			}	//end function trx		
+	);	//end system trx	
+}
+
+function restoreSlatesCompleted() {
+	// tjs 120214
+    $('.loginLogout').children('.ui-btn-inner').children('.ui-btn-text').text("Logout");
+    $("#login-dial").dialog("close");
+	// the database for slates, foods is now restored, next load the cache arrays
+	truncateSlates();
+}
+
 function populatePlate() {
+	// tjs 120210
 	populatePlateMasterData();
 }
 
+//function populatePlateMasterData() {
 function populatePlateMasterData() {
 
 	var i = 1;
@@ -898,10 +1204,16 @@ function populatePlateMasterData() {
 	plates.push(dish);
 	i++;
 	
-	insertPlateMasterData();
+	// tjs 120214
+	//insertPlateMasterData();
+	insertPlateMasterData(true, null, null);
 }
 
-function insertPlateMasterData() {
+// tjs 120210
+//function insertPlateMasterData() {
+// tjs 120211
+//function insertPlateMasterData(isStatic) {
+function insertPlateMasterData(isStatic, xml) {
 	var len = plates.length;
 	var i = 0;
 	//e.g. 41
@@ -910,7 +1222,10 @@ function insertPlateMasterData() {
 		var plate = plates[i++];
 		addToPlate(plate);
 	}
-	loadPlates();
+	if (isStatic == false) {
+		plates.length = 0;
+	}
+	loadPlates(isStatic, xml);
 }
 
 function addToPlate(plate) {
@@ -1248,6 +1563,7 @@ function loadSlates()
 	//alert("plateslate loadSlates isSlateDataInserted " + isSlateDataInserted);
 }
 
+// tjs 120213 deprecated!
 function loadSlatesCallback(torf) {
 	if (torf == true) {
 		populateSlate();
@@ -2053,6 +2369,7 @@ function updateSlate(offset) {
    }
 }
 
+// tjs 120213 deprecated!!!
 function populateSlate() {
 	view = new PageView(wrap);
 }
@@ -3325,11 +3642,62 @@ function viewSlate(location, slate) {
 	alert("plateslate viewSlate " + location + " id " + slate.id + " offset " + slate.offset +  " name "  + slate.name + " bid " + slate.breakfastId + " lid " + slate.lunchId + " did " + slate.dinnerId + " blen " + blen + " llen " + llen + " dlen " + dlen);	
 }
 
+// tjs 120209
+function hyjaxLoginDial() {
+	var newDialHtml = '<div data-role="dialog" id="login-dial" data-rel="dialog"><div data-role="header">';
+	newDialHtml += '<h1>Login</h1></div>';	
+	newDialHtml += '<div data-role="content" data-theme="c"><div class="content-primary"><div id="loginContents">';	
+	newDialHtml += '<form name="loginForm"><p>Plate Slate login...</p><p/>';
+	//newDialHtml += '<p>Add New Grain Portion...</p><p/>';
+	newDialHtml += '<p><label for="name">Username:</label><input type="text" name="name" id="username" value="" placeholder="username" data-theme="d"/></p>';
+	newDialHtml += '<p><label for="password">Password:</label><input type="password" name="pword" id="pword" value="" placeholder="" data-theme="d"/></p>';
+	newDialHtml += '<p><fieldset data-role="fieldcontain"><label for="refresh">Restore client data from server backup</label>';  
+	newDialHtml += '<input type="checkbox" name="refresh" id="refresh" size="30" value="refresh" '; 
+	if (refreshDataFromServerDefault) {
+		newDialHtml += ' checked="checked" ';
+	} 
+	newDialHtml += ' data-theme="d"/></fieldset></p>';
+	newDialHtml += '</form><br/><br/><a href="#home-page" data-role="button" data-inline="true" data-rel="back" data-theme="a">Cancel</a>';		
+	newDialHtml += '<a href="javascript:processLoginForm();" data-role="button" data-inline="true">Login</a><div id ="resultLog"></div>';
+	newDialHtml += '</div></div></div><script></script></div>';
+	var newDial = $(newDialHtml);
+	//add new dialog to page container
+	newDial.appendTo($.mobile.pageContainer);
+	
+	// tweak the new dialog just added into the dom
+ 	//document.newGrainPortionForm.slateOffset.value = offset;
+	//document.newGrainPortionForm.mealName.value = mealName;
+   
+	// enhance and open the new dialog
+    $.mobile.changePage(newDial);
+}
+
 function processLoginForm() {
-	var name = document.loginForm.name.value;
-	var pword = document.loginForm.pword.value;
-	// use loginForm
+	//alert("plateslate  processLoginForm...");
+	//var name = document.loginForm.name.value;
+	//var pword = document.loginForm.pword.value;
+	var name = $('#username').get(0).value;
+	var pword = $('#pword').get(0).value;
+	// tjs 120210
+	var restoreFromBackup = false;
 	//alert("plateslate  processLoginForm name " + name + " password " + pword);
+	var optionsChecked = $("#loginContents input:checked");
+	//alert("plateslate optionsChecked...");
+	if (optionsChecked) {
+		var len = optionsChecked.length;
+		//alert("plateslate  processLoginForm len " + len);
+		var option;
+		for (var i = 0; i < len; i++) {
+			var inputElm = optionsChecked[i];
+			option = inputElm.value;
+			//alert("plateslate  processLoginForm option " + option);
+			if (option == "refresh") {
+				restoreFromBackup = true;
+			}
+		}
+	}
+	// use loginForm
+	//alert("plateslate  processLoginForm name " + name + " password " + pword + " restoreFromBackup " + restoreFromBackup);
 
     $.ajax({  
         //type: "POST",  
@@ -3357,12 +3725,17 @@ function processLoginForm() {
     	  if (accountId > 0) {
     		  authenticated = true;
     		  loginAccountNumber = accountId;
-    		  //alert("plateslate processLoginForm success  authenticated " + authenticated + " loginAccountNumber " + loginAccountNumber);
+    		  //alert("plateslate processLoginForm success  authenticated " + authenticated + " loginAccountNumber " + loginAccountNumber + " restoreFromBackup " + restoreFromBackup);
      		  //alert("plateslate processLoginForm success closing dialog...");
     		  // tjs 120119
      		  //setLogoutButton();
-    		  $('.loginLogout').children('.ui-btn-inner').children('.ui-btn-text').text("Logout");
-    		  $("#login-dial").dialog("close");
+    		  // tjs 120210
+    		  if (restoreFromBackup == true) {
+    			  doRestoreFromBackup(loginAccountNumber);
+    		  } else {
+	    		  $('.loginLogout').children('.ui-btn-inner').children('.ui-btn-text').text("Logout");
+	    		  $("#login-dial").dialog("close");
+    		  }
     	  } else {
     		  alert("Login failed!");
     	  }
@@ -3373,8 +3746,47 @@ function processLoginForm() {
     return false;  
 }
 
+//tjs 120209
+function hyjaxLogoutDial() {
+	var newDialHtml = '<div data-role="dialog" id="logout-dial" data-rel="dialog"><div data-role="header">';
+	newDialHtml += '<h1>Logout</h1></div>';	
+	newDialHtml += '<div data-role="content" data-theme="c">';	
+	newDialHtml += '<form name="logoutForm"><p>Plate Slate logout...</p><p/>';
+	newDialHtml += '<p><fieldset data-role="fieldcontain"><label for="backup">Backup client data to server</label>';  
+	newDialHtml += '<input type="checkbox" name="backup" id="backup" size="30" ';  
+	if (backupDataToServer) {
+		newPageHtml += ' value="backup" checked="checked" ';
+	} else {
+		newPageHtml += ' value="" ';
+	}
+	newDialHtml += ' data-theme="d"/></fieldset></p>';
+	newDialHtml += '</form><br/><br/><a href="#home-page" data-role="button" data-inline="true" data-rel="back" data-theme="a">Cancel</a>';		
+	newDialHtml += '<a href="javascript:doLogout();" data-role="button" data-inline="true">Logout</a><div id ="resultLog"></div>';
+	newDialHtml += '</div><script></script></div>';
+	var newDial = $(newDialHtml);
+	//add new dialog to page container
+	newDial.appendTo($.mobile.pageContainer);
+	
+	// tweak the new dialog just added into the dom
+ 	//document.newGrainPortionForm.slateOffset.value = offset;
+	//document.newGrainPortionForm.mealName.value = mealName;
+   
+	// enhance and open the new dialog
+    $.mobile.changePage(newDial);
+}
+
 function doLogout() {
 	//alert("plateslate   doLogout");
+	// tjs 120203
+	//doClientBackup();
+	// tjs 120209
+	if (backupDataToServer) {
+		var confirmBackup = document.logoutForm.backup.value;
+		if (confirmBackup == 'backup') {
+			doClientBackup();
+		}
+	}
+	
     var dataString = '';  
 	    $.ajax({  
 	        //type: "POST",  
@@ -3429,14 +3841,31 @@ function hijaxPreferencesPage() {
 		newPageHtml += ' checked="checked" ';
 	}
 	newPageHtml += '/><br />';  	      
-	newPageHtml += '<label for="shareDinnerOnly" id="shareMethod_label">Share ONLY DINNER slates with server</label>';  
+	newPageHtml += '<label for="shareDinnerOnly" id="shareDinnerMethod_label">Share ONLY DINNER slates with server</label>';  
 	newPageHtml += '<input type="checkbox" name="shareDinnerOnly" id="shareDinnerOnly" size="30" value="shareDinner" ';  
 	if (slateMealPlansForDinnerOnly) {
 		newPageHtml += ' checked="checked" ';
 	}
-	newPageHtml += '/>';  	      
+	// tjs 120209
+	newPageHtml += '/><br />';  	      
+	newPageHtml += '<p>NOTE: For each Plate Slate registered member just ONE device should have the following option enabled!</p>';  
+	newPageHtml += '<p>If checked, then you will be prompted for a confirmation to start the backup as you logout from the server.</p>';  
+	newPageHtml += '<label for="backupToServer" id="backupMethod_label">Backup <strong>all</strong> client data to server (from this mobile device or computer).</label>';  
+	newPageHtml += '<input type="checkbox" name="backupToServer" id="backupToServer" size="30" value="backupToServer" ';  
+	if (backupDataToServer) {
+		newPageHtml += ' checked="checked" ';
+	}
+	newPageHtml += '/><br />';  	      
+	newPageHtml += '<p>NOTE: For each Plate Slate registered member any device could have the following option enabled!</p>';  
+	newPageHtml += '<p>If checked, then it becomes the default confirmation setting to start the restoration of client data as you login to the server.</p>';  
+	newPageHtml += '<label for="restoreFromServer" id="restoreMethod_label">Restore <strong>all</strong> client data from server (refreshes this mobile device or computer with data backed up from another device).</label>';  
+	newPageHtml += '<input type="checkbox" name="restoreFromServer" id="restoreFromServer" size="30" value="restoreFromServer" ';  
+	if (refreshDataFromServerDefault) {
+		newPageHtml += ' checked="checked" ';
+	}
+	newPageHtml += '/>';  	      	
 	newPageHtml += '</fieldset>';  
-	newPageHtml += '<br />';  
+	newPageHtml += '<br />';
 	newPageHtml += '<input type="button" name="placeSettingPrefSubmit" class="placeSettingPrefButton" id="placeSettingPrefSubmit_btn" value="Save Preferences"';
 	if (authenticated) {
 		newPageHtml += '/>';
@@ -3487,6 +3916,13 @@ function hijaxPreferencesPage() {
 	        		if (pref == "shareDinner") {
 	        			slateMealPlansForDinnerOnly = true;
 	        		}
+	        		// tjs 120209
+	        		if (pref == "backupToServer") {
+	        			backupDataToServer = true;
+	        		}
+	        		if (pref == "restoreFromServer" && !backupDataToServer) {
+	        			refreshDataFromServerDefault = true;
+	        		}
 	        	}
 	        	
 	        	//update setting table with this info and upon refresh/reload use the persisted values to initialize the globals
@@ -3495,6 +3931,8 @@ function hijaxPreferencesPage() {
 	        	preferences.plateSelectionSeasonal = plateSelectionSeasonal;
 	        	preferences.plateSelectionShared = plateSelectionShared;
 	        	preferences.slateMealPlansForDinnerOnly = slateMealPlansForDinnerOnly;
+	        	preferences.backupDataToServer = backupDataToServer;
+	        	preferences.refreshDataFromServerDefault = refreshDataFromServerDefault;
 	        	//alert("plateslate showPlaceSetting placeSettingPrefButton click preferences.plateSelectionRandom " + preferences.plateSelectionRandom + " preferences.plateSelectionSeasonal " + preferences.plateSelectionSeasonal + " preferences.plateSelectionShared " + preferences.plateSelectionShared);
 	        	localStorage.setItem('preferences', JSON.stringify(preferences));	// persists above cached data
 	        	//alert("plateslate showPlaceSetting placeSettingPrefButton click preferences persisted" );
@@ -5797,4 +6235,350 @@ function getRelativeSlateDescription(slate) {
 	//}
 		//alert("plateSlateCellApp getRelativeSlateDescription relativeSlateDescription " + relativeSlateDescription);
 	return relativeSlateDescription;			
+}
+
+// tjs 120202
+function doClientBackup() {
+	if (!authenticated)	{
+		alert("You must login before using this feature!");
+		return;
+	}
+	//alert("plateSlateCellApp doClientBackup starting...");
+	var thresholdOffset = slateOffsetThreshold;
+	//var xml = getClientBackupXml('Client Backup', thresholdOffset);
+	var xml = getClientBackupXml(thresholdOffset);
+	//alert("plateSlateCellApp doClientBackup xml " + xml);
+	// tjs 120206
+	$.post("../plateslate/storeSlates.php", { xml: xml }, function(msg) {		
+	//$.post("../plateslate/clientXml2RDBMS.php", { xml: xml }, function(msg) {		
+		var len = msg.length;
+		// need to chop off the %20 chars that were placed onto the msg in lieu of the new line    		
+		//var crop = len - 4;
+		//var path = new String(msg);
+	//alert("plateslate click path " + path);
+		path = path.substring(0, crop);
+	//alert("plateslate click chop path " + path);
+		//var url = '../plateslate/clintXml2RDBMS.php?xml=' + path;
+		//var patt1=/slate.......xml/gi;
+		//windowName = msg.match(patt1);
+		//alert("plateslate click url " + url + " windowName " + windowName);
+		//window.open(url, windowName, 'resizable,scrollbars');
+		// tjs 120206
+		$.get("../plateslate/clientXml2RDBMS.php", { xmlPath: path }, function(msg) {		
+			//$.post("../plateslate/clientXml2RDBMS.php", { xml: xml }, function(msg) {		
+				var len = msg.length;
+		});
+	});
+}
+
+/*
+e.g. of data content (to be stored):
+<tables memberId="xxxx">
+<preferences>
+	<preference type="" name="" isInactive="">
+	(value)
+	</preference>
+	...
+</preferences>
+<portions>
+	<portion type="" description="" isMaster="" isInactive="">
+	(value i.e. the name)
+	</portion>
+</portions>
+<plates>
+	<plate name="" type="" description="" isMaster="" isInactive="">
+		<portions>
+			<portion type="">
+			(value i.e. the name)
+			</portion>
+		</portions>
+	</plate>
+	...
+</plates>
+<slates>
+	<slate name="August 27, 2011">
+		<plate name="Flakes-n-Bakes" type="Breakfast" description="Cereal, Fruit, etc.">
+			<portion type="Grain">Bran Flakes</portion>
+			<portion type="Fruits">Grapes</portion>
+			<portion type="Dairy">Milk</portion>
+			<portion type="Grain">Muffins</portion>
+		</plate>
+		<plate name="PB Sandwich" type="Lunch" description="(with fruit)">
+			<portion type="Grain">Irish Bread</portion>
+			<portion type="Protein">Legeume Products</portion>
+			<portion type="Fruits">Berries</portion>
+			<portion type="Fruits">Apples</portion>
+		</plate>
+		<plate name="Ham Steak-w-RiceVeg" type="Dinner" description="">
+			<portion type="Protein">Pork Products</portion>
+			<portion type="Grain">Rice</portion>
+			<portion type="Vegetables">Brussel Sprouts</portion>
+		</plate>
+	</slate>
+	...
+</slates>
+</tables>
+*/
+//function getClientBackupXml(title, thresholdOffset) {
+function getClientBackupXml(offset) {
+	//alert("plateSlateCellApp getClientBackupXml offset " + offset);
+	//alert("plateSlateCellApp getClientBackupXml offset " + offset + " accountId" + loginInfo.id);
+	var xml = '<tables accountId="' + loginInfo.id + '" userName="' + loginInfo.userName + '" firstName="' + loginInfo.firstName + '" lastName="' + loginInfo.lastName + '">';
+	// handle preferences...
+	xml += '<preferences>';
+	xml += '<preference type="user" name="share">';
+	xml += plateSelectionShared;
+	xml += '</preference>';
+	xml += '</preferences>';
+	//alert("plateSlateCellApp getClientBackupXml xml (preferences milestone) " + xml);
+
+	// handle portions (i.e. morsels or segments on the USDA model plate)...
+	xml += '<morsels>';
+	xml += getMorselsXml();
+	xml += '</morsels>';
+	//alert("plateSlateCellApp getClientBackupXml xml (portions milestone) " + xml);
+
+	// handle plates (more generally dishes)...
+	xml += '<dishes>';
+	xml += getDishesXml();
+	xml += '</dishes>';
+	//alert("plateSlateCellApp getClientBackupXml xml (plates milestone) " + xml);
+
+	//use cache to create xml to be sent to server for the report.
+	var cursor = offset;
+	//var backwardsCursor = offset - 1;
+	var slate;
+	var count = 0;
+	// just backup two weeks...
+	var maxCount = 14;
+	// TODO eliminate some attributes here:
+	//xml += '<slates accountId="' + loginInfo.id + '" userName="' + loginInfo.userName + '" firstName="' + loginInfo.firstName + '" lastName="' + loginInfo.lastName + '" share="' + plateSelectionShared + '">';
+	xml += '<slates>';
+	while (count < maxCount) {
+		//alert("plateslate getReportXml count " + count + " cursor " + cursor + " slate name " + slates[cursor].name);
+		//alert("plateslate getReportXml forwards count " + count + " cursor " + cursor);
+	    if (typeof(slates[cursor]) === 'undefined') {
+	    	break;
+	    } else {
+	    	slate = slates[cursor++];
+	    	count++;
+	    	xml += getXml(slate);
+			//alert("plateslate createReport next cursor " + cursor + " count " + count + " today onwards xml " + xml);
+		}		
+	}
+	cursor = offset - 1;
+	while (count < maxCount) {
+		//alert("plateslate createReport count " + count + " cursor " + cursor + " slate name " + slates[cursor].name);
+		//alert("plateslate createReport backwards count " + count + " cursor " + cursor);
+	    if (typeof(slates[cursor]) === 'undefined') {
+	    	break;
+	    } else {
+	    	slate = slates[cursor--];
+	    	count++;
+	    	xml += getXml(slate);
+			//alert("plateslate createReport next cursor " + cursor + " count " + count + " today backwards xml " + xml);
+		}		
+	}
+	
+	xml += '</slates></tables>';
+	//xml += '</tables>';
+	return xml;	
+}
+
+function getMorselsXml() {
+	//alert("plateslate getXml slate name " + slate.name + " id " + slate.id + " breakfast id " + slate.breakfastId);
+	var xml = '';
+	var portionsLen = portions.length;
+	var portion;
+	//alert("index getXml portionsLen " + portionsLen);
+	for (var i = 0; i < portionsLen; i++) {
+		//alert("plateslate getXml portion id " + portionId + " name " + portions[portionId].name + " type " + portions[portionId].type);
+		//portion = portions[i];
+		//xml += '<portion type="' + portion.type + '" description="' + portion.description + '" isMaster="' + portion.master + '" isInactive="' + portion.isInactive + '">' + portion.name + '</portion>';
+		xml += getSegmentXml(i, true);
+	}
+	return xml;
+}
+
+function getSegmentXml(portionId, torf) {
+	var xml;
+	if (typeof(portions[portionId]) === 'undefined') {
+		xml = '';
+		/*
+		if (torf)
+			xml = '<morsel />';
+		else
+			xml = '<segment />';
+		*/
+    } else {
+    	var portion = portions[portionId];
+    	if (torf)
+    		xml = '<morsel type="' + portion.type + '" description="' + portion.description + '" isMaster="' + portion.master + '" isInactive="' + portion.isInactive + '">' + portion.name + '</morsel>';
+    	else
+    		xml = '<segment type="' + portion.type + '" description="' + portion.description + '" isMaster="' + portion.master + '" isInactive="' + portion.isInactive + '">' + portion.name + '</segment>';
+    }
+	return xml;
+}
+
+function getDishesXml() {
+	//alert("plateslate getXml slate name " + slate.name + " id " + slate.id + " breakfast id " + slate.breakfastId);
+	var xml = '';
+	var platesLen = plates.length;
+	var plate;
+	var portionId;
+	//alert("index getXml portionsLen " + portionsLen);
+	for (var i = 0; i < platesLen; i++) {
+		//alert("plateslate getXml portion id " + portionId + " name " + portions[portionId].name + " type " + portions[portionId].type);
+		if (typeof(plates[i]) === 'undefined') {
+	    	continue;
+	    } else {
+			plate = plates[i];
+			//xml += '<dish type="' + plate.type + '" name="' + plate.name + '" description="' + plate.description + '" isMaster="' + plate.master + '" isInactive="' + plate.isInactive + '">';
+			xml += '<dish type="' + plate.type + '" name="' + plate.name + '" description="' + plate.description + '" isMaster="' + plate.master + '" isInactive="' + plate.isInactive + '"><segments>';
+			portionId = plate.portion1;
+			if (portionId != null)
+				xml += getSegmentXml(portionId, false);
+			portionId = plate.portion2;
+			if (portionId != null)
+				xml += getSegmentXml(portionId, false);
+			portionId = plate.portion3;
+			if (portionId != null)
+				xml += getSegmentXml(portionId, false);
+			portionId = plate.portion4;
+			if (portionId != null)
+				xml += getSegmentXml(portionId, false);
+			portionId = plate.portion5;
+			if (portionId != null)
+				xml += getSegmentXml(portionId, false);
+			portionId = plate.portion6;
+			if (portionId != null)
+				xml += getSegmentXml(portionId, false);
+			portionId = plate.portion7;
+			if (portionId != null)
+				xml += getSegmentXml(portionId, false);
+			portionId = plate.portion8;
+			if (portionId != null)
+				xml += getSegmentXml(portionId, false);
+			portionId = plate.portion9;
+			if (portionId != null)
+				xml += getSegmentXml(portionId, false);
+			//xml += '</dish>';
+			xml += '</segments></dish>';
+	    }
+	}
+	return xml;
+}
+
+function doRestoreFromBackup(accountId) {
+    //alert("plateslate doRestoreFromBackup accountId " + accountId);
+	var url = '../plateslate/getServerDataAsXML.php?account=' + accountId;
+	//var url = 'http://localhost/~thomassoucy/plateslate/getServerDataAsXML.php?account=' + accountId;
+    $.ajax({  
+        //type: "POST",  
+      type: "GET",
+      //url: "../plateslate/getServerDataAsXML.php",
+      //data: { "account": accountId },  
+      url: url,
+     dataType: ($.browser.msie) ? "text" : "xml",
+      success: function(data) {
+          //alert("plateslate doRestoreFromBackup success...");
+          var xml;
+          if (typeof data == "string") {
+            xml = new ActiveXObject("Microsoft.XMLDOM");
+            xml.async = false;
+            xml.loadXML(data);
+          } else {
+            xml = data;
+          }
+
+          // e.g. <preferences><preference type="user" name="share">true</preference></preferences>
+			var preferences = new Array();
+			//var sql;
+			var preference;
+			$(xml).find('preference').each(function() {
+				var preference = $(this);
+				var preferenceType = preference.attr('type');
+				var preferenceName = preference.attr('name');
+				var preferenceValue = preference.text();
+		         //alert("plateslate doRestoreFromBackup preference type " + preferenceType + " preferenceName " + preferenceName + " preferenceValue " + preferenceValue);
+			});
+
+			// delete all rows from all tables...
+			systemDB.transaction(
+					function(transaction) {
+						transaction.executeSql(
+						'DELETE from food', null,						
+						function (transaction, result) {
+							//alert("plateslate loadPlates result.rows.length " + result.rows.length);
+						});
+					});
+			systemDB.transaction(
+					function(transaction) {
+						transaction.executeSql(
+						'DELETE from slate', null,						
+						function (transaction, result) {
+							//alert("plateslate loadPlates result.rows.length " + result.rows.length);
+						});
+					});
+			systemDB.transaction(
+					function(transaction) {
+						transaction.executeSql(
+						'DELETE from plate', null,						
+						function (transaction, result) {
+							//alert("plateslate loadPlates result.rows.length " + result.rows.length);
+						});
+					});
+			systemDB.transaction(
+					function(transaction) {
+						transaction.executeSql(
+						'DELETE from portion', null,						
+						function (transaction, result) {
+							//alert("plateslate loadPlates result.rows.length " + result.rows.length);
+						});
+					});
+
+			// the cache arrays also need to be truncated...
+			slates.length = 0;
+			plates.length = 0;
+			portions.length = 0;
+			
+			// now repopulate the portions
+			var type;
+			var description;
+			var isMaster;
+			var isInactive;
+			var name;
+			// e.g. <morsel type="Fruits" description="mango" isMaster="0" isInactive="0">mango</morsel>
+			//var morsels = new Array();
+			var morsel;
+			var index = 0;
+			$(xml).find('morsel').each(function() {
+				var morsel = $(this);
+				type = morsel.attr('type');
+				description = morsel.attr('description');
+				isMaster = morsel.attr('isMaster');
+				isInactive = morsel.attr('isInactive');
+				name = morsel.text();
+				var portion = new Portion(index++, type, name, description, isMaster, isInactive);
+				//morsels.push(portion);
+				portions.push(portion);
+		         //alert("plateslate doRestoreFromBackup preference type " + preferenceType + " preferenceName " + preferenceName + " preferenceValue " + preferenceValue);
+			});
+	         //alert("plateslate doRestoreFromBackup morsels length " + morsels.length);
+	         //alert("plateslate doRestoreFromBackup portions length " + portions.length);
+	         // tjs 120211
+	         //insertPortionMasterData(false);
+	         //insertPortionMasterData(false, xml);
+			// tjs 120216
+			//portionNames.length = 0;
+	         insertPortionMasterData(false, xml);
+	         // here we have the database loaded with portions and the array cache is properly synchronized
+	         //alert("plateslate doRestoreFromBackup portions synchronized length " + portions.length);
+      },
+      error: function(xmlReq, status, errorMsg) {
+	         alert("plateslate doRestoreFromBackup status " + status + " errorMsg " + errorMsg);
+	         // e.g. msg = plateslate doRestoreFromBackup msg parsererror
+      }
+    });  
+    return false;	
 }
