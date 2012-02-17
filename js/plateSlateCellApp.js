@@ -760,18 +760,23 @@ function loadPlates(isStatic, xml)
 							var breakfastId;
 							var lunchId;
 							var dinnerId;
+							/*
 							var breakfastPortions = new Array();
 							var lunchPortions = new Array();
 							var dinnerPortions = new Array();
+							*/
+							var breakfastPortions;
+							var lunchPortions;
+							var dinnerPortions;
 							$(xml).find('slate').each(function() {
 								var slate = $(this);
 								var slateName = slate.attr('name'); // e.g. February 6, 2012
 								var slateDescription = slate.attr('dow'); // description is the day of the week, e.g. Monday
 								var slateDate = new Date(slateName);
 								slateDate.setHours(0, 0, 0, 0);
-								breakfastPortions.length = 0;
-								lunchPortions.length = 0;
-								dinnerPortions.length = 0;
+								//breakfastPortions.length = 0;
+								//lunchPortions.length = 0;
+								//dinnerPortions.length = 0;
 								//alert ("plateSlateCellApp loadPlates slateName " + slateName + " date " + slateDate);
 						         //alert("plateslate loadPlates name " + date + " dow " + dow);
 								$(this).find('plate').each(function() {
@@ -787,15 +792,19 @@ function loadPlates(isStatic, xml)
 									//}
 									if (type == "Breakfast") {
 										breakfastId = plateId;
+										breakfastPortions = new Array();
 									}
 									else if (type == "Lunch") {
 										lunchId = plateId;
+										lunchPortions = new Array();
 									}
 									// tjs 120217
 									//else {
 									else if (type == "Dinner") {
 										dinnerId = plateId;
+										dinnerPortions = new Array();
 									}
+									
 									$(this).find('portion').each(function() {
 										var portion = $(this);
 										//var portionType = portion.attr('type');
