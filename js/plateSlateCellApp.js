@@ -6321,8 +6321,8 @@ function doClientBackup() {
 	//$.post("../plateslate/clientXml2RDBMS.php", { xml: xml }, function(msg) {		
 		var len = msg.length;
 		// need to chop off the %20 chars that were placed onto the msg in lieu of the new line    		
-		//var crop = len - 4;
-		//var path = new String(msg);
+		var crop = len - 4;
+		var path = new String(msg);
 	//alert("plateslate click path " + path);
 		path = path.substring(0, crop);
 	//alert("plateslate click chop path " + path);
