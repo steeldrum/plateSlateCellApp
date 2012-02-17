@@ -817,7 +817,8 @@ function loadPlates(isStatic, xml)
 										else if (type == "Lunch") {
 											lunchPortions.push(portionId);
 										}
-										else {
+										//else {
+										else if (type == "Dinner") {
 											dinnerPortions.push(portionId);
 										}
 									}); // end loop through portions
