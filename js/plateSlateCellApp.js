@@ -791,7 +791,9 @@ function loadPlates(isStatic, xml)
 									else if (type == "Lunch") {
 										lunchId = plateId;
 									}
-									else {
+									// tjs 120217
+									//else {
+									else if (type == "Dinner") {
 										dinnerId = plateId;
 									}
 									$(this).find('portion').each(function() {
