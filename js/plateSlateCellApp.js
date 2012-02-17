@@ -840,7 +840,7 @@ function loadPlates(isStatic, xml)
 // tjs 120214
 function insertRestoredSlate(slateDate, slateName, slateDescription, breakfastId, lunchId, dinnerId, breakfastPortions, lunchPortions, dinnerPortions) {
 	var slateId = 0;
-	alert ("plateSlateCellApp insertRestoredSlate slateName " + slateName + " date " + slateDate + " breakfastId " + breakfastId + " lunchId " + lunchId + " dinnerId " + dinnerId + " bportlen " + breakfastPortions.length  + " lportlen " + lunchPortions.length + " dportlen " + dinnerPortions.length);
+	//alert ("plateSlateCellApp insertRestoredSlate slateName " + slateName + " date " + slateDate + " breakfastId " + breakfastId + " lunchId " + lunchId + " dinnerId " + dinnerId + " bportlen " + breakfastPortions.length  + " lportlen " + lunchPortions.length + " dportlen " + dinnerPortions.length);
 	systemDB.transaction(
 			function(transaction) {
 				transaction.executeSql(
@@ -859,7 +859,7 @@ function insertRestoredSlate(slateDate, slateName, slateDescription, breakfastId
 			                }
 			                //id=parseInt(row.id);
 			                slateId = parseInt(result.insertId);
-			                alert('plateSlateCellApp insertRestoredSlate slateId ' + slateId);
+			                //alert('plateSlateCellApp insertRestoredSlate slateId ' + slateId);
 			                var type = "Breakfast";
 			                var portionId;
 			                for (var i = 0; i < breakfastPortions.length; i++) {
