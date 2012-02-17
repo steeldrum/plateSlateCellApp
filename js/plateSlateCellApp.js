@@ -828,7 +828,9 @@ function loadPlates(isStatic, xml)
 							setTimeout(function() {
 								//alert('hello');
 								restoreSlatesCompleted();
-								},1250);														
+								// tjs 120217
+							//},1250);														
+								},2250);														
 						} // end not isStatic 
 						//alert("plateslate loadPlates slates loaded... plates len " + plates.length);
 					}
