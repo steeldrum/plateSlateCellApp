@@ -152,47 +152,6 @@ $LastChangedDate:: 2012-01-03 14:44:48#$: Date of last commit
 			});
 			});
 
-		// tjs 111228
-		// tjs 120117
-		/*
-			//$('#grain-portion-dial').live("pageinit", function(){
-			$('#breakfast-page').live("pageinit", function(){
-				if (grainPortionSelectListHtml == null)				
-					derivePortionSelectionLists(true);					
-			});
-			$('#lunch-page').live("pageinit", function(){
-				if (grainPortionSelectListHtml == null)				
-					derivePortionSelectionLists(true);					
-			});
-			$('#dinner-page').live("pageinit", function(){
-				if (grainPortionSelectListHtml == null)				
-					derivePortionSelectionLists(true);					
-			});*/
-
-			//tjs 120107
-			/*
-			$('#breakfast-page').live("pagehide", function(event, ui){
-			      var page = jQuery(event.target);
-
-			      //if(page.attr('data-cache') == 'never'){
-			        page.remove();
-			      //};
-			});
-			$('#lunch-page').live("pagehide", function(event, ui){
-			      var page = jQuery(event.target);
-			        page.remove();
-			});
-			$('#dinner-page').live("pagehide", function(event, ui){
-			      var page = jQuery(event.target);
-			        page.remove();
-			});
-			*/
-			
-			// tjs 111230
-			//$('#preferences-page').live("pageinit", function(){
-			//	showPlaceSetting();					
-			//});
-
 		function login() {
 			// tjs 120209
 			//$.mobile.changePage("#login-dial");
@@ -202,38 +161,13 @@ $LastChangedDate:: 2012-01-03 14:44:48#$: Date of last commit
 		function logout() {
 			// process button action...
 			//alert("logout");
-			//handleLogout();
-			// tjs 120209
-			// tjs 120216
-			//if (backupDataToServer) {
-			//alert("index logout backupDataToServer " + backupDataToServer);
 			if (backupDataToServer == true) {
 				//alert("index logout backupDataToServer " + backupDataToServer + " hyjaxLogoutDial...");
 				hyjaxLogoutDial();
 			} else {
 				doLogout();
 			}
-			//doLogout();
-			// tjs 120217
-			//authenticated = false;
-			//loginAccountNumber = 0;
-			// tjs 120119
-			//setLoginButton();
 		}
-		
-		// tjs 120119
-		/*
-		function setLoginButton() {
-			var buttonHtml = '<input type="button" value="Login" onclick="javascript:login();" data-icon="arrow-l" class="ui-btn-right"/>';
-			$('#loginLogoutButton').empty();
-			$('#loginLogoutButton').append($(buttonHtml));
-		}
-
-		function setLogoutButton() {
-			var buttonHtml = '<input type="button" value="Logout" onclick="javascript:logout();" data-icon="arrow-l" class="ui-btn-right"/>';
-			$('#loginLogoutButton').empty();
-			$('#loginLogoutButton').append($(buttonHtml));
-		}*/
 
 	</script>
 	<script src="js/jquery.mobile-1.0.min.js"></script>
@@ -261,13 +195,11 @@ $LastChangedDate:: 2012-01-03 14:44:48#$: Date of last commit
 			  </a>
 			</li>
 			<li>
-			  <!-- a href="#plates-page" -->
 			  <a href="javascript:hijaxPlatesPage();">
 				<h3>Plates</h3>
 			  </a>
 			</li>
 			<li>
-			  <!-- a href="#portions-page" -->
 			  <a href="javascript:hijaxPortionsPage();">
 				<h3>Portions</h3>
 			  </a>
@@ -275,6 +207,11 @@ $LastChangedDate:: 2012-01-03 14:44:48#$: Date of last commit
 			<li>
 			  <a href="javascript:hijaxReportPage();">
 				<h3>Report</h3>
+			  </a>
+			</li>	
+			<li>
+			  <a href="javascript:hijaxImportPage();">
+				<h3>Import</h3>
 			  </a>
 			</li>	
 			<li>

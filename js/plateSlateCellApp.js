@@ -80,6 +80,9 @@ screenReportFontColors[9] = 180;
 // tjs 120216
 var debugLoopCount = 0;
 
+// tjs 120221
+var importProfile = false;
+
 var systemDB;
 
 function Portion(id, type, name, description, master, isInactive) {
@@ -897,9 +900,15 @@ function insertRestoredSlate(slateDate, slateName, slateDescription, breakfastId
 }
 
 function restoreSlatesCompleted() {
+	// tjs 120221
+	if (importProfile == true) {
+	    //$("#login-dial").dialog("close");
+		$.mobile.changePage('#home-page');
+	} else {
 	// tjs 120214
-    $('.loginLogout').children('.ui-btn-inner').children('.ui-btn-text').text("Logout");
-    $("#login-dial").dialog("close");
+		$('.loginLogout').children('.ui-btn-inner').children('.ui-btn-text').text("Logout");
+		$("#login-dial").dialog("close");
+	}
 	// the database for slates, foods is now restored, next load the cache arrays
 	truncateSlates();
 }
@@ -3745,7 +3754,9 @@ function processLoginForm() {
      		  //setLogoutButton();
     		  // tjs 120210
     		  if (restoreFromBackup == true) {
-    			  doRestoreFromBackup(loginAccountNumber);
+    			  // tjs 120221
+    			  //doRestoreFromBackup(loginAccountNumber);
+    			  doRestoreFromBackup(loginAccountNumber, null);
     		  } else {
 	    		  $('.loginLogout').children('.ui-btn-inner').children('.ui-btn-text').text("Logout");
 	    		  $("#login-dial").dialog("close");
@@ -5251,6 +5262,80 @@ function getReportGridArrays(thresholdOffset, plateCount, plateHistory) {
 	return results;
 }
 
+// tjs 120221
+//'aahfInfo','africanAmerican','american','brazilian','cajun','caribbean','chinese','elderly','french','german','greek',
+//'indian','irish','italian','japanese','jewish','mexican','middleEast','multinational','nativeAmerican','polish',
+//'portuguese','russian','southern','thai','texmex','vegetarian','other'
+function deriveProfileSelectionList() {
+	var profileSelectListHtml = '<select name="profileSelection" class="Profile"><optgroup label="Profile">';
+	profileSelectListHtml += '<option value ="aahfInfo">AAH Food!</option>';
+	profileSelectListHtml += '<option value ="africanAmerican">African American</option>';
+	profileSelectListHtml += '<option value ="american">American</option>';
+	profileSelectListHtml += '<option value ="brazilian">Brazilian</option>';
+	profileSelectListHtml += '<option value ="cajun">Cajun</option>';
+	profileSelectListHtml += '<option value ="caribbean">Caribbean</option>';
+	profileSelectListHtml += '<option value ="chinese">Chinese</option>';
+	profileSelectListHtml += '<option value ="elderly">Elderly</option>';
+	profileSelectListHtml += '<option value ="french">French</option>';
+	profileSelectListHtml += '<option value ="german">German</option>';
+	profileSelectListHtml += '<option value ="greek">Greek</option>';
+	profileSelectListHtml += '<option value ="indian">Indian</option>';
+	profileSelectListHtml += '<option value ="irish">Irish</option>';
+	profileSelectListHtml += '<option value ="italian">Italian</option>';
+	profileSelectListHtml += '<option value ="japanese">Japanese</option>';
+	profileSelectListHtml += '<option value ="jewish">Jewish</option>';
+	profileSelectListHtml += '<option value ="mexican">Mexican</option>';
+	profileSelectListHtml += '<option value ="middleEast">Middle East</option>';
+	profileSelectListHtml += '<option value ="multinational">Multinational</option>';
+	profileSelectListHtml += '<option value ="nativeAmerican">Native American</option>';
+	profileSelectListHtml += '<option value ="polish">Polish</option>';
+	profileSelectListHtml += '<option value ="portuguese">Portuguese</option>';
+	profileSelectListHtml += '<option value ="russian">Russian</option>';
+	profileSelectListHtml += '<option value ="southern">Southern</option>';
+	profileSelectListHtml += '<option value ="thai">Thai</option>';
+	profileSelectListHtml += '<option value ="texmex">Texmex</option>';
+	profileSelectListHtml += '<option value ="vegetarian">Vegetarian</option>';
+	profileSelectListHtml += '<option value ="other">Other</option>';
+	profileSelectListHtml += '</optgroup></select>';
+	//alert("plateSlateCellApp deriveProfileSelectionList profileSelectListHtml " + profileSelectListHtml);
+	return profileSelectListHtml;
+}
+
+function hijaxImportPage() {
+	var profileSelections = deriveProfileSelectionList();
+	var newPageHtml = '<div data-role="page" data-add-back-btn="true" id="import-page" data-title="Import">';
+	//newPageHtml += '<div data-role="header"><h1>Meal Plan Report</h1></div>';
+	newPageHtml += '<div data-role="header" data-theme="f" data-position="fixed">';
+	newPageHtml += '<a href="index.html" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-left jqm-home">Home</a>';
+	newPageHtml += '<h1>Imports</h1>';
+	newPageHtml += '</div>';
+	newPageHtml += '<div data-role="content"><form name="importForm">';
+	newPageHtml += '<p style="color: red;">NOTICE: importing a profile shared by another member will clear your slate!</p>';
+	newPageHtml += '<p><label for="profile">Profile:</label>' + profileSelections + '</p>';
+	newPageHtml += '<p>The profile that you select replaces your plates and the portions that the plates consist of!</p>';
+	newPageHtml += '<p>When the import is completed, your slate will be clean but you can immediately use the Slates choice';
+	newPageHtml += ' and create plans for meals based upon the newly imported profile!</p>';
+	newPageHtml += '<p>If the newly imported profile suits your needs use it as long as you care to.';
+	newPageHtml += ' Feel free to alter the plate selections or otherwise tweak the imported profile.</p>';
+	newPageHtml += '<p>Note: use <a href:="http://www.plateslate.com">PlateSlate</a> to learn more about profiles or to reach the profile creator';
+	newPageHtml += ' (some profile donors are willing to share receipes or have published them.)</p>';
+	newPageHtml += '</form>';
+	newPageHtml += '<a href="javascript:processImportProfileForm();" data-role="button" data-inline="true">Import Profile</a>';
+	newPageHtml += '</div><script type="text/javascript"></script></div>';	
+	var newPage = $(newPageHtml);
+	//add new dialog to page container
+	newPage.appendTo($.mobile.pageContainer);
+	// enhance and open the new page
+    $.mobile.changePage(newPage);
+}
+
+function processImportProfileForm() {
+	var profileSelection;
+	profileSelection = document.importForm.profileSelection;
+	var optionValue = profileSelection.options[profileSelection.selectedIndex].value;
+	doRestoreFromBackup(loginAccountNumber, optionValue);
+}
+
 // tjs 120216
 function loadPreferences() {
 	//alert("plateslate start loadPreferences preferences.plateSelectionRandom " + preferences.plateSelectionRandom + " preferences.plateSelectionSeasonal " + preferences.plateSelectionSeasonal + " preferences.plateSelectionShared " + preferences.plateSelectionShared);
@@ -5450,33 +5535,43 @@ function processAddNewPortionForm(portionType) {
 	//alert("plateslate processAddNewPortionForm portionType " + portionType);
 	var offset;
 	var mealName;
+	// tjs 120223
+	var isSlate;
 	var portionSelection;
 	if (portionType == "grain") {
 		offset = Number(document.newGrainPortionForm.slateOffset.value);
 		mealName = document.newGrainPortionForm.mealName.value;
+		// tjs 120223
+		isSlate = document.newGrainPortionForm.isSlate.value;
 		portionSelection = document.newGrainPortionForm.portionSelection;
 	} else if (portionType == "protein") {
 		offset = Number(document.newProteinPortionForm.slateOffset.value);
 		mealName = document.newProteinPortionForm.mealName.value;
+		isSlate = document.newProteinPortionForm.isSlate.value;
 		portionSelection = document.newProteinPortionForm.portionSelection;
 	} else if (portionType == "vegetables") {
 		offset = Number(document.newVegetablesPortionForm.slateOffset.value);
 		mealName = document.newVegetablesPortionForm.mealName.value;
+		isSlate = document.newVegetablesPortionForm.isSlate.value;
 		portionSelection = document.newVegetablesPortionForm.portionSelection;
 	} else if (portionType == "fruits") {
 		offset = Number(document.newFruitsPortionForm.slateOffset.value);
 		mealName = document.newFruitsPortionForm.mealName.value;
+		isSlate = document.newFruitsPortionForm.isSlate.value;
 		portionSelection = document.newFruitsPortionForm.portionSelection;
 	} else if (portionType == "dairy") {
 		offset = Number(document.newDairyPortionForm.slateOffset.value);
 		mealName = document.newDairyPortionForm.mealName.value;
+		isSlate = document.newDairyPortionForm.isSlate.value;
 		portionSelection = document.newDairyPortionForm.portionSelection;
 	}
 		
 	var optionValue = portionSelection.options[portionSelection.selectedIndex].value;
 	//alert("plateslate processAddNewPortionForm offset " + offset + " mealName " + mealName + " optionValue " + optionValue);
 
-	if (offset < 1000) { // i.e. if working with slate edits of portions
+	// tjs 120223
+	//if (offset < 1000) { // i.e. if working with slate edits of portions
+	if (isSlate > 0) { // i.e. if working with slate edits of portions
 		var thresholdOffset = offset + slateOffsetThreshold;
 		//alert("plateslate processAddNewPortionForm thresholdOffset " + thresholdOffset);
 		// e.g. offset 0 means 100
@@ -5486,7 +5581,8 @@ function processAddNewPortionForm(portionType) {
 		updateFood(slateId, mealName, optionValue, 0, 0);
 	} else { // i.e. working with plate edits of portions
 		//alert("plateslate processAddNewPortionForm offset " + offset + " mealName " + mealName + " optionValue " + optionValue);
-		var index = offset - 1000;
+		//var index = offset - 1000;
+		var index = offset;
 		var dish = plates[index];
 		var existingPortions = new Array();
 		if (dish.portion1 != null && dish.portion1 > 0)
@@ -5557,7 +5653,8 @@ function processAddNewPortionForm(portionType) {
 	var portionName;
 	var newPortionHtml;
 	var partialNewPortionHtml;
-	if (offset < 1000) {
+	//if (offset < 1000) {
+	if (isSlate > 0) {
 		chalkColor = makeColor(color);
 		portionName = portions[optionValue].name;
 		partialNewPortionHtml = '<a href="javascript:dropPortion(0 , ' + "'" + mealName + "'" + ', ' + optionValue + ');" data-role="button" data-icon="delete" data-iconpos="right" data-theme="a"><span class="chalk" style="color:' + chalkColor + '">' + portionName + '</span></a>';
@@ -5567,7 +5664,8 @@ function processAddNewPortionForm(portionType) {
 
 	if (portionType == "grain") {
 		$('#grain-portion-dial').dialog('close');
-		if (offset < 1000){
+		//if (offset < 1000){
+		if (isSlate > 0){
 			var dividerId = '#grain' + mealName;
 			if  (mealName == "Breakfast") {
 				newPortionHtml = '<li  class="grainPortion">' + partialNewPortionHtml;
@@ -5670,8 +5768,9 @@ function processAddNewPortion(offset, mealName, portionType, optionValue) {
 	//alert("plateslate processAddNewPortion offset " + offset + " mealName " + mealName + " portionType " + portionType + " optionValue " + optionValue);
 
 	var slate;
-	var slateId;	
-	if (offset < 1000) { // i.e. if working with slate edits of portions
+	var slateId;
+	// tjs 120223
+	//if (offset < 1000) { // i.e. if working with slate edits of portions
 		var thresholdOffset = offset + slateOffsetThreshold;
 		//alert("plateslate processAddNewPortionForm thresholdOffset " + thresholdOffset);
 		// e.g. offset 0 means 100
@@ -5679,7 +5778,7 @@ function processAddNewPortion(offset, mealName, portionType, optionValue) {
 		slate = slates[thresholdOffset];
 		slateId = slate.id;	
 		updateFood(slateId, mealName, optionValue, 0, 0);
-	} else { // i.e. working with plate edits of portions
+	/*} else { // i.e. working with plate edits of portions
 		//alert("plateslate processAddNewPortionForm offset " + offset + " mealName " + mealName + " optionValue " + optionValue);
 		var index = offset - 1000;
 		var dish = plates[index];
@@ -5746,12 +5845,12 @@ function processAddNewPortion(offset, mealName, portionType, optionValue) {
 			}
 			addToPlate(dish);
 		}
-	}
+	}*/
 	
 	//  update cache
-	if (offset < 1000) {
+	//if (offset < 1000) {
 		refreshSlatePortionCache(slate, mealName, optionValue);
-	}
+	//}
 }
 
 function refreshSlatePortionCache(slate, mealName, optionValue) {
@@ -5786,13 +5885,16 @@ function refreshSlatePortionCache(slate, mealName, optionValue) {
 	}
 }
 
-function hijaxGrainSelectionDial(offset, mealName) {
+// tjs 120223
+//function hijaxGrainSelectionDial(offset, mealName) {
+function hijaxGrainSelectionDial(offset, mealName, torf) {
 	//alert("plateslate hijaxGrainSelectionDial offset " + offset + " mealName " + mealName);
 	//alert("plateslate hijaxGrainSelectionDial offset " + offset + " mealName " + mealName + " grainPortionSelectListHtml " + grainPortionSelectListHtml);
 	var newDialHtml = '<div data-role="dialog" id="grain-portion-dial" data-rel="dialog"><div data-role="header">';
 	newDialHtml += '<h1>Add New Grain Portion</h1></div>';	
 	newDialHtml += '<div data-role="content" data-theme="c">';	
-	newDialHtml += '<form name="newGrainPortionForm"><input type="hidden" name="slateOffset" /><input type="hidden" name="portionName" />';
+	//newDialHtml += '<form name="newGrainPortionForm"><input type="hidden" name="slateOffset" /><input type="hidden" name="portionName" />';
+	newDialHtml += '<form name="newGrainPortionForm"><input type="hidden" name="slateOffset" /><input type="hidden" name="portionName" /><input type="hidden" name="isSlate" />';
 	newDialHtml += '<p>Add New Grain Portion...</p><p/>';
 	newDialHtml += '<p><label for="mealName">Meal:</label><input type="text" name="mealName" id="name" readonly="readonly" data-theme="d"/></p>';
 	newDialHtml += '<p><label for="name">Grain:</label>' + grainPortionSelectListHtml + '</p>';
@@ -5806,17 +5908,21 @@ function hijaxGrainSelectionDial(offset, mealName) {
 	// tweak the new dialog just added into the dom
  	document.newGrainPortionForm.slateOffset.value = offset;
 	document.newGrainPortionForm.mealName.value = mealName;
-   
+	if (torf)
+		document.newGrainPortionForm.isSlate.value = 1;
+	else
+		document.newGrainPortionForm.isSlate.value = 0;
+	
 	// enhance and open the new dialog
     $.mobile.changePage(newDial);
 }
 
-function hijaxProteinSelectionDial(offset, mealName) {
+function hijaxProteinSelectionDial(offset, mealName, torf) {
 	//alert("plateslate hijaxProteinSelectionDial offset " + offset + " mealName " + mealName + " grainPortionSelectListHtml " + grainPortionSelectListHtml);
 	var newDialHtml = '<div data-role="dialog" id="protein-portion-dial"><div data-role="header">';
 	newDialHtml += '<h1>Add New Protein Portion</h1></div>';	
 	newDialHtml += '<div data-role="content" data-theme="c">';	
-	newDialHtml += '<form name="newProteinPortionForm"><input type="hidden" name="slateOffset" /><input type="hidden" name="portionName" />';
+	newDialHtml += '<form name="newProteinPortionForm"><input type="hidden" name="slateOffset" /><input type="hidden" name="portionName" /><input type="hidden" name="isSlate" />';
 	newDialHtml += '<p>Add New Protein Portion...</p><p/>';
 	newDialHtml += '<p><label for="mealName">Meal:</label><input type="text" name="mealName" id="name" readonly="readonly" data-theme="d"/></p>';
 	newDialHtml += '<p><label for="name">Protein:</label>' + proteinPortionSelectListHtml + '</p>';
@@ -5830,16 +5936,20 @@ function hijaxProteinSelectionDial(offset, mealName) {
 	// tweak the new dialog just added into the dom
  	document.newProteinPortionForm.slateOffset.value = offset;
 	document.newProteinPortionForm.mealName.value = mealName;
+	if (torf)
+		document.newProteinPortionForm.isSlate.value = 1;
+	else
+		document.newProteinPortionForm.isSlate.value = 0;
    
 	// enhance and open the new dialog
     $.mobile.changePage(newDial);
 }
 
-function hijaxVegetablesSelectionDial(offset, mealName) {
+function hijaxVegetablesSelectionDial(offset, mealName, torf) {
 	var newDialHtml = '<div data-role="dialog" id="vegetables-portion-dial"><div data-role="header">';
 	newDialHtml += '<h1>Add New Vegetable Portion</h1></div>';	
 	newDialHtml += '<div data-role="content" data-theme="c">';	
-	newDialHtml += '<form name="newVegetablesPortionForm"><input type="hidden" name="slateOffset" /><input type="hidden" name="portionName" />';
+	newDialHtml += '<form name="newVegetablesPortionForm"><input type="hidden" name="slateOffset" /><input type="hidden" name="portionName" /><input type="hidden" name="isSlate" />';
 	newDialHtml += '<p>Add New Vegetable Portion...</p><p/>';
 	newDialHtml += '<p><label for="mealName">Meal:</label><input type="text" name="mealName" id="name" readonly="readonly" data-theme="d"/></p>';
 	newDialHtml += '<p><label for="name">Vegetable:</label>' + vegetablesPortionSelectListHtml + '</p>';
@@ -5853,16 +5963,20 @@ function hijaxVegetablesSelectionDial(offset, mealName) {
 	// tweak the new dialog just added into the dom
  	document.newVegetablesPortionForm.slateOffset.value = offset;
 	document.newVegetablesPortionForm.mealName.value = mealName;
+	if (torf)
+		document.newVegetablesPortionForm.isSlate.value = 1;
+	else
+		document.newVegetablesPortionForm.isSlate.value = 0;
    
 	// enhance and open the new dialog
     $.mobile.changePage(newDial);
 }
 
-function hijaxFruitsSelectionDial(offset, mealName) {
+function hijaxFruitsSelectionDial(offset, mealName, torf) {
 	var newDialHtml = '<div data-role="dialog" id="fruits-portion-dial"><div data-role="header">';
 	newDialHtml += '<h1>Add New Fruit Portion</h1></div>';	
 	newDialHtml += '<div data-role="content" data-theme="c">';	
-	newDialHtml += '<form name="newFruitsPortionForm"><input type="hidden" name="slateOffset" /><input type="hidden" name="portionName" />';
+	newDialHtml += '<form name="newFruitsPortionForm"><input type="hidden" name="slateOffset" /><input type="hidden" name="portionName" /><input type="hidden" name="isSlate" />';
 	newDialHtml += '<p>Add New Fruit Portion...</p><p/>';
 	newDialHtml += '<p><label for="mealName">Meal:</label><input type="text" name="mealName" id="name" readonly="readonly" data-theme="d"/></p>';
 	newDialHtml += '<p><label for="name">Fruit:</label>' + fruitsPortionSelectListHtml + '</p>';
@@ -5876,16 +5990,20 @@ function hijaxFruitsSelectionDial(offset, mealName) {
 	// tweak the new dialog just added into the dom
  	document.newFruitsPortionForm.slateOffset.value = offset;
 	document.newFruitsPortionForm.mealName.value = mealName;
+	if (torf)
+		document.newFruitsPortionForm.isSlate.value = 1;
+	else
+		document.newFruitsPortionForm.isSlate.value = 0;
    
 	// enhance and open the new dialog
     $.mobile.changePage(newDial);
 }
 
-function hijaxDairySelectionDial(offset, mealName) {
+function hijaxDairySelectionDial(offset, mealName, torf) {
 	var newDialHtml = '<div data-role="dialog" id="dairy-portion-dial"><div data-role="header">';
 	newDialHtml += '<h1>Add New Dairy Portion</h1></div>';	
 	newDialHtml += '<div data-role="content" data-theme="c">';	
-	newDialHtml += '<form name="newDairyPortionForm"><input type="hidden" name="slateOffset" /><input type="hidden" name="portionName" />';
+	newDialHtml += '<form name="newDairyPortionForm"><input type="hidden" name="slateOffset" /><input type="hidden" name="portionName" /><input type="hidden" name="isSlate" />';
 	newDialHtml += '<p>Add New Dairy Portion...</p><p/>';
 	newDialHtml += '<p><label for="mealName">Meal:</label><input type="text" name="mealName" id="name" readonly="readonly" data-theme="d"/></p>';
 	newDialHtml += '<p><label for="name">Dairy:</label>' + dairyPortionSelectListHtml + '</p>';
@@ -5899,6 +6017,10 @@ function hijaxDairySelectionDial(offset, mealName) {
 	// tweak the new dialog just added into the dom
  	document.newDairyPortionForm.slateOffset.value = offset;
 	document.newDairyPortionForm.mealName.value = mealName;
+	if (torf)
+		document.newDairyPortionForm.isSlate.value = 1;
+	else
+		document.newDairyPortionForm.isSlate.value = 0;
    
 	// enhance and open the new dialog
     $.mobile.changePage(newDial);
@@ -5946,6 +6068,22 @@ function hijaxPlatesPage() {
 		return;
 	}
 	//alert("plateSlateCellApp hijaxPlatesPage...");
+	// tjs 120224
+	var plateName;
+	var plateNames = new Array();
+	var keys = new Array();
+	for (var i = 0; i < plates.length; i++) {
+	    if (i in plates) {
+			var plate = plates[i];
+			plateName = plate.name;
+			plateNames[plateName] = i;
+			keys.push(plateName);
+	    }
+	}
+	//alert("plateSlateCellApp sorting portionNames...");
+	//portionNames.sort(keyCmp);
+	keys.sort();
+	
 	  // create page markup
 	var newPageHtml = '<div data-role="page" id="plates-page" data-title="Plates" class="type-interior" data-theme="b" data-dom-cache="true">';
 	newPageHtml += '<div data-role="header" data-theme="f" data-position="fixed">';
@@ -5956,7 +6094,13 @@ function hijaxPlatesPage() {
 	newPageHtml += '<div class="content-primary">';
 	newPageHtml += '<ul data-role="listview" id="plates-list" data-filter="true" data-filter-placeholder="Search..." data-split-icon="delete" data-split-theme="d">';
 	//alert("plateSlateCellApp hijaxPlatesPage plates.length " + plates.length);
-	for (var i = 0; i < plates.length; i++) {
+	for(var j = 0; j < keys.length; j++) {
+		plateName = keys[j];
+		var i = plateNames[plateName];
+		newPageHtml += '<li><a href="javascript:editPlate(' + i + ')">' + plateName + '</a><a href="javascript:inactivatePlate(' + i + ')" data-role="button">Remove Plate</a></li>';
+	}
+
+	/*for (var i = 0; i < plates.length; i++) {
 	    if (typeof(plates[i]) !== 'undefined') {
 
 		var plate = plates[i];
@@ -5965,7 +6109,7 @@ function hijaxPlatesPage() {
 		//	alert("plateSlateCellApp hijaxPlatesPage plate name " + plateName);
 		newPageHtml += '<li><a href="javascript:editPlate(' + i + ')">' + plateName + '</a><a href="javascript:inactivatePlate(' + i + ')" data-role="button">Remove Plate</a></li>';
 	    }
-	}
+	}*/
 	newPageHtml += "</ul>";
 	newPageHtml += '</div>'; // end content primary
 	newPageHtml += '<div class="content-secondary">';
@@ -5993,9 +6137,11 @@ function activatePlate() {
 
 function editPlate(index) {
 	//alert("plateSlateCellApp editPlate index " + index);
-	var indexOffset = 1000 + index;
+	// tjs 120223
+	//var indexOffset = 1000 + index;
 	var plate = plates[index];
 	var mealName = plate.type;
+	//assigns values to globals such as grainPortionSelectListHtml
 	derivePortionSelectionLists(false);
 	plateGrainsHtml = '<li/>';
 	plateProteinHtml = '<li/>';
@@ -6025,23 +6171,25 @@ function editPlate(index) {
 	newDialHtml += '<h1>Edit Plate</h1></div>';	
 	newDialHtml += '<div data-role="content" data-theme="c">';	
 	newDialHtml += '<li data-role="list-divider" data-theme="b"><div data-type="horizontal">';
-	newDialHtml += '<a href="javascript:hijaxGrainSelectionDial(' + indexOffset + ",'" + mealName + "'" + ');" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Grains</a>';
+	// tjs 120223
+	//newDialHtml += '<a href="javascript:hijaxGrainSelectionDial(' + indexOffset + ",'" + mealName + "'" + ');" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Grains</a>';
+	newDialHtml += '<a href="javascript:hijaxGrainSelectionDial(' + index + ",'" + mealName + "', false" + ');" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Grains</a>';
 	newDialHtml += '</div></li>';
 	newDialHtml += plateGrainsHtml;
 	newDialHtml += '<li data-role="list-divider" data-theme="b"><div data-type="horizontal">';
-	newDialHtml += '<a href="javascript:hijaxProteinSelectionDial(' + indexOffset + ",'" + mealName + "'" + ');" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Protein</a>';
+	newDialHtml += '<a href="javascript:hijaxProteinSelectionDial(' + index + ",'" + mealName + "', false" + ');" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Protein</a>';
 	newDialHtml += '</div></li>';
 	newDialHtml += plateProteinHtml;
 	newDialHtml += '<li data-role="list-divider" data-theme="b"><div data-type="horizontal">';
-	newDialHtml += '<a href="javascript:hijaxVegetablesSelectionDial(' + indexOffset + ",'" + mealName + "'" + ');" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Vegetables</a>';
+	newDialHtml += '<a href="javascript:hijaxVegetablesSelectionDial(' + index + ",'" + mealName + "', false" + ');" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Vegetables</a>';
 	newDialHtml += '</div></li>';
 	newDialHtml += plateVegetablesHtml;
 	newDialHtml += '<li data-role="list-divider" data-theme="b"><div data-type="horizontal">';
-	newDialHtml += '<a href="javascript:hijaxFruitsSelectionDial(' + indexOffset + ",'" + mealName + "'" + ');" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Fruits</a>';
+	newDialHtml += '<a href="javascript:hijaxFruitsSelectionDial(' + index + ",'" + mealName + "', false" + ');" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Fruits</a>';
 	newDialHtml += '</div></li>';
 	newDialHtml += plateFruitsHtml;
 	newDialHtml += '<li data-role="list-divider" data-theme="b"><div data-type="horizontal">';
-	newDialHtml += '<a href="javascript:hijaxDairySelectionDial(' + indexOffset + ",'" + mealName + "'" + ');" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Dairy</a>';
+	newDialHtml += '<a href="javascript:hijaxDairySelectionDial(' + index + ",'" + mealName + "', false" + ');" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Dairy</a>';
 	newDialHtml += '</div></li>';
 	newDialHtml += plateDairyHtml;
 
@@ -6073,11 +6221,15 @@ function processAddPlateForm() {
 	var dish;
 	var plateExists = false;
 	var i = plates.length;
-	for (var j = 1; j < i; j++) {
-		dish = plates[j];
-		if (dish.name == plateName) {
-			plateExists = true;
-			break;
+	// tjs 120223
+	//for (var j = 1; j < i; j++) {
+	for (var j = 0; j < i; j++) {
+		if (j in plates) {
+			dish = plates[j];
+			if (dish.name == plateName) {
+				plateExists = true;
+				break;
+			}
 		}
 	}
 	if (!plateExists) {
@@ -6102,6 +6254,21 @@ function hijaxPortionsPage() {
 		//alert("You must login before using this feature!");
 		return;
 	}
+	// tjs 120224
+	var portionName;
+	var portionNames = new Array();
+	var keys = new Array();
+	for (var i = 0; i < portions.length; i++) {
+	    if (i in portions) {
+			var portion = portions[i];
+			portionName = portion.name;
+			portionNames[portionName] = i;
+			keys.push(portionName);
+	    }
+	}
+	//alert("plateSlateCellApp sorting portionNames...");
+	keys.sort();
+	
 	  // create page markup
 	var newPageHtml = '<div data-role="page" id="portions-page" data-title="Portions" class="type-interior" data-theme="b" data-dom-cache="true">';
 	newPageHtml += '<div data-role="header" data-theme="f" data-position="fixed">';
@@ -6112,12 +6279,10 @@ function hijaxPortionsPage() {
 	newPageHtml += '<div class="content-primary">';
 	newPageHtml += '<ul data-role="listview" id="portions-list" data-filter="true" data-filter-placeholder="Search..." data-split-icon="delete" data-split-theme="d">';
 	//alert("plateSlateCellApp hijaxPortionsPage portions.length " + portions.length);
-	for (var i = 0; i < portions.length; i++) {
-	    if (typeof(portions[i]) !== 'undefined') {
-			var portion = portions[i];
-			var portionName = portion.name;
-			newPageHtml += '<li><a href="javascript:editPortion(' + i + ')">' + portionName + '</a><a href="javascript:inactivatePortion(' + i + ')" data-role="button">Remove Portion</a></li>';
-	    }
+	for(var j = 0; j < keys.length; j++) {
+		portionName = keys[j];
+		var i = portionNames[portionName];
+		newPageHtml += '<li><a href="javascript:editPortion(' + i + ')">' + portionName + '</a><a href="javascript:inactivatePortion(' + i + ')" data-role="button">Remove Portion</a></li>';
 	}
 	newPageHtml += "</ul>";
 	newPageHtml += '</div>'; // end content primary
@@ -6220,11 +6385,15 @@ function processAddPortionForm() {
 	var portion;
 	var portionExists = false;
 	var i = portions.length;
-	for (var j = 1; j < i; j++) {
-		portion = portions[j];
-		if (portion.name == portionName) {
-			portionExists = true;
-			break;
+	// tjs 120223
+	//for (var j = 1; j < i; j++) {
+	for (var j = 0; j < i; j++) {
+		if (j in portions) {
+			portion = portions[j];
+			if (portion.name == portionName) {
+				portionExists = true;
+				break;
+			}
 		}
 	}
 	if (!portionExists) {
@@ -6554,10 +6723,19 @@ function getDishesXml() {
 	return xml;
 }
 
-function doRestoreFromBackup(accountId) {
+// tjs 120221
+//function doRestoreFromBackup(accountId) {
+function doRestoreFromBackup(accountId, profile) {
     //alert("plateslate doRestoreFromBackup accountId " + accountId);
-	var url = '../plateslate/getServerDataAsXML.php?account=' + accountId;
-	//var url = 'http://localhost/~thomassoucy/plateslate/getServerDataAsXML.php?account=' + accountId;
+	var url;
+	//var url = '../plateslate/getServerDataAsXML.php?account=' + accountId;
+	if (profile != null) {
+		url = '../plateslate/getServerDataAsXMLbyProfile.php?account=' + accountId + '&profile=' + profile;
+		importProfile = true;
+	} else {
+		url = '../plateslate/getServerDataAsXML.php?account=' + accountId;
+		importProfile = false;
+	}
     $.ajax({  
         //type: "POST",  
       type: "GET",
