@@ -83,6 +83,20 @@ var debugLoopCount = 0;
 // tjs 120221
 var importProfile = false;
 
+// tjs 120229
+// dialog messages
+var requiresLoginTitle = 'Requires Login';
+var requiresLoginLine1 = 'The PlateSlate feature that you are trying to use requires that you be logged in!';
+var requiresLoginLine2 = 'To become a PlateSlate registered user visit <a href="http://www.plateslate.com" data-rel="external">plateSlate.com</a> and request an invitation to register.';
+var insufficientDataTitle = 'Insufficient Data';
+var insufficientDataLine1 = 'The PlateSlate Web App requires several days of meal plans for meaningful reports!';
+var insufficientDataLine2 = 'Before trying to view certain reports it is advisable to <i>slate</i> some <i>plate</i> plans (for a few days) using the Slates choice.';
+// tjs 120301
+var alertDialogMessages = new Array();
+var duplicatePortionTitle = 'Duplicate Portion';
+var duplicatePortionLine1;
+var duplicatePortionLine2;
+
 var systemDB;
 
 function Portion(id, type, name, description, master, isInactive) {
@@ -138,9 +152,17 @@ function Slate(id, offset, date, name, description, breakfastId, lunchId, dinner
 }
 
 function initDB() {	 
+	var title = "Not Supported";
+	var paragraphs = new Array();
 	try {
 	    if (!window.openDatabase) {
-	        alert('not supported');
+	    	// tjs 120301
+	    	paragraphs.push("The browser you are using is not HTML5 or CSS3 compliant!");
+	    	paragraphs.push("The browser you need also should support client side storage.");
+	    	paragraphs.push("Example browsers to use include Safari or Chrome.");
+			hijaxAlertDial(title, paragraphs);
+			return;
+	        //alert('not supported');
 	    } else {
 	    	var datab;
 	    	var shortName = 'plateSlate';
@@ -154,10 +176,16 @@ function initDB() {
 	    // Error handling code goes here.
 	    if (e == INVALID_STATE_ERR) {
 	        // Version number mismatch.
-	    alert("Invalid database version.");
+	    //alert("Invalid database version.");
+    	paragraphs.push("Invalid database version.");
+		hijaxAlertDial(title, paragraphs);
+		return;
 
 	    } else {
-	    alert("Unknown error "+e+".");
+	    //alert("Unknown error "+e+".");
+    	paragraphs.push("Unknown error "+e+".");
+		hijaxAlertDial(title, paragraphs);
+		return;
 
 	    }
 	    return;
@@ -874,7 +902,7 @@ function insertRestoredSlate(slateDate, slateName, slateDescription, breakfastId
 			            function (transaction, result) {
 			                if (!result.rowsAffected) {
 			                    // Previous insert failed. Bail.
-			                    alert('plateSlateCellApp insertRestoredSlate No rows affected!');
+			                    //alert('plateSlateCellApp insertRestoredSlate No rows affected!');
 			                    return false;
 			                }
 			                //id=parseInt(row.id);
@@ -1643,7 +1671,7 @@ function addToSlate(slate) {
 											            function (transaction, result) {
 											                if (!result.rowsAffected) {
 											                    // Previous insert failed. Bail.
-											                    alert('plateslate addToSlate No rows affected!');
+											                    //alert('plateslate addToSlate No rows affected!');
 											                    return false;
 											                }
 											                id = result.insertId;
@@ -1712,7 +1740,7 @@ function appendSlate(loadSlatesCallback, slate, offset) {
 											            function (transaction, result) {
 											                if (!result.rowsAffected) {
 											                    // Previous insert failed. Bail.
-											                    alert('plateslate appendSlate No rows affected!');
+											                    //alert('plateslate appendSlate No rows affected!');
 											                    return false;
 											                }
 											                id = result.insertId;
@@ -1739,7 +1767,12 @@ function appendSlate(loadSlatesCallback, slate, offset) {
 
 
 function displayerrormessage(transaction, error) {
-	alert('Error:  '+error.message+' has occurred with Code: '+error.code);
+	//alert('Error:  '+error.message+' has occurred with Code: '+error.code);
+	var title = 'Database Error';
+	var paragraphs = new Array();
+	var msg = 'Error:  '+error.message+' has occurred with Code: '+error.code;
+	paragraphs.push(msg);
+	hijaxAlertDial(title, paragraphs);
 	return true;
 }
 
@@ -2619,7 +2652,7 @@ function addToFood(slate) {
 
 function appendFood(loadSlatesCallback, count, length, slate) {
 	if (slate.id == 0) {
-		alert("plateslate appendFood slate id is zero!");
+		//alert("plateslate appendFood slate id is zero!");
 	}
 	//alert("plateslate appendFood slate id " + slate.id + " breakfastPortions len " + slate.breakfastPortions.length);
 	systemDB.transaction(
@@ -3122,12 +3155,12 @@ function insertFoodPortion(slateId, type, portionId, master) {
 function insertSlateFoodPortion(slateId, type, portionId, master) {
 		if (!isNaN(portionId)) {
 			if (portionId == 0) {
-				alert("insertSlateFoodPortion portionId is zero!");
+				//alert("insertSlateFoodPortion portionId is zero!");
 				return;
 			}
 				
 			if (slateId == 0) {
-				alert("insertSlateFoodPortion slateId is zero!");
+				//alert("insertSlateFoodPortion slateId is zero!");
 				return;				
 			}
 			//alert("plateslate insertSlateFoodPortion slate id " + slateId + " portion id " + portionId + " plate type " + type);
@@ -3824,7 +3857,12 @@ function processLoginForm() {
 	    		  $("#login-dial").dialog("close");
     		  }
     	  } else {
-    		  alert("Login failed!");
+    		  //alert("Login failed!");
+    			var title = 'Login Failure';
+    			var paragraphs = new Array();
+    			var msg = "The user with name " + name + " must be registered before trying to login!";
+    			paragraphs.push(msg);
+    			hijaxAlertDial(title, paragraphs);
     	  }
       }  
     });  
@@ -4167,7 +4205,12 @@ function hijaxSlateOfPlatesPage() {
 	var len = dows.length;
 	// tjs 120120
 	if (len < 2) {
-		$.mobile.changePage("#insufficient-data-dial");
+		// tjs 120229
+		//$.mobile.changePage("#insufficient-data-dial");
+		var paragraphs = new Array();
+		paragraphs.push(insufficientDataLine1);
+		paragraphs.push(insufficientDataLine2);
+		hijaxAlertDial(insufficientDataTitle, paragraphs);
 		return;
 	}
 	var gridClass = 'ui-grid-';
@@ -4391,7 +4434,12 @@ function hijaxDinnerSlatePage() {
 	var len = dows.length;
 	// tjs 120120
 	if (len < 3) {
-		$.mobile.changePage("#insufficient-data-dial");
+		// tjs 120229
+		//$.mobile.changePage("#insufficient-data-dial");
+		var paragraphs = new Array();
+		paragraphs.push(insufficientDataLine1);
+		paragraphs.push(insufficientDataLine2);
+		hijaxAlertDial(insufficientDataTitle, paragraphs);
 		return;
 	}
 	//if (len < 3)
@@ -4528,7 +4576,12 @@ Dairy			4c98d0		8cc7eb
 	var len = dows.length;
 	// tjs 120120
 	if (len < 2) {
-		$.mobile.changePage("#insufficient-data-dial");
+		// tjs 120229
+		//$.mobile.changePage("#insufficient-data-dial");
+		var paragraphs = new Array();
+		paragraphs.push(insufficientDataLine1);
+		paragraphs.push(insufficientDataLine2);
+		hijaxAlertDial(insufficientDataTitle, paragraphs);
 		return;
 	}
 	//if (len < 2)
@@ -4801,7 +4854,12 @@ Dairy			4c98d0		8cc7eb
 	var len = dows.length;
 	// tjs 120120
 	if (len < 2) {
-		$.mobile.changePage("#insufficient-data-dial");
+		// tjs 120229
+		//$.mobile.changePage("#insufficient-data-dial");
+		var paragraphs = new Array();
+		paragraphs.push(insufficientDataLine1);
+		paragraphs.push(insufficientDataLine2);
+		hijaxAlertDial(insufficientDataTitle, paragraphs);
 		return;
 	}
 	//if (len < 2)
@@ -5112,7 +5170,11 @@ Dairy			4c98d0		8cc7eb
 
 function doReport() {
 	if (!authenticated)	{
-		alert("You must login before using this feature!");
+		//alert("You must login before using this feature!");
+		var paragraphs = new Array();
+		paragraphs.push(requiresLoginLine1);
+		paragraphs.push(requiresLoginLine2);
+		hijaxAlertDial(requiresLoginTitle, paragraphs);
 		return;
 	}
 	//alert("plateSlateCellApp doReport authenticated " + authenticated);
@@ -5392,6 +5454,13 @@ function hijaxImportPage() {
 }
 
 function processImportProfileForm() {
+	if (!authenticated)	{
+		var paragraphs = new Array();
+		paragraphs.push(requiresLoginLine1);
+		paragraphs.push(requiresLoginLine2);
+		hijaxAlertDial(requiresLoginTitle, paragraphs);		
+		return;
+	}
 	var profileSelection;
 	profileSelection = document.importForm.profileSelection;
 	var optionValue = profileSelection.options[profileSelection.selectedIndex].value;
@@ -6160,9 +6229,18 @@ function dropPortion(plateIndex, mealName, portionId) {
 
 function hijaxPlatesPage() {
 	if (!authenticated)	{
+		// tjs 120229
 		// tjs 120120
-		$.mobile.changePage("#prerequisite-dial");
+		//$.mobile.changePage("#prerequisite-dial");
 		//alert("You must login before using this feature!");
+		//return;
+		//var title = 'Requires Login';
+		var paragraphs = new Array();
+		//paragraphs.push('The PlateSlate feature that you are trying to use requires that you be logged in!');
+		//paragraphs.push('To become a PlateSlate registered user visit <a href="http://www.plateslate.com" data-rel="external">plateSlate.com</a> and request an invitation to register.');
+		paragraphs.push(requiresLoginLine1);
+		paragraphs.push(requiresLoginLine2);
+		hijaxAlertDial(requiresLoginTitle, paragraphs);
 		return;
 	}
 	//alert("plateSlateCellApp hijaxPlatesPage...");
@@ -6385,29 +6463,40 @@ function togglePlateInactive(torf, index) {
 
 function processAddPlateForm() {
 	var plateName;
+	var plateNameUC;
 	var plateDescription;
 	var typeSelection;
 	plateName = document.addPlateForm.name.value;
+	plateNameUC = plateName.toUpperCase();
 	plateDescription = document.addPlateForm.description.value;
 	typeSelection = document.addPlateForm.type;
 	var optionValue = typeSelection.options[typeSelection.selectedIndex].value;
 	//alert("plateSlateCellApp processAddPlateForm plateName " + plateName + " plateDescription " + plateDescription + " optionValue " + optionValue);
 	
 	var dish;
-	var plateExists = false;
+	var dishName;
+	var dishNameUC;
+	// tjs 120229
+	var plateIndex = -1;
+	//var plateExists = false;
 	var i = plates.length;
 	// tjs 120223
 	//for (var j = 1; j < i; j++) {
 	for (var j = 0; j < i; j++) {
 		if (j in plates) {
 			dish = plates[j];
-			if (dish.name == plateName) {
-				plateExists = true;
+			dishName = dish.name;
+			dishNameUC = dishName.toUpperCase();
+			if (dishNameUC == plateNameUC) {
+				//plateExists = true;
+				plateIndex = j;
 				break;
 			}
 		}
 	}
-	if (!plateExists) {
+	//if (!plateExists) {
+	$('#add-plate-dial-error').empty();
+	if (plateIndex == -1) {
 		var index = i++;	
 		dish = new Plate(index, optionValue, plateName, plateDescription, 0, null, null, null, null, null, null, null, null, null, 0);
 		addToPlate(dish);
@@ -6415,18 +6504,47 @@ function processAddPlateForm() {
 		// use plate edit dialog...
 		editPlate(index);
 	} else {
+		/*
+		var title = 'Plate Already Exists';
+		var paragraphs = new Array();
 		var msg = "The plate with name " + plateName + " already Exists!";
-		alert(msg);
+		paragraphs.push(msg);
+		dish = plates[plateIndex];
+		if (dish.isInactive > 0) {
+			togglePlateInactive(false, plateIndex);
+			msg = "(The plate had been concealed but is now revealed and my be edited.)";
+			paragraphs.push(msg);
+		}
+		//alert(msg);
 		$('#add-plate-dial').dialog('close');
+		hijaxAlertDial(title, paragraphs);
+		return;*/
+		var isError = true;
+		var msg = "The plate with name " + plateName + " already Exists!";
+		dish = plates[plateIndex];
+		if (dish.isInactive > 0) {
+			togglePlateInactive(false, plateIndex);
+			msg += "<br/>(The plate had been concealed but is now revealed and my be edited.)";
+			isError = false;
+		}
+		var warningOrError = isError? "Error: ": "Warning: ";
+		warningOrError += msg;
+		$('#add-plate-dial-error').text(warningOrError);
 	}
+	return;
 }
 
 function hijaxPortionsPage() {
 	// for debug comment out this...
 	if (!authenticated)	{
 		// tjs 120120
-		$.mobile.changePage("#prerequisite-dial");
+		//$.mobile.changePage("#prerequisite-dial");
 		//alert("You must login before using this feature!");
+		// tjs 120229
+		var paragraphs = new Array();
+		paragraphs.push(requiresLoginLine1);
+		paragraphs.push(requiresLoginLine2);
+		hijaxAlertDial(requiresLoginTitle, paragraphs);
 		return;
 	}
 	// tjs 120224
@@ -6582,29 +6700,44 @@ function togglePortionInactive(torf, index) {
 
 function processAddPortionForm() {
 	var portionName;
+	var portionNameUC;
 	var portionDescription;
 	var typeSelection;
 	portionName = document.addPortionForm.name.value;
+	portionNameUC = portionName.toUpperCase();
 	portionDescription = document.addPortionForm.description.value;
 	typeSelection = document.addPortionForm.type;
 	var optionValue = typeSelection.options[typeSelection.selectedIndex].value;
 	//alert("plateSlateCellApp processAddPortionForm portionName " + portionName + " portionDescription " + portionDescription + " optionValue " + optionValue);
 	
 	var portion;
-	var portionExists = false;
+	var segmentName;
+	var segmentNameUC;
+	// tjs 120229
+	var portionIndex = -1;
+	//var portionExists = false;
 	var i = portions.length;
 	// tjs 120223
 	//for (var j = 1; j < i; j++) {
 	for (var j = 0; j < i; j++) {
 		if (j in portions) {
 			portion = portions[j];
-			if (portion.name == portionName) {
-				portionExists = true;
+			segmentName = portion.name;
+			segmentNameUC = segmentName.toUpperCase();
+			if (segmentNameUC == portionNameUC) {
+				//portionExists = true;
+				portionIndex = j;
 				break;
 			}
 		}
 	}
-	if (!portionExists) {
+	// e.g. plateSlateCellApp processAddPortionForm portionName apples portionNameUC APPLES portionIndex 62
+	//alert("plateSlateCellApp processAddPortionForm portionName " + portionName + " portionNameUC " + portionNameUC + " portionIndex " + portionIndex);
+	//$('#add-portion-dial').dialog('close');
+	//alert("plateSlateCellApp processAddPortionForm portionName " + portionName + " portionNameUC " + portionNameUC + " portionIndex " + portionIndex + " CLOSED DIAL");
+	//$.mobile.changePage('#home-page');
+	$('#add-portion-dial-error').empty();
+	if (portionIndex == -1) {
 		var index = i++;
 		portion = new Portion(index, optionValue, portionName, portionDescription, 0, 0);
 		portions[index] = portion;
@@ -6612,10 +6745,53 @@ function processAddPortionForm() {
 		addToPortion(portion);
 		$('#add-portion-dial').dialog('close');
 	} else {
+		/*
+		var title = 'Portion Already Exists';
+		var paragraphs = new Array();
 		var msg = "The portion with name " + portionName + " already Exists!";
-		alert(msg);
-		$('#add-portion-dial').dialog('close');
+		paragraphs.push(msg);
+		portion = portions[portionIndex];
+		if (portion.isInactive > 0) {
+			togglePortionInactive(false, portionIndex);
+			msg = "(The portion had been concealed but is now revealed and my be edited.)";
+			paragraphs.push(msg);
+		}
+		//alert(msg);
+		//$('#add-portion-dial').dialog('close');
+		hijaxAlertDial(title, paragraphs);
+		*/
+		/*
+		//var duplicatePortionTitle = 'Portion Already Exists';
+		alertDialogMessages.length = 0;
+		var msg = "The portion with name " + portionName + " already Exists!";
+		duplicatePortionLine1 = new String(msg);
+		alertDialogMessages.push(duplicatePortionLine1);
+		portion = portions[portionIndex];
+		if (portion.isInactive > 0) {
+			togglePortionInactive(false, portionIndex);
+			msg = "(The portion had been concealed but is now revealed and my be edited.)";
+			duplicatePortionLine2 = new String(msg);
+			alertDialogMessages.push(duplicatePortionLine2);
+		}
+		//alert(msg);
+		//$('#add-portion-dial').dialog('close');
+		hijaxAlertDial(duplicatePortionTitle, alertDialogMessages);
+		//return;
+		*/
+		var isError = true;
+		var msg = "The portion with name " + portionName + " already Exists!";
+		portion = portions[portionIndex];
+		if (portion.isInactive > 0) {
+			togglePortionInactive(false, portionIndex);
+			msg += "<br/>(The portion had been concealed but is now revealed and my be edited.)";
+			isError = false;
+		}
+		var warningOrError = isError? "Error: ": "Warning: ";
+		warningOrError += msg;
+		$('#add-portion-dial-error').text(warningOrError);
 	}
+	return;
+	//return false;
 }
 
 function processEditPortionForm() {
@@ -6699,7 +6875,11 @@ function getRelativeSlateDescription(slate) {
 // tjs 120202
 function doClientBackup() {
 	if (!authenticated)	{
-		alert("You must login before using this feature!");
+		//alert("You must login before using this feature!");
+		var paragraphs = new Array();
+		paragraphs.push(requiresLoginLine1);
+		paragraphs.push(requiresLoginLine2);
+		hijaxAlertDial(requiresLoginTitle, paragraphs);
 		return;
 	}
 	//alert("plateSlateCellApp doClientBackup starting...");
@@ -7008,6 +7188,41 @@ function doRestoreFromBackup(accountId, profile) {
 						});
 					});
 
+			// tjs 120301
+			// reset the tables' sequences...
+			systemDB.transaction(
+					function(transaction) {
+						transaction.executeSql(
+						"DELETE FROM sqlite_sequence WHERE name = 'food'", null,						
+						function (transaction, result) {
+							//alert("plateslate loadPlates result.rows.length " + result.rows.length);
+						});
+					});
+			systemDB.transaction(
+					function(transaction) {
+						transaction.executeSql(
+						"DELETE FROM sqlite_sequence WHERE name = 'slate'", null,						
+						function (transaction, result) {
+							//alert("plateslate loadPlates result.rows.length " + result.rows.length);
+						});
+					});
+			systemDB.transaction(
+					function(transaction) {
+						transaction.executeSql(
+						"DELETE FROM sqlite_sequence WHERE name = 'plate'", null,						
+						function (transaction, result) {
+							//alert("plateslate loadPlates result.rows.length " + result.rows.length);
+						});
+					});
+			systemDB.transaction(
+					function(transaction) {
+						transaction.executeSql(
+						"DELETE FROM sqlite_sequence WHERE name = 'portion'", null,						
+						function (transaction, result) {
+							//alert("plateslate loadPlates result.rows.length " + result.rows.length);
+						});
+					});
+
 			// the cache arrays also need to be truncated...
 			slates.length = 0;
 			plates.length = 0;
@@ -7047,9 +7262,37 @@ function doRestoreFromBackup(accountId, profile) {
 	         //alert("plateslate doRestoreFromBackup portions synchronized length " + portions.length);
       },
       error: function(xmlReq, status, errorMsg) {
-	         alert("plateslate doRestoreFromBackup status " + status + " errorMsg " + errorMsg);
+    	  var title = "Database Error"
+	         //alert("plateslate doRestoreFromBackup status " + status + " errorMsg " + errorMsg);
+	         var msg = "plateslate doRestoreFromBackup status " + status + " errorMsg " + errorMsg;
 	         // e.g. msg = plateslate doRestoreFromBackup msg parsererror
-      }
+	 		var paragraphs = new Array();
+			paragraphs.push(msg);
+			hijaxAlertDial(requiresLoginTitle, paragraphs);
+     }
     });  
     return false;	
+}
+
+// tjs 120229
+function hijaxAlertDial(title, paragraphs) {
+	var newDialHtml = '<div data-role="dialog" id="alert-dial" data-rel="dialog"><div data-role="header">';
+	newDialHtml += '<h1>' + title + '</h1></div>';	
+	newDialHtml += '<div data-role="content" data-theme="c">';
+	for (var i = 0; i < paragraphs.length; i++) {
+		newDialHtml += '<p>';
+		newDialHtml += paragraphs[i];
+		newDialHtml += '</p>';
+	}
+	newDialHtml += '<br/><br/>';
+	newDialHtml += '<a href="#home-page" data-role="button" data-inline="true" data-rel="back" data-theme="a">OK</a>';
+	newDialHtml += '</div><script></script></div>';
+	var newDial = $(newDialHtml);
+	//add new dialog to page container
+	newDial.appendTo($.mobile.pageContainer);
+	
+	// tweak the new dialog just added into the dom
+	
+	// enhance and open the new dialog
+    $.mobile.changePage(newDial);
 }
