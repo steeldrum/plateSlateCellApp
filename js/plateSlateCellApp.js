@@ -6227,7 +6227,8 @@ function dropPortion(plateIndex, mealName, portionId) {
 	}
 }
 
-function hijaxPlatesPage() {
+//function hijaxPlatesPage() {
+function hijaxPlatesPage(direction) {
 	if (!authenticated)	{
 		// tjs 120229
 		// tjs 120120
@@ -6243,6 +6244,17 @@ function hijaxPlatesPage() {
 		hijaxAlertDial(requiresLoginTitle, paragraphs);
 		return;
 	}
+
+	// tjs 120303
+	var transition = 'slide';
+	var reverse = false;
+	if (direction != null) {
+		if (direction == 'reverse')
+			reverse = true;
+		else 
+			transition = direction;
+	}
+
 	//alert("plateSlateCellApp hijaxPlatesPage...");
 	// tjs 120224
 	var plateName;
@@ -6338,7 +6350,8 @@ function hijaxPlatesPage() {
 	//add new dialog to page container
 	newPage.appendTo($.mobile.pageContainer);
 	// enhance and open the new dialog
-    $.mobile.changePage(newPage);	
+    //$.mobile.changePage(newPage);	
+    $.mobile.changePage(newPage, {transition: transition, reverse: reverse });	
 }
 
 function addPlate() {
@@ -6455,11 +6468,9 @@ function togglePlateInactive(torf, index) {
 		plate.isInactive = 0;
 	}
 	addToPlate(plate);
+	// tjs 120303
+	hijaxPlatesPage('fade');
 }
-
-//function inactivatePlate(index) {
-//	alert("plateSlateCellApp inactivatePlate index " + index);
-//}
 
 function processAddPlateForm() {
 	var plateName;
@@ -6504,27 +6515,13 @@ function processAddPlateForm() {
 		// use plate edit dialog...
 		editPlate(index);
 	} else {
-		/*
-		var title = 'Plate Already Exists';
-		var paragraphs = new Array();
-		var msg = "The plate with name " + plateName + " already Exists!";
-		paragraphs.push(msg);
-		dish = plates[plateIndex];
-		if (dish.isInactive > 0) {
-			togglePlateInactive(false, plateIndex);
-			msg = "(The plate had been concealed but is now revealed and my be edited.)";
-			paragraphs.push(msg);
-		}
-		//alert(msg);
-		$('#add-plate-dial').dialog('close');
-		hijaxAlertDial(title, paragraphs);
-		return;*/
 		var isError = true;
 		var msg = "The plate with name " + plateName + " already Exists!";
 		dish = plates[plateIndex];
 		if (dish.isInactive > 0) {
 			togglePlateInactive(false, plateIndex);
-			msg += "<br/>(The plate had been concealed but is now revealed and my be edited.)";
+			//msg += "<br/>(The plate had been concealed but is now revealed and my be edited.)";
+			msg += " (The plate had been concealed but is now revealed and my be edited.)";
 			isError = false;
 		}
 		var warningOrError = isError? "Error: ": "Warning: ";
@@ -6534,7 +6531,8 @@ function processAddPlateForm() {
 	return;
 }
 
-function hijaxPortionsPage() {
+//function hijaxPortionsPage() {
+function hijaxPortionsPage(direction) {
 	// for debug comment out this...
 	if (!authenticated)	{
 		// tjs 120120
@@ -6547,6 +6545,16 @@ function hijaxPortionsPage() {
 		hijaxAlertDial(requiresLoginTitle, paragraphs);
 		return;
 	}
+	// tjs 120303
+	var transition = 'slide';
+	var reverse = false;
+	if (direction != null) {
+		if (direction == 'reverse')
+			reverse = true;
+		else 
+			transition = direction;
+	}
+
 	// tjs 120224
 	var portionName;
 	var portionNames = new Array();
@@ -6611,17 +6619,15 @@ function hijaxPortionsPage() {
 	//add new dialog to page container
 	newPage.appendTo($.mobile.pageContainer);
 	// enhance and open the new dialog
-    $.mobile.changePage(newPage);	
+	// tjs 120303
+    //$.mobile.changePage(newPage);	
+    $.mobile.changePage(newPage, {transition: transition, reverse: reverse });	
 }
 
 function addPortion() {
 	//alert("plateSlateCellApp addPlate...");
 	$.mobile.changePage("#add-portion-dial");
 }
-
-//function activatePortion() {
-//	alert("plateSlateCellApp activatePortion...");
-//}
 
 function editPortion(index) {
 	//alert("plateSlateCellApp editPortion index " + index);
@@ -6682,10 +6688,6 @@ function editPortion(index) {
     $.mobile.changePage(newDial);
 }
 
-//function inactivatePortion(index) {
-//	alert("plateSlateCellApp inactivatePortion index " + index);
-//}
-
 // tjs 120227
 function togglePortionInactive(torf, index) {
 	//alert("plateSlateCellApp togglePortionInactive torf " + torf + " index " + index);
@@ -6696,6 +6698,9 @@ function togglePortionInactive(torf, index) {
 		portion.isInactive = 0;
 	}
 	addToPortion(portion);
+	//$("#portions-page ul").listview("refresh");
+	// tjs 120303
+	hijaxPortionsPage('fade');
 }
 
 function processAddPortionForm() {
@@ -6745,45 +6750,13 @@ function processAddPortionForm() {
 		addToPortion(portion);
 		$('#add-portion-dial').dialog('close');
 	} else {
-		/*
-		var title = 'Portion Already Exists';
-		var paragraphs = new Array();
-		var msg = "The portion with name " + portionName + " already Exists!";
-		paragraphs.push(msg);
-		portion = portions[portionIndex];
-		if (portion.isInactive > 0) {
-			togglePortionInactive(false, portionIndex);
-			msg = "(The portion had been concealed but is now revealed and my be edited.)";
-			paragraphs.push(msg);
-		}
-		//alert(msg);
-		//$('#add-portion-dial').dialog('close');
-		hijaxAlertDial(title, paragraphs);
-		*/
-		/*
-		//var duplicatePortionTitle = 'Portion Already Exists';
-		alertDialogMessages.length = 0;
-		var msg = "The portion with name " + portionName + " already Exists!";
-		duplicatePortionLine1 = new String(msg);
-		alertDialogMessages.push(duplicatePortionLine1);
-		portion = portions[portionIndex];
-		if (portion.isInactive > 0) {
-			togglePortionInactive(false, portionIndex);
-			msg = "(The portion had been concealed but is now revealed and my be edited.)";
-			duplicatePortionLine2 = new String(msg);
-			alertDialogMessages.push(duplicatePortionLine2);
-		}
-		//alert(msg);
-		//$('#add-portion-dial').dialog('close');
-		hijaxAlertDial(duplicatePortionTitle, alertDialogMessages);
-		//return;
-		*/
 		var isError = true;
 		var msg = "The portion with name " + portionName + " already Exists!";
 		portion = portions[portionIndex];
 		if (portion.isInactive > 0) {
 			togglePortionInactive(false, portionIndex);
-			msg += "<br/>(The portion had been concealed but is now revealed and my be edited.)";
+			//msg += "<br/>(The portion had been concealed but is now revealed and my be edited.)";
+			msg += " (The portion had been concealed but is now revealed and my be edited.)";
 			isError = false;
 		}
 		var warningOrError = isError? "Error: ": "Warning: ";
