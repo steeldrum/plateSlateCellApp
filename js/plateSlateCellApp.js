@@ -253,17 +253,8 @@ function readPortions()
 	loadPortions(true, null);
 }
 
-// tjs 120211
-//function loadPortions(isStatic)
 function loadPortions(isStatic, xml)
 {
-/*	
-	var datab;var shortName = 'plateSlate';
-	var version = '1.0';
-	var displayName = 'plateSlate';
-	var maxSize = 200000;
-	datab = openDatabase(shortName, version, displayName, maxSize);
-*/
 	var isPortionMasterDataInserted = false;
 	var id;
 	var type;
@@ -352,23 +343,13 @@ function loadPortions(isStatic, xml)
 									//if (index == 0)
 										//alert("plateslate loadPortions dish type " + type + " name " + name + " description " + description);
 									// e.g. dish type Dinner name Pizza and Salad description BGE smoked
-									//var segments = new Array();
-									//var segment;
-									//var children = dish.children();
-									//$(children).find('segment').each(function() {
 									var index2 = 0;
 									$(this).find('segment').each(function() {
 										var segmantType = $(this).attr('type');
-										//var segmentName = segment.attr('name');
 										var segmentDescription = $(this).attr('description');
-										//var segmentIsMaster = $(this).attr('isMaster');
-										//var segmentIsInactive = $(this).attr('isInactive');
 										var segmentName = $(this).text();
 										//if (index2 == 0)
 											//alert("plateslate loadPortions segment type " + segmantType + " name " + segmentName + " description " + segmentDescription);
-										//segments.push(getPortionByName(segmentName));
-										// tjs 120214
-										//var portion = getPortionByName(segmentName);
 										var portionId = portionNames[segmentName];
 										//if (index2 == 0)
 											//alert("plateslate loadPortions portionId " + portionId);
@@ -402,12 +383,8 @@ function loadPortions(isStatic, xml)
 											break;
 										}
 									});
-									//var plate = new Plate(index++, type, name, description, isMaster, portion1.id, portion2.id, portion3.id, portion4.id, portion5.id, portion6.id, portion7.id, portion8.id, portion9.id, isInactive);
 									var plate = new Plate(index++, type, name, description, isMaster, portion1, portion2, portion3, portion4, portion5, portion6, portion7, portion8, portion9, isInactive);
 									plates.push(plate);
-
-									//var portion = new Portion(null, type, name, description, isMaster, isInactive);
-									//morsels.push(portion);
 							         //alert("plateslate doRestoreFromBackup preference type " + preferenceType + " preferenceName " + preferenceName + " preferenceValue " + preferenceValue);
 								});
 						         //alert("plateslate loadPortions plates length " + plates.length);
@@ -598,15 +575,10 @@ function populatePortionMasterData() {
 	portly = new Portion(i, "Dairy", "Yogurt", "Yogurt", 1, 0);
 	portions.push(portly);
 	
-	// tjs 120210
-	//insertPortionMasterData();
 	// tjs 120216
 	insertPortionMasterData(true, null);
 }
 
-// tjs 120211
-//function insertPortionMasterData(isStaticData) {
-//function insertPortionMasterData(isStatic, xml) {
 function insertPortionMasterData(isStatic, xml) {
 	var len = portions.length;
 	var i = 0;
@@ -615,14 +587,7 @@ function insertPortionMasterData(isStatic, xml) {
 		var portion = portions[i++];
 		addToPortion(portion);
 	}
-	/*
-	if (isStaticData) {
-		portions.length = 0;	
-		loadPortions(true);
-	}
-	*/
 	portions.length = 0;
-	//loadPortions(isStaticData);
 	//alert ("insertPortionMasterData isStatic " + isStatic + " i " + i);
 	loadPortions(isStatic, xml);
 }
@@ -632,7 +597,6 @@ function addToPortion(portion) {
 			systemDB.transaction(
 				function(transaction) {
 					transaction.executeSql(
-					//'SELECT cart_sess, cart_sku,  cart_item_name, cart_qty, cart_price FROM shopcart where cart_sess=? and cart_sku=?;',[sid, sku],
 							'SELECT id, type, name,  description, master, isInactive FROM portion where name=?;',[portion.name],
 
 					function (transaction, result) {
@@ -643,8 +607,6 @@ function addToPortion(portion) {
 							function(transaction) {
 								transaction.executeSql(
 										// tjs 120227
-								//'update portion set description=? where name=?;',
-								//[portion.description, portion.name],
 								'update portion set type=?, description=?, isInactive=? where name=?;',
 								[portion.type, portion.description, portion.isInactive, portion.name],
 								function(){
@@ -794,11 +756,6 @@ function loadPlates(isStatic, xml)
 							var breakfastId;
 							var lunchId;
 							var dinnerId;
-							/*
-							var breakfastPortions = new Array();
-							var lunchPortions = new Array();
-							var dinnerPortions = new Array();
-							*/
 							var breakfastPortions;
 							var lunchPortions;
 							var dinnerPortions;
@@ -808,9 +765,6 @@ function loadPlates(isStatic, xml)
 								var slateDescription = slate.attr('dow'); // description is the day of the week, e.g. Monday
 								var slateDate = new Date(slateName);
 								slateDate.setHours(0, 0, 0, 0);
-								//breakfastPortions.length = 0;
-								//lunchPortions.length = 0;
-								//dinnerPortions.length = 0;
 								//alert ("plateSlateCellApp loadPlates slateName " + slateName + " date " + slateDate);
 						         //alert("plateslate loadPlates name " + date + " dow " + dow);
 								$(this).find('plate').each(function() {
@@ -818,7 +772,6 @@ function loadPlates(isStatic, xml)
 									var name = plate.attr('name');
 									var type = plate.attr('type');
 									//alert ("plateSlateCellApp loadPlates plateName " + name + " type " + type);
-									//var description = plate.attr('description');
 									var plateId = plateNames[name];
 									//if (0 == debugLoopCount%10) {
 									//	alert ("plateSlateCellApp loadPlates debugLoopCount " + debugLoopCount + " plateId " + plateId + " slateName " + slateName);
@@ -841,10 +794,7 @@ function loadPlates(isStatic, xml)
 									
 									$(this).find('portion').each(function() {
 										var portion = $(this);
-										//var portionType = portion.attr('type');
 										var portionName = $(this).text();
-										//var portion = getPortionByName(portionName);
-										//var portionId = portion.id;
 										//if (0 == debugLoopCount%10) {
 										//	alert ("plateSlateCellApp loadPlates debugLoopCount " + debugLoopCount + " portionName " + portionName);
 											// e.g. plateSlateCellApp loadPlates debugLoopCount 0 portionName Bran Flakes
@@ -1263,10 +1213,6 @@ function populatePlateMasterData() {
 	insertPlateMasterData(true, null, null);
 }
 
-// tjs 120210
-//function insertPlateMasterData() {
-// tjs 120211
-//function insertPlateMasterData(isStatic) {
 function insertPlateMasterData(isStatic, xml) {
 	var len = plates.length;
 	var i = 0;
@@ -1297,11 +1243,6 @@ function addToPlate(plate) {
 								systemDB.transaction(
 										function(transaction) {
 											transaction.executeSql(
-													//'update plate set description=? where name=?;',
-													//[plate.description, plate.name],
-													// tjs 120228
-													//'update plate set description=?, portion1=?, portion2=?, portion3=?, portion4=?, portion5=?, portion6=?, portion7=?, portion8=?, portion9=? where name=?;',
-													//[plate.description, plate.portion1, plate.portion2, plate.portion3, plate.portion4, plate.portion5, plate.portion6, plate.portion7, plate.portion8, plate.portion9, plate.name],
 													'update plate set type=?, description=?, portion1=?, portion2=?, portion3=?, portion4=?, portion5=?, portion6=?, portion7=?, portion8=?, portion9=?, isInactive=? where name=?;',
 													[plate.type, plate.description, plate.portion1, plate.portion2, plate.portion3, plate.portion4, plate.portion5, plate.portion6, plate.portion7, plate.portion8, plate.portion9, plate.isInactive, plate.name],
 													function(){
@@ -2133,21 +2074,21 @@ function getPlatePortions(plate) {
 function getPlateSelections(slate, plate, offset, slateRandomlyGenerated) {
 	var len = plates.length;
 	//alert("plateslate getPlateSelections len " + len + " slate id" + slate.id + " plateType " + plate.type + " offset " + offset);
-	// tjs 120228
-	//var breakfastLen = 0;
-	//var lunchLen = 0;
-	//var dinnerLen = 0;
 	var typeLen = 0;
-		plateGrainsHtml = '<li/>';
-		plateProteinHtml = '<li/>';
-		plateVegetablesHtml = '<li/>';
-		plateFruitsHtml = '<li/>';
-		plateDairyHtml = '<li/>';
+	plateGrainsHtml = '<li/>';
+	plateProteinHtml = '<li/>';
+	plateVegetablesHtml = '<li/>';
+	plateFruitsHtml = '<li/>';
+	plateDairyHtml = '<li/>';
 	
 	var currentPlate;
 	var plateType = plate.type;
 	var id = plate.id;
 	
+	// tjs 120306
+	var plateName;
+	var plateNames = new Array();
+	var keys = new Array();
 	var selectedPlate = null;
 	for (var i = 0; i < len; i++) {
 	    if (i in plates) {
@@ -2157,32 +2098,25 @@ function getPlateSelections(slate, plate, offset, slateRandomlyGenerated) {
 					//alert("plateslate getRandomPlate plate.type " + plate.type + " plate.name " + plate.name + " index " + i);
 				if (currentPlate.type == plateType) {
 					typeLen++;
+					plateName = currentPlate.name;
+					plateNames[plateName] = i;
+					keys.push(plateName);
 				}
 			}
 		}
-		/*
-		//alert("plateslate getRandomPlate i " + i);
-	    if (typeof(plates[i]) === 'undefined')
-	    	continue;
-	    currentPlate = plates[i];
-		if (currentPlate != null) {
-			//TODO if (currentPlate.master == 1)
-				//alert("plateslate getRandomPlate plate.type " + plate.type + " plate.name " + plate.name + " index " + i);
-			if (currentPlate.type == plateType) {
-				typeLen++;
-			}
-		} else {
-			//alert("plateslate getPlateSelections null plate at index " + i);
-		}
-		*/
 	}
+
+	keys.sort();
 
 	//TODO consider offset for uniqueness
 	var html = '<select class="' + plateType + '"><optgroup label="' + plateType + '">';
 	if (typeLen > 0) {
-		//return a random integer between 0 and typeLen
-		for (var i = 0; i < len; i++) {
-		    if (i in plates) {
+		// tjs 120306
+		//for (var i = 0; i < len; i++) {
+		for (var j = 0; j < keys.length; j++) {
+			//var i = keys[j];
+			var i = plateNames[keys[j]];
+		    //if (i in plates) {
 		    	currentPlate = plates[i];
 				if (currentPlate != null) {
 					//TODO if (currentPlate.master == 1)
@@ -2198,28 +2132,8 @@ function getPlateSelections(slate, plate, offset, slateRandomlyGenerated) {
 						}
 					}
 				}
-			}
+			//}
 		}
-		/*
-		var offset = 0;
-		for (var i = 0; i < len; i++) {
-			//alert("plateslate populatePlateMenus i " + i);
-		    if (typeof(plates[i]) === 'undefined')
-		    	continue;
-		    currentPlate = plates[i];
-			if (currentPlate != null) {
-				//TODO if (currentPlate.master == 1)
-				//alert("plateslate getPlateSelections plate.type " + plate.type + " plate.name " + plate.name);
-				if (currentPlate.type == plateType) {
-					html += '<option value ="' + currentPlate.id +'"';
-					if (id == currentPlate.id) {
-						html += ' selected="selected" ';
-					}
-					html += '>' + currentPlate.name + '</option>';
-					offset++;
-				}
-			}
-		}*/
 		var plateSelectionsHtml = html + '</optgroup></select>';
 		//alert("plateslate getPlateSelections plateSelectionsHtml " + plateSelectionsHtml);
 			getFoodPortions(slate, plate);
@@ -2337,43 +2251,11 @@ function getPortionSelections(offset, mealName, portionType) {
 				}
 			}
 		}
-		
-		/*
-		//var offset = 0;
-		for (var i = 0; i < len; i++) {
-			//alert("plateslate populatePlateMenus i " + i);
-			var currentPortion = portions[i];
-			if (currentPortion != null) {
-				//TODO if (currentPlate.master == 1)
-				//alert("plateslate updatePortionsDialogs portion type " + currentPortion.type + " portion name " + currentPortion.name);
-				if (currentPortion.type == portionType) {
-					if (!isPortionSelected(currentPortion.id, foodPortions)) {
-						portionSelectionsHtml += '<option value ="' + currentPortion.id + '">' + currentPortion.name + '</option>';
-					}
-				}
-			}
-		}
-		*/
 		portionSelectionsHtml += '</optgroup></select>';
 	}
 	//alert("plateslate newGrainSelectionHtml offset " + offset + " mealName " + mealName + " grainPortionSelectListHtml " + grainPortionSelectListHtml);
 	return portionSelectionsHtml;
 }
-
-// tjs 120116
-/* tjs 120117
-function getMealFoodPortions(thresholdOffset, mealName) {
-	var slate = slates[thresholdOffset];
-	var foodPortions;
-	if (mealName == "Breakfast") {
-		foodPortions = slate.breakfastPortions;
-	}  else if (mealName == "Lunch") {
-		foodPortions = slate.lunchPortions;
-	}  else if (mealName == "Dinner") {
-		foodPortions = slate.dinnerPortions;
-	}
-	return foodPortions;
-}*/
 
 function isPortionSelected(portionId, foodPortions) {
 	var torf = false;
@@ -3584,19 +3466,6 @@ function refreshSlateFoodsCache(slate, typeNumber) {
 		syncSlateFoodsCache(slate, typeNumber);
 }
 
-// tjs 120119
-/*
-function isPortionInCache(foodPortions, portionId) {
-	var torf = false;
-	for (var i = 0; i < foodPortions.length; i++) {
-		if (foodPortions[i] == portionId) {
-			torf = true;
-			break;
-		}
-	}
-	return torf;
-}*/
-
 function syncSlateFoodsCache(slate, typeNumber) {
 	var type;
 	var slateId = slate.id;
@@ -3783,8 +3652,6 @@ function hyjaxLoginDial() {
 	newDial.appendTo($.mobile.pageContainer);
 	
 	// tweak the new dialog just added into the dom
- 	//document.newGrainPortionForm.slateOffset.value = offset;
-	//document.newGrainPortionForm.mealName.value = mealName;
    
 	// enhance and open the new dialog
     $.mobile.changePage(newDial);
@@ -3883,9 +3750,7 @@ function hyjaxLogoutDial() {
 	//if (backupDataToServer) {
 	if (backupDataToServer == true) {
 		newDialHtml += ' checked="checked" ';
-	}// else {
-		//newDialHtml += ' value="" ';
-	//}
+	}
 	newDialHtml += ' data-theme="d"/></fieldset></p>';
 	newDialHtml += '</form><br/><br/><a href="#home-page" data-role="button" data-inline="true" data-rel="back" data-theme="a">Cancel</a>';		
 	newDialHtml += '<a href="javascript:doLogout();" data-role="button" data-inline="true">Logout</a><div id ="resultLog"></div>';
@@ -3895,8 +3760,6 @@ function hyjaxLogoutDial() {
 	newDial.appendTo($.mobile.pageContainer);
 	
 	// tweak the new dialog just added into the dom
- 	//document.newGrainPortionForm.slateOffset.value = offset;
-	//document.newGrainPortionForm.mealName.value = mealName;
    
 	// enhance and open the new dialog
     $.mobile.changePage(newDial);
@@ -3904,20 +3767,9 @@ function hyjaxLogoutDial() {
 
 function doLogout() {
 	//alert("plateslate   doLogout");
-	// tjs 120203
-	//doClientBackup();
-	// tjs 120209
-	// tjs 120216
-	//if (backupDataToServer) {
 	var isBackupStarted = false;
 	if (backupDataToServer == true) {
 		// tjs 120216
-		//var confirmBackup = document.logoutForm.backup.value;
-		//var confirmBackup = $('#backup').get(0).value;
-		//alert("plateSlateCellApp doLogout confirmBackup " + confirmBackup);
-		//if (confirmBackup == 'backup') {
-		//	doClientBackup();
-		//}
     	var fieldsChecked = $("#logout-dial input:checked");
     	var len = fieldsChecked.length;
     	//alert("plateSlateCellApp hyjaxPreferencesPage len " + len);
@@ -3937,23 +3789,6 @@ function doLogout() {
 			$("#logout-dial").dialog("close");
 		finishLogout();
 	}
-	/*
-    var dataString = '';  
-	    $.ajax({  
-	        //type: "POST",  
-      type: "GET",  
-      url: "logout4app.php",  
-      data: dataString,  
-      success: function(msg) {
-          //alert("plateslate processLoginForm success  msg " + msg);
-    	  if (msg == "false") {
-    		  authenticated = false;
-    		  loginAccountNumber = 0;
-    		  //alert("plateslate handleLogout success  authenticated " + authenticated);
-     	  }
-      }  
-    }); 
-	    */
 }
 
 function finishLogout() {
@@ -4187,15 +4022,11 @@ function hijaxSlateOfPlatesPage() {
 
 	 */
 	var thresholdOffset = slateOffsetThreshold;
-	//var chalkColor = makeRandomScreenReportColor();
-	//var divStyle = 'color:' + chalkColor;
-	//var chalkColors = makeRandomScreenReportColors(3);
 	var chalkColors = getScreenReportHues(3);
 	var divHeaderStyle = 'color:' + makeColor(chalkColors[0]);
 	var divLabelStyle = 'color:' + makeColor(chalkColors[1]);
 	var divDataStyle = 'color:' + makeColor(chalkColors[2]);
 	
-	//var results = getReportGridArrays(thresholdOffset);
 	var results = getReportGridArrays(thresholdOffset, 5, false);
 //	alert("plateSlateCellApp hijaxScreenReportPage results.length " + results.length);
 	var dows = results[0];
@@ -4205,8 +4036,6 @@ function hijaxSlateOfPlatesPage() {
 	var len = dows.length;
 	// tjs 120120
 	if (len < 2) {
-		// tjs 120229
-		//$.mobile.changePage("#insufficient-data-dial");
 		var paragraphs = new Array();
 		paragraphs.push(insufficientDataLine1);
 		paragraphs.push(insufficientDataLine2);
@@ -4416,15 +4245,10 @@ function hijaxDinnerSlatePage() {
 
 	 */
 	var thresholdOffset = slateOffsetThreshold;
-	//var chalkColor = makeRandomScreenReportColor();
-	//var divStyle = 'color:' + chalkColor;
-	//var chalkColors = makeRandomScreenReportColors(3);
 	var chalkColors = getScreenReportHues(2);
 	var divHeaderStyle = 'color:' + makeColor(chalkColors[0]);
-	//var divLabelStyle = 'color:' + makeColor(chalkColors[1]);
 	var divDataStyle = 'color:' + makeColor(chalkColors[1]);
 	
-	//var results = getReportGridArrays(thresholdOffset);
 	var results = getReportGridArrays(thresholdOffset, 15, true);
 	//alert("plateSlateCellApp hijaxDinnerSlatePage results.length " + results.length);
 	var dows = results[0];
@@ -4434,16 +4258,12 @@ function hijaxDinnerSlatePage() {
 	var len = dows.length;
 	// tjs 120120
 	if (len < 3) {
-		// tjs 120229
-		//$.mobile.changePage("#insufficient-data-dial");
 		var paragraphs = new Array();
 		paragraphs.push(insufficientDataLine1);
 		paragraphs.push(insufficientDataLine2);
 		hijaxAlertDial(insufficientDataTitle, paragraphs);
 		return;
 	}
-	//if (len < 3)
-	//	return;
 	//alert("plateSlateCellApp hijaxDinnerSlatePage len " + len);
 	// three column report
 	var gridClass = 'ui-grid-b';
@@ -4556,13 +4376,9 @@ Dairy			4c98d0		8cc7eb
 
 	 */
 	var thresholdOffset = slateOffsetThreshold;
-	//var chalkColor = makeRandomScreenReportColor();
-	//var divStyle = 'color:' + chalkColor;
-	//var chalkColors = makeRandomScreenReportColors(3);
 	var chalkColors = getScreenReportHues(3);
 	var divHeaderStyle = 'color:' + makeColor(chalkColors[0]);
 	var divLabelStyle = 'color:' + makeColor(chalkColors[1]);
-	//var divLabelStyle;
 	var divDataStyle = 'color:' + makeColor(chalkColors[2]);
 	
 	var results = getReportGridArrays(thresholdOffset, 4, false);
@@ -4576,16 +4392,12 @@ Dairy			4c98d0		8cc7eb
 	var len = dows.length;
 	// tjs 120120
 	if (len < 2) {
-		// tjs 120229
-		//$.mobile.changePage("#insufficient-data-dial");
 		var paragraphs = new Array();
 		paragraphs.push(insufficientDataLine1);
 		paragraphs.push(insufficientDataLine2);
 		hijaxAlertDial(insufficientDataTitle, paragraphs);
 		return;
 	}
-	//if (len < 2)
-	//	return;
 	var gridClass = 'ui-grid-';
 	if (len < 3)
 		gridClass += 'b';
@@ -4833,13 +4645,9 @@ Dairy			4c98d0		8cc7eb
 
 	 */
 	var thresholdOffset = slateOffsetThreshold;
-	//var chalkColor = makeRandomScreenReportColor();
-	//var divStyle = 'color:' + chalkColor;
-	//var chalkColors = makeRandomScreenReportColors(3);
 	var chalkColors = getScreenReportHues(3);
 	var divHeaderStyle = 'color:' + makeColor(chalkColors[0]);
 	var divLabelStyle = 'color:' + makeColor(chalkColors[1]);
-	//var divLabelStyle;
 	var divDataStyle = 'color:' + makeColor(chalkColors[2]);
 	
 	var results = getReportGridArrays(thresholdOffset, 5, false);
@@ -4854,8 +4662,6 @@ Dairy			4c98d0		8cc7eb
 	var len = dows.length;
 	// tjs 120120
 	if (len < 2) {
-		// tjs 120229
-		//$.mobile.changePage("#insufficient-data-dial");
 		var paragraphs = new Array();
 		paragraphs.push(insufficientDataLine1);
 		paragraphs.push(insufficientDataLine2);
@@ -4881,8 +4687,6 @@ Dairy			4c98d0		8cc7eb
 	newPageHtml += '</div>';
 	newPageHtml += '<div data-role="content">';
 	newPageHtml += '<div class="' + gridClass + '" style="text-align: center;">';
-	//newPageHtml += '<div class="chalk" style="' + divStyle + ';">';
-	//newPageHtml += '<div class="chalk">';
 	newPageHtml += '<div class="felt">';
 	newPageHtml += '<div style="' + divHeaderStyle + ';">';
 	// grid headers (dow)
@@ -5276,8 +5080,6 @@ function getXml(slate) {
 	return xml;
 }
 
-// tjs 120116
-//function getReportGridArrays(thresholdOffset) {
 function getReportGridArrays(thresholdOffset, plateCount, plateHistory) {
 	//alert("plateslate getReportGridArrays name " + name + " offset " + offset);
 	//use cache for the report.
@@ -5322,8 +5124,6 @@ function getReportGridArrays(thresholdOffset, plateCount, plateHistory) {
 	    	plateId = slate.dinnerId;
 	    	plate = plates[plateId];
 	    	dinnerPlates.push(plate);
-	    	// tjs 120116
-	    	//dinnerPortions.push(slate.dinnerPortions);
 	    	breakfastPortions.push(copyPortions(slate.breakfastPortions));
 	    	lunchPortions.push(copyPortions(slate.lunchPortions));
 	    	dinnerPortions.push(copyPortions(slate.dinnerPortions));
@@ -5346,7 +5146,6 @@ function getReportGridArrays(thresholdOffset, plateCount, plateHistory) {
 		    	slate = slates[cursor--];
 		    	count++;
 		    	// TODO label one or the other
-		    	//dows.unshift("Yesterday/Prior Day");
 		    	dow = getRelativeSlateDescription(slate);
 		    	if (dow != null) {
 			    	dows.unshift(dow);
@@ -5362,9 +5161,6 @@ function getReportGridArrays(thresholdOffset, plateCount, plateHistory) {
 		    	plateId = slate.dinnerId;
 		    	plate = plates[plateId];
 		    	dinnerPlates.unshift(plate);
-		    	// tjs 120116
-		    	//dinnerPortions.unshift(slate.dinnerPortions);
-		    	// tjs 120117
 		    	breakfastPortions.unshift(copyPortions(slate.breakfastPortions));
 		    	lunchPortions.unshift(copyPortions(slate.lunchPortions));
 		    	dinnerPortions.unshift(copyPortions(slate.dinnerPortions));
@@ -5479,16 +5275,8 @@ function loadPreferences() {
 		preferences.plateSelectionSeasonal = tempPreferences.plateSelectionSeasonal;
 		preferences.plateSelectionShared = tempPreferences.plateSelectionShared;
 		preferences.slateMealPlansForDinnerOnly = tempPreferences.slateMealPlansForDinnerOnly;
-		//if (typeof(tempPreferences.refreshDataFromServerDefault) !== 'undefined'  && tempPreferences.refreshDataFromServerDefault != null) {
 			preferences.refreshDataFromServerDefault = tempPreferences.refreshDataFromServerDefault;
-		//} else {
-		//	preferences.refreshDataFromServerDefault = false;	
-		//}
-		//if (typeof(tempPreferences.backupDataToServer) !== 'undefined'  && tempPreferences.backupDataToServer != null) {
 			preferences.backupDataToServer = tempPreferences.backupDataToServer;
-		//} else {
-		//	preferences.backupDataToServer = false;	
-		//}
 		plateSelectionRandom = preferences.plateSelectionRandom;
 		plateSelectionSeasonal = preferences.plateSelectionSeasonal;
 		plateSelectionShared = preferences.plateSelectionShared;
@@ -5525,8 +5313,6 @@ function hijaxBreakfastPage(direction) {
     var mealHtml = getSlateView(offset, mealName);
 
     // create page markup
-    // tjs 120117
-	//var newPageHtml = '<div data-role="page" id="breakfast-page" data-title="Breakfast" class="type-interior" data-theme="b" data-dom-cache="false">';
 	var newPageHtml = '<div data-role="page" id="breakfast-page" data-title="Breakfast" class="type-interior" data-theme="b" data-dom-cache="true">';
 	newPageHtml += '<div data-role="header" data-theme="f" data-position="fixed">';
 	newPageHtml += '<a href="index.html" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-left jqm-home">Home</a>';
@@ -5859,7 +5645,6 @@ function cancelAddNewPortionForm(portionType) {
 
 // TODO use html for each portion to build select via filtering out those in the lists
 // tjs 120228 this is altered to filter out portions already selected for the plate
-//function derivePortionSelectionLists(slateTorf) {
 function derivePortionSelectionLists(preSelectedPortions) {
 	grainPortionSelectListHtml = '<select name="portionSelection" class="Grain"><optgroup label="Grain">';
 	proteinPortionSelectListHtml = '<select name="portionSelection" class="Protein"><optgroup label="Protein">';
@@ -5900,28 +5685,6 @@ function derivePortionSelectionLists(preSelectedPortions) {
 				}
 			}
 		}
-
-		/*
-		for (var i = 0; i < len; i++) {
-			//alert("plateslate populatePlateMenus i " + i);
-			var currentPortion = portions[i];
-			if (currentPortion != null) {
-				//TODO if (currentPlate.master == 1)
-				//alert("plateslate updatePortionsDialogs portion type " + currentPortion.type + " portion name " + currentPortion.name);
-				if (currentPortion.type == "Grain") {
-					grainPortionSelectListHtml += '<option value ="' + currentPortion.id + '">' + currentPortion.name + '</option>';
-				} else if (currentPortion.type == "Protein") {
-					proteinPortionSelectListHtml += '<option value ="' + currentPortion.id +'">' + currentPortion.name + '</option>';
-				} else if (currentPortion.type == "Vegetables") {
-					vegetablesPortionSelectListHtml += '<option value ="' + currentPortion.id +'">' + currentPortion.name + '</option>';
-				} else if (currentPortion.type == "Fruits") {
-					fruitsPortionSelectListHtml += '<option value ="' + currentPortion.id +'">' + currentPortion.name + '</option>';
-				} else if (currentPortion.type == "Dairy") {
-					dairyPortionSelectListHtml += '<option value ="' + currentPortion.id +'">' + currentPortion.name + '</option>';
-				}
-			}
-		}
-		*/
 		grainPortionSelectListHtml += '</optgroup></select>';
 		proteinPortionSelectListHtml += '</optgroup></select>';
 		vegetablesPortionSelectListHtml += '</optgroup></select>';
@@ -5945,79 +5708,9 @@ function processAddNewPortion(offset, mealName, portionType, optionValue) {
 		slate = slates[thresholdOffset];
 		slateId = slate.id;	
 		updateFood(slateId, mealName, optionValue, 0, 0);
-	/*} else { // i.e. working with plate edits of portions
-		//alert("plateslate processAddNewPortionForm offset " + offset + " mealName " + mealName + " optionValue " + optionValue);
-		var index = offset - 1000;
-		var dish = plates[index];
-		var existingPortions = new Array();
-		if (dish.portion1 != null && dish.portion1 > 0)
-			existingPortions.push(dish.portion1);
-		if (dish.portion2 != null && dish.portion2 > 0)
-			existingPortions.push(dish.portion2);
-		if (dish.portion3 != null && dish.portion3 > 0)
-			existingPortions.push(dish.portion3);
-		if (dish.portion4 != null && dish.portion4 > 0)
-			existingPortions.push(dish.portion4);
-		if (dish.portion5 != null && dish.portion5 > 0)
-			existingPortions.push(dish.portion5);
-		if (dish.portion6 != null && dish.portion6 > 0)
-			existingPortions.push(dish.portion6);
-		if (dish.portion7 != null && dish.portion7 > 0)
-			existingPortions.push(dish.portion7);
-		if (dish.portion8 != null && dish.portion8 > 0)
-			existingPortions.push(dish.portion8);
-		if (dish.portion9 != null && dish.portion9 > 0)
-			existingPortions.push(dish.portion9);
-		var okToAdd = true;
-		var count = 0;
-		//alert("plateslate processAddNewPortionForm existingPortions.length " + existingPortions.length);
-		for (var i = 0; i < existingPortions.length; i++) {
-			if (existingPortions[i] == optionValue) {
-				okToAdd = false;
-				break;
-			}
-			count++;
-		}
-		//alert("plateslate processAddNewPortionForm okToAdd " + okToAdd + " count " + count);
-		if (okToAdd && count < 9) {
-			count++;
-			switch (count) {
-			case 1:
-				dish.portion1 = optionValue;
-				break;
-			case 2:
-				dish.portion2 = optionValue;
-				break;
-			case 3:
-				dish.portion3 = optionValue;
-				break;
-			case 4:
-				dish.portion4 = optionValue;
-				break;
-			case 5:
-				dish.portion5 = optionValue;
-				break;
-			case 6:
-				dish.portion6 = optionValue;
-				break;
-			case 7:
-				dish.portion7 = optionValue;
-				break;
-			case 8:
-				dish.portion8 = optionValue;
-				break;
-			case 9:
-				dish.portion9 = optionValue;
-				break;
-			}
-			addToPlate(dish);
-		}
-	}*/
 	
 	//  update cache
-	//if (offset < 1000) {
 		refreshSlatePortionCache(slate, mealName, optionValue);
-	//}
 }
 
 function refreshSlatePortionCache(slate, mealName, optionValue) {
@@ -6052,8 +5745,6 @@ function refreshSlatePortionCache(slate, mealName, optionValue) {
 	}
 }
 
-// tjs 120223
-//function hijaxGrainSelectionDial(offset, mealName) {
 function hijaxGrainSelectionDial(offset, mealName, torf) {
 	//alert("plateslate hijaxGrainSelectionDial offset " + offset + " mealName " + mealName);
 	//alert("plateslate hijaxGrainSelectionDial offset " + offset + " mealName " + mealName + " grainPortionSelectListHtml " + grainPortionSelectListHtml);
@@ -6227,18 +5918,10 @@ function dropPortion(plateIndex, mealName, portionId) {
 	}
 }
 
-//function hijaxPlatesPage() {
 function hijaxPlatesPage(direction) {
 	if (!authenticated)	{
 		// tjs 120229
-		// tjs 120120
-		//$.mobile.changePage("#prerequisite-dial");
-		//alert("You must login before using this feature!");
-		//return;
-		//var title = 'Requires Login';
 		var paragraphs = new Array();
-		//paragraphs.push('The PlateSlate feature that you are trying to use requires that you be logged in!');
-		//paragraphs.push('To become a PlateSlate registered user visit <a href="http://www.plateslate.com" data-rel="external">plateSlate.com</a> and request an invitation to register.');
 		paragraphs.push(requiresLoginLine1);
 		paragraphs.push(requiresLoginLine2);
 		hijaxAlertDial(requiresLoginTitle, paragraphs);
@@ -6260,20 +5943,6 @@ function hijaxPlatesPage(direction) {
 	var plateName;
 	var plateNames = new Array();
 	// tjs 120228
-	/*
-	var keys = new Array();
-	for (var i = 0; i < plates.length; i++) {
-	    if (i in plates) {
-			var plate = plates[i];
-			plateName = plate.name;
-			plateNames[plateName] = i;
-			keys.push(plateName);
-	    }
-	}
-	//alert("plateSlateCellApp sorting portionNames...");
-	//portionNames.sort(keyCmp);
-	keys.sort();
-*/
 	var actives = new Array();
 	var inActives = new Array();
 	for (var i = 0; i < plates.length; i++) {
@@ -6288,7 +5957,6 @@ function hijaxPlatesPage(direction) {
 	    }
 	}
 	//alert("plateSlateCellApp sorting portionNames...");
-	//keys.sort();
 	actives.sort();
 	inActives.sort();
 
@@ -6300,17 +5968,14 @@ function hijaxPlatesPage(direction) {
 	newPageHtml += '</div>';
 	newPageHtml += '<div data-role="content">';
 	newPageHtml += '<div class="content-primary">';
-	//newPageHtml += '<ul data-role="listview" id="plates-list" data-filter="true" data-filter-placeholder="Search..." data-split-icon="delete" data-split-theme="d">';
 	newPageHtml += '<ul data-role="listview" id="plates-list" data-filter="true" data-filter-placeholder="Search..." data-split-theme="d">';
 	newPageHtml += '<li data-role="list-divider" data-theme="b"><a href="javascript:addPlate()">Add New Plate</a></li>';
-	//newPageHtml += '<li data-role="list-divider" data-theme="b"><a href="javascript:addPortion()" data-icon="add">Add New Portion</a></li>';
 	newPageHtml += '<li data-role="list-divider" data-theme="b">Plates Revealed for Selection:</li>';
 	for(var j = 0; j < actives.length; j++) {
 		plateName = actives[j];
 		var i = plateNames[plateName];
 		newPageHtml += '<li><a href="javascript:editPlate(' + i + ')">' + plateName + '</a><a href="javascript:togglePlateInactive(true, ' + i + ')" data-role="button" data-icon="delete">Conceal Plate</a></li>';
 	}
-	//newPageHtml += '<li data-role="list-divider" data-theme="b"><a href="javascript:addPortion()">Add New Portion</a></li>';
 	newPageHtml += '<li data-role="list-divider" data-theme="b">Concealed Plates:</li>';
 	for(var j = 0; j < inActives.length; j++) {
 		plateName = inActives[j];
@@ -6318,39 +5983,14 @@ function hijaxPlatesPage(direction) {
 		newPageHtml += '<li><a href="javascript:editPlate(' + i + ')">' + plateName + '</a><a href="javascript:togglePlateInactive(false, ' + i + ')" data-role="button" data-icon="add">Reveal Plate</a></li>';
 	}
 	//alert("plateSlateCellApp hijaxPlatesPage plates.length " + plates.length);
-	/*
-	for(var j = 0; j < keys.length; j++) {
-		plateName = keys[j];
-		var i = plateNames[plateName];
-		newPageHtml += '<li><a href="javascript:editPlate(' + i + ')">' + plateName + '</a><a href="javascript:inactivatePlate(' + i + ')" data-role="button">Remove Plate</a></li>';
-	}
-*/
-	/*for (var i = 0; i < plates.length; i++) {
-	    if (typeof(plates[i]) !== 'undefined') {
-
-		var plate = plates[i];
-		var plateName = plate.name;
-		//if (i%5 == 0)
-		//	alert("plateSlateCellApp hijaxPlatesPage plate name " + plateName);
-		newPageHtml += '<li><a href="javascript:editPlate(' + i + ')">' + plateName + '</a><a href="javascript:inactivatePlate(' + i + ')" data-role="button">Remove Plate</a></li>';
-	    }
-	}*/
 	newPageHtml += "</ul>";
 	newPageHtml += '</div>'; // end content primary
-	/*
-	newPageHtml += '<div class="content-secondary">';
-	newPageHtml += '<ul data-role="listview" id="add-plates-list" data-filter="false" data-split-icon="add" data-split-theme="d">';
-	newPageHtml += '<li><a href="javascript:addPlate()">Add New Plate</a><a href="javascript:activatePlate()" data-role="button">Add Plate</a></li>';
-	newPageHtml += "</ul>";
-	newPageHtml += '</div>'; // end content secondary
-	*/
 	newPageHtml += '</div></div>';
 	//alert("plateSlateCellApp hijaxPlatesPage newPageHtml " + newPageHtml);
 	var newPage = $(newPageHtml);
 	//add new dialog to page container
 	newPage.appendTo($.mobile.pageContainer);
 	// enhance and open the new dialog
-    //$.mobile.changePage(newPage);	
     $.mobile.changePage(newPage, {transition: transition, reverse: reverse });	
 }
 
@@ -6359,10 +5999,6 @@ function addPlate() {
 	$.mobile.changePage("#add-plate-dial");
 }
 
-//function activatePlate() {
-//	alert("plateSlateCellApp activatePlate...");
-//}
-
 function editPlate(index) {
 	//alert("plateSlateCellApp editPlate index " + index);
 	// tjs 120223
@@ -6370,8 +6006,6 @@ function editPlate(index) {
 	var plate = plates[index];
 	var mealName = plate.type;
 	//assigns values to globals such as grainPortionSelectListHtml
-	// tjs 120227
-	//derivePortionSelectionLists(false);
 	var preSelectedPortions = new Array();
 	
 	// set empty lists...
@@ -6425,8 +6059,6 @@ function editPlate(index) {
 	newDialHtml += '<h1>Edit Plate</h1></div>';	
 	newDialHtml += '<div data-role="content" data-theme="c">';	
 	newDialHtml += '<li data-role="list-divider" data-theme="b"><div data-type="horizontal">';
-	// tjs 120223
-	//newDialHtml += '<a href="javascript:hijaxGrainSelectionDial(' + indexOffset + ",'" + mealName + "'" + ');" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Grains</a>';
 	newDialHtml += '<a href="javascript:hijaxGrainSelectionDial(' + index + ",'" + mealName + "', false" + ');" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Grains</a>';
 	newDialHtml += '</div></li>';
 	newDialHtml += plateGrainsHtml;
@@ -6491,8 +6123,6 @@ function processAddPlateForm() {
 	var plateIndex = -1;
 	//var plateExists = false;
 	var i = plates.length;
-	// tjs 120223
-	//for (var j = 1; j < i; j++) {
 	for (var j = 0; j < i; j++) {
 		if (j in plates) {
 			dish = plates[j];
@@ -6505,7 +6135,6 @@ function processAddPlateForm() {
 			}
 		}
 	}
-	//if (!plateExists) {
 	$('#add-plate-dial-error').empty();
 	if (plateIndex == -1) {
 		var index = i++;	
@@ -6531,14 +6160,10 @@ function processAddPlateForm() {
 	return;
 }
 
-//function hijaxPortionsPage() {
 function hijaxPortionsPage(direction) {
 	// for debug comment out this...
 	if (!authenticated)	{
-		// tjs 120120
-		//$.mobile.changePage("#prerequisite-dial");
 		//alert("You must login before using this feature!");
-		// tjs 120229
 		var paragraphs = new Array();
 		paragraphs.push(requiresLoginLine1);
 		paragraphs.push(requiresLoginLine2);
@@ -6558,8 +6183,6 @@ function hijaxPortionsPage(direction) {
 	// tjs 120224
 	var portionName;
 	var portionNames = new Array();
-	// tjs 120227
-	//var keys = new Array();
 	var actives = new Array();
 	var inActives = new Array();
 	for (var i = 0; i < portions.length; i++) {
@@ -6574,7 +6197,6 @@ function hijaxPortionsPage(direction) {
 	    }
 	}
 	//alert("plateSlateCellApp sorting portionNames...");
-	//keys.sort();
 	actives.sort();
 	inActives.sort();
 	
@@ -6586,18 +6208,15 @@ function hijaxPortionsPage(direction) {
 	newPageHtml += '</div>';
 	newPageHtml += '<div data-role="content">';
 	newPageHtml += '<div class="content-primary">';
-	//newPageHtml += '<ul data-role="listview" id="portions-list" data-filter="true" data-filter-placeholder="Search..." data-split-icon="delete" data-split-theme="d">';
 	newPageHtml += '<ul data-role="listview" id="portions-list" data-filter="true" data-filter-placeholder="Search..." data-split-theme="d">';
 	//alert("plateSlateCellApp hijaxPortionsPage portions.length " + portions.length);
 	newPageHtml += '<li data-role="list-divider" data-theme="b"><a href="javascript:addPortion()">Add New Portion</a></li>';
-	//newPageHtml += '<li data-role="list-divider" data-theme="b"><a href="javascript:addPortion()" data-icon="add">Add New Portion</a></li>';
 	newPageHtml += '<li data-role="list-divider" data-theme="b">Portions Revealed for Selection:</li>';
 	for(var j = 0; j < actives.length; j++) {
 		portionName = actives[j];
 		var i = portionNames[portionName];
 		newPageHtml += '<li><a href="javascript:editPortion(' + i + ')">' + portionName + '</a><a href="javascript:togglePortionInactive(true, ' + i + ')" data-role="button" data-icon="delete">Conceal Portion</a></li>';
 	}
-	//newPageHtml += '<li data-role="list-divider" data-theme="b"><a href="javascript:addPortion()">Add New Portion</a></li>';
 	newPageHtml += '<li data-role="list-divider" data-theme="b">Concealed Portions:</li>';
 	for(var j = 0; j < inActives.length; j++) {
 		portionName = inActives[j];
@@ -6606,21 +6225,12 @@ function hijaxPortionsPage(direction) {
 	}
 	newPageHtml += "</ul>";
 	newPageHtml += '</div>'; // end content primary
-	/*
-	newPageHtml += '<div class="content-secondary">';
-	newPageHtml += '<ul data-role="listview" id="add-portions-list" data-filter="false" data-split-icon="add" data-split-theme="d">';
-	newPageHtml += '<li><a href="javascript:addPortion()">Add New Portion</a><a href="javascript:activatePortion()" data-role="button">Add Portion</a></li>';
-	newPageHtml += "</ul>";
-	newPageHtml += '</div>'; // end content secondary
-	*/
 	newPageHtml += '</div></div>';
 	//alert("plateSlateCellApp hijaxPlatesPage newPageHtml " + newPageHtml);
 	var newPage = $(newPageHtml);
 	//add new dialog to page container
 	newPage.appendTo($.mobile.pageContainer);
 	// enhance and open the new dialog
-	// tjs 120303
-    //$.mobile.changePage(newPage);	
     $.mobile.changePage(newPage, {transition: transition, reverse: reverse });	
 }
 
@@ -6720,10 +6330,7 @@ function processAddPortionForm() {
 	var segmentNameUC;
 	// tjs 120229
 	var portionIndex = -1;
-	//var portionExists = false;
 	var i = portions.length;
-	// tjs 120223
-	//for (var j = 1; j < i; j++) {
 	for (var j = 0; j < i; j++) {
 		if (j in portions) {
 			portion = portions[j];
@@ -6738,9 +6345,7 @@ function processAddPortionForm() {
 	}
 	// e.g. plateSlateCellApp processAddPortionForm portionName apples portionNameUC APPLES portionIndex 62
 	//alert("plateSlateCellApp processAddPortionForm portionName " + portionName + " portionNameUC " + portionNameUC + " portionIndex " + portionIndex);
-	//$('#add-portion-dial').dialog('close');
 	//alert("plateSlateCellApp processAddPortionForm portionName " + portionName + " portionNameUC " + portionNameUC + " portionIndex " + portionIndex + " CLOSED DIAL");
-	//$.mobile.changePage('#home-page');
 	$('#add-portion-dial-error').empty();
 	if (portionIndex == -1) {
 		var index = i++;
@@ -6815,7 +6420,6 @@ function getRelativeSlateDescription(slate) {
 	//alert("plateSlateCellApp getRelativeSlateDescription...");
 	var relativeSlateDescription = null;
 	var dayMillies = 24*60*60*1000;
-	//if (typeof(slate) != 'undefined') {
 		var today = new Date();
 		today.setHours(0, 0, 0, 0);
 		var todayMillis = today.getTime();
@@ -6826,7 +6430,6 @@ function getRelativeSlateDescription(slate) {
     	//alert("plateslate getSlateView priorOffset " + priorOffset + " slate name " + slate.name + " id " + slate.id + " priorDate name " + priorDateName);
         relativeDate = new Date(relativeDateName);
         var relativeDateMillis = relativeDate.getTime();
-		//var dateMillis = date.getTime();
 		//alert("plateSlateCellApp getRelativeSlateDescription todayMillis " + todayMillis + " dateMillis "+ dateMillis);
 		//alert("plateSlateCellApp getRelativeSlateDescription today " + today + " date "+ date + " todayMillis " + todayMillis + " dateMillis "+ dateMillis);
 		if (todayMillis == relativeDateMillis) {
@@ -6857,12 +6460,10 @@ function doClientBackup() {
 	}
 	//alert("plateSlateCellApp doClientBackup starting...");
 	var thresholdOffset = slateOffsetThreshold;
-	//var xml = getClientBackupXml('Client Backup', thresholdOffset);
 	var xml = getClientBackupXml(thresholdOffset);
 	//alert("plateSlateCellApp doClientBackup xml " + xml);
 	// tjs 120206
 	$.post("../plateslate/storeSlates.php", { xml: xml }, function(msg) {		
-	//$.post("../plateslate/clientXml2RDBMS.php", { xml: xml }, function(msg) {		
 		var len = msg.length;
 		// need to chop off the %20 chars that were placed onto the msg in lieu of the new line    		
 		var crop = len - 4;
@@ -6870,11 +6471,7 @@ function doClientBackup() {
 	//alert("plateslate click path " + path);
 		path = path.substring(0, crop);
 	//alert("plateslate click chop path " + path);
-		//var url = '../plateslate/clintXml2RDBMS.php?xml=' + path;
-		//var patt1=/slate.......xml/gi;
-		//windowName = msg.match(patt1);
 		//alert("plateslate click url " + url + " windowName " + windowName);
-		//window.open(url, windowName, 'resizable,scrollbars');
 		// tjs 120206
 		$.get("../plateslate/clientXml2RDBMS.php", { xmlPath: path }, function(msg) {		
 			//$.post("../plateslate/clientXml2RDBMS.php", { xml: xml }, function(msg) {		
@@ -7019,12 +6616,6 @@ function getSegmentXml(portionId, torf) {
 	var xml;
 	if (typeof(portions[portionId]) === 'undefined') {
 		xml = '';
-		/*
-		if (torf)
-			xml = '<morsel />';
-		else
-			xml = '<segment />';
-		*/
     } else {
     	var portion = portions[portionId];
     	if (torf)
@@ -7084,8 +6675,6 @@ function getDishesXml() {
 	return xml;
 }
 
-// tjs 120221
-//function doRestoreFromBackup(accountId) {
 function doRestoreFromBackup(accountId, profile) {
     //alert("plateslate doRestoreFromBackup accountId " + accountId);
 	var url;
@@ -7100,8 +6689,6 @@ function doRestoreFromBackup(accountId, profile) {
     $.ajax({  
         //type: "POST",  
       type: "GET",
-      //url: "../plateslate/getServerDataAsXML.php",
-      //data: { "account": accountId },  
       url: url,
      dataType: ($.browser.msie) ? "text" : "xml",
       success: function(data) {
@@ -7225,11 +6812,6 @@ function doRestoreFromBackup(accountId, profile) {
 			});
 	         //alert("plateslate doRestoreFromBackup morsels length " + morsels.length);
 	         //alert("plateslate doRestoreFromBackup portions length " + portions.length);
-	         // tjs 120211
-	         //insertPortionMasterData(false);
-	         //insertPortionMasterData(false, xml);
-			// tjs 120216
-			//portionNames.length = 0;
 	         insertPortionMasterData(false, xml);
 	         // here we have the database loaded with portions and the array cache is properly synchronized
 	         //alert("plateslate doRestoreFromBackup portions synchronized length " + portions.length);
