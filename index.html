@@ -46,6 +46,54 @@ $LastChangedDate:: 2012-01-03 14:44:48#$: Date of last commit
 		 	alert("page load failed!");	
 		});
 		
+		// tjs 120326
+		$(document).bind('pagebeforechange',function(e, data){ 
+		 	//alert("page load failed!");
+		 	//var toPage = data.toPage;
+	 		//alert ("index pagebeforechange toPage " + toPage);
+	 		//var url = $.mobile.path.parseUrl(toPage).hash;
+	 		var url = $.mobile.path.parseUrl(data.toPage).hash;
+	 		if (url != undefined) {
+	 			//alert ("index pagebeforechange toPage url " + url);
+	 			//alert ("index pagebeforechange toPage url length " + url.length);
+	 			if (url.length == 0) {
+	 		 	   var toPageId = data.toPage.attr("id");
+	 		 	  //alert ("index pagebeforechange toPageId " + toPageId);
+	 		 	  //if (toPageId == "home-page") {
+	 		 	  if (toPageId != undefined && toPageId == "home-page") {
+	 		 		 color = 0;
+	 		 		//alert("pagebeforechange with url color " + color);
+	 		 	  }
+	 			} else {
+	 				//alert("pagebeforechange with url " + url);
+	 				if (url == '#home-page') {
+	 					color = 0;
+	 				}
+	 			}
+		 		//color = 0;
+	 			
+	 		} else {
+	 		 	   var toPageId = data.toPage.attr("id");
+		 		 	  //alert ("index pagebeforechange toPageId " + toPageId);
+		 		 	  //if (toPageId == "home-page") {
+		 		 	  if (toPageId != undefined && toPageId == "home-page") {
+		 		 		 color = 0;
+		 		 		//alert("pagebeforechange no url color " + color);
+		 		 	  }
+	 		}
+		 	//if (toPage == "home-page") {
+		 		//color = 0;
+		 	//}
+		 	//alert("pagebeforechange...");
+	 	  // var toPageId = data.toPage.attr("id");
+	 	  //alert ("index pagebeforechange toPageId " + toPageId);
+	 	  //if (toPageId == "home-page") {
+	 	  //if (toPageId != undefined && toPageId == "home-page") {
+	 		// color = 0;
+	 	  //}
+	 	 //alert("done pagebeforechange color " + color);
+		});
+
 		// When the page loads configure a custom search
 		/*
 		$('#calendar-page').live("pagebeforeshow", function(){

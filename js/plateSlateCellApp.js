@@ -5063,7 +5063,8 @@ Dairy			4c98d0		8cc7eb
 
 	 */
 	var thresholdOffset = slateOffsetThreshold;
-	var results = getReportGridArrays(thresholdOffset, 7, false);
+	//var results = getReportGridArrays(thresholdOffset, 7, false);
+	var results = getReportGridArrays(thresholdOffset, 10, false);
 	//alert("plateSlateCellApp hijaxSlateOfPlatesPages results.length " + results.length);
 	var dows = results[0];
 	var breakfastPlates = results[1]; 
@@ -5086,6 +5087,7 @@ Dairy			4c98d0		8cc7eb
     $('.slatePage').remove();
     // Add the new slate pages
     var currentDow = addSlatePages(dows, breakfastPlates, lunchPlates, dinnerPlates, breakfastPortions, lunchPortions, dinnerPortions);
+   	//alert("plateSlateCellApp hijaxSlateOfPlatesPages currentDow " + currentDow);
 
     // Switch to the current slate's menu page
     $.mobile.changePage( '#' + currentDow, { transition: 'flip', reverse: true } );
@@ -5103,8 +5105,10 @@ function addSlatePages(dows, breakfastPlates, lunchPlates, dinnerPlates, breakfa
 
     // tjs 120326
     var colorOffset = 0;
+    var synchronizedColor = 0;
+    
    	//alert("plateSlateCellApp addSlatePages dows.length " + dows.length);
-   	// e.g. 5
+   	// e.g. 7
     
     // Create each page's markup
     for ( var i=0; i<dows.length; i++ ) {
@@ -5112,9 +5116,11 @@ function addSlatePages(dows, breakfastPlates, lunchPlates, dinnerPlates, breakfa
     	//alert("plateSlateCellApp addSlatePages prevPage " + prevPage);
     	if (prevPage == "Today") {
     		currentDow = prevPage;
-    		colorOffset = 0;
+    		//colorOffset = 0;
+    		synchronizedColor = 0;
     	} else {
-    		colorOffset++;
+    		//colorOffset++;
+    		synchronizedColor += 20;
     	}
     }
     
@@ -5127,11 +5133,15 @@ function addSlatePages(dows, breakfastPlates, lunchPlates, dinnerPlates, breakfa
 	//alert("plateSlateCellApp addSlatePages prevPage " + prevPage);
 	// e.g. Friday
     if ( prevPage ) {
-    	colorOffset++;
+		synchronizedColor += 20;
+   	//colorOffset++;
+    	color = synchronizedColor;
+    	colorOffset = color/20;
     	if (slateMealPlansForDinnerOnly) {
     		mealName = "Dinner";
     		pageId = "dinner-page";
     	}
+    	//alert("plateSlateCellApp addSlatePages color " + color + " colorOffset " + colorOffset);
     	var pageMarkup = getSlatePlateView(mealName, colorOffset, true);
     	//alert("plateSlateCellApp addSlatePages pageMarkup " + pageMarkup);
         // Add the page to the DOM
