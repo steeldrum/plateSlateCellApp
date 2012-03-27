@@ -4022,8 +4022,8 @@ function hijaxReportPage() {
 	newPageHtml += '<p><a href="javascript:hijaxDinnerPortionsSlatePage();">Dinner Portions Slate</a></p>';	
 	newPageHtml += '<p>The Prep Cook and Chef maintain a whiteboard in the kitchen.  It shows detailed portions they need for the dinner plans over the next few days.</p>';
 	newPageHtml += '<p><a href="javascript:hijaxKitchenPortionsWhiteboardPage();">Kitchen Portions Whiteboard</a></p>';	
-	newPageHtml += "<p>The following report is the Slate of Breakfast, Lunch and Dinner Plates that shows detailed portions for a single day (main PlateSlate Report). (Mobile platforms swipe either left or right for prior or next day's plans.)</p>";
-	newPageHtml += '<p><a href="javascript:hijaxSlateOfPlatesPages();">Slate of Plates and Portions</a></p>';	
+	//newPageHtml += "<p>The following report is the Slate of Breakfast, Lunch and Dinner Plates that shows detailed portions for a single day (main PlateSlate Report). (Mobile platforms swipe either left or right for prior or next day's plans.)</p>";
+	//newPageHtml += '<p><a href="javascript:hijaxSlateOfPlatesPages();">Slate of Plates and Portions</a></p>';	
 	newPageHtml += '<p>For logged in users, the PlateSlate Server provides a detailed and printable report of slated plates....</p>';
 	newPageHtml += '<p><a href="javascript:doReport();">Get PDF PlateSlate Report</a></p>';	
 	newPageHtml += '</div><script type="text/javascript"></script></div>';
@@ -5075,12 +5075,14 @@ Dairy			4c98d0		8cc7eb
 	var dinnerPortions = results[6];
 	var len = dows.length;
 	//alert("plateSlateCellApp hijaxSlateOfPlatesPages dows.length " + len);
+	// tjs 120327
 	if (len < 2) {
-		var paragraphs = new Array();
-		paragraphs.push(insufficientDataLine1);
-		paragraphs.push(insufficientDataLine2);
-		hijaxAlertDial(insufficientDataTitle, paragraphs);
-		return;
+		//var paragraphs = new Array();
+		//paragraphs.push(insufficientDataLine1);
+		//paragraphs.push(insufficientDataLine2);
+		//hijaxAlertDial(insufficientDataTitle, paragraphs);
+		//return;
+		openSlatePlansPage();
 	}
 	
     // Remove all old slate pages
@@ -5182,58 +5184,60 @@ function addSlatePage(prevPage, divHeaderStyle, divLabelStyle, divDataStyle, dow
     pageMarkup += '<div style="' + divHeaderStyle + ';">';
     pageMarkup += '<h1>' + pageId + '</h1>';
     pageMarkup += '</div>';
-    pageMarkup += '<div style="' + divLabelStyle + ';">';
-    pageMarkup += '<h2>Breakfast</h2>';
-    pageMarkup += '<h3>' + breakfastPlate + '</h3>';
-    pageMarkup += '</div>';
-    pageMarkup += '<div style="' + divDataStyle + ';">';
-	//alert("plateSlateCellApp addSlatePage pageMarkup " + pageMarkup);
-	// add breakfast portions
-	typePortions = breakfastPortions;
-	typePortion = '&nbsp;';
-	for (j = 0; j < typePortions.length; j++) {
-		portion = portions[typePortions[j]];
-		if (portion.type == "Grain") {
-			typePortion += '<span style="color: #dd7d22;">' + portion.name + '</span>&nbsp;';
-		} else	if (portion.type == "Protein") {
-			typePortion += '<span style="color: #705b9b;">' + portion.name + '</span>&nbsp;';
-		} else	if (portion.type == "Vegetables") {
-			typePortion += '<span style="color: #00b65b;">' + portion.name + '</span>&nbsp;';
-		} else	if (portion.type == "Fruits") {
-			typePortion += '<span style="color: #dc332e;">' + portion.name + '</span>&nbsp;';
-		} else	if (portion.type == "Dairy") {
-			typePortion += '<span style="color: #4c98d0;">' + portion.name + '</span>&nbsp;';
+    // tjs 120327
+	if (!slateMealPlansForDinnerOnly) {
+	    pageMarkup += '<div style="' + divLabelStyle + ';">';
+	    pageMarkup += '<h2>Breakfast</h2>';
+	    pageMarkup += '<h3>' + breakfastPlate + '</h3>';
+	    pageMarkup += '</div>';
+	    pageMarkup += '<div style="' + divDataStyle + ';">';
+		//alert("plateSlateCellApp addSlatePage pageMarkup " + pageMarkup);
+		// add breakfast portions
+		typePortions = breakfastPortions;
+		typePortion = '&nbsp;';
+		for (j = 0; j < typePortions.length; j++) {
+			portion = portions[typePortions[j]];
+			if (portion.type == "Grain") {
+				typePortion += '<span style="color: #dd7d22;">' + portion.name + '</span>&nbsp;';
+			} else	if (portion.type == "Protein") {
+				typePortion += '<span style="color: #705b9b;">' + portion.name + '</span>&nbsp;';
+			} else	if (portion.type == "Vegetables") {
+				typePortion += '<span style="color: #00b65b;">' + portion.name + '</span>&nbsp;';
+			} else	if (portion.type == "Fruits") {
+				typePortion += '<span style="color: #dc332e;">' + portion.name + '</span>&nbsp;';
+			} else	if (portion.type == "Dairy") {
+				typePortion += '<span style="color: #4c98d0;">' + portion.name + '</span>&nbsp;';
+			}
 		}
-	}
-    pageMarkup += '<p>' + typePortion + '</p>';
-    pageMarkup += '</div>';
-	//alert("plateSlateCellApp addSlatePage pageMarkup " + pageMarkup);
-
-    pageMarkup += '<div style="' + divLabelStyle + ';">';
-    pageMarkup += '<h2>Lunch</h2>';
-    pageMarkup += '<h3>' + lunchPlate + '</h3>';
-    pageMarkup += '</div>';
-    pageMarkup += '<div style="' + divDataStyle + ';">';
-	// add lunch portions
-	typePortions = lunchPortions;
-	typePortion = '&nbsp;';
-	for (j = 0; j < typePortions.length; j++) {
-		portion = portions[typePortions[j]];
-		if (portion.type == "Grain") {
-			typePortion += '<span style="color: #dd7d22;">' + portion.name + '</span>&nbsp;';
-		} else	if (portion.type == "Protein") {
-			typePortion += '<span style="color: #705b9b;">' + portion.name + '</span>&nbsp;';
-		} else	if (portion.type == "Vegetables") {
-			typePortion += '<span style="color: #00b65b;">' + portion.name + '</span>&nbsp;';
-		} else	if (portion.type == "Fruits") {
-			typePortion += '<span style="color: #dc332e;">' + portion.name + '</span>&nbsp;';
-		} else	if (portion.type == "Dairy") {
-			typePortion += '<span style="color: #4c98d0;">' + portion.name + '</span>&nbsp;';
+	    pageMarkup += '<p>' + typePortion + '</p>';
+	    pageMarkup += '</div>';
+		//alert("plateSlateCellApp addSlatePage pageMarkup " + pageMarkup);
+	
+	    pageMarkup += '<div style="' + divLabelStyle + ';">';
+	    pageMarkup += '<h2>Lunch</h2>';
+	    pageMarkup += '<h3>' + lunchPlate + '</h3>';
+	    pageMarkup += '</div>';
+	    pageMarkup += '<div style="' + divDataStyle + ';">';
+		// add lunch portions
+		typePortions = lunchPortions;
+		typePortion = '&nbsp;';
+		for (j = 0; j < typePortions.length; j++) {
+			portion = portions[typePortions[j]];
+			if (portion.type == "Grain") {
+				typePortion += '<span style="color: #dd7d22;">' + portion.name + '</span>&nbsp;';
+			} else	if (portion.type == "Protein") {
+				typePortion += '<span style="color: #705b9b;">' + portion.name + '</span>&nbsp;';
+			} else	if (portion.type == "Vegetables") {
+				typePortion += '<span style="color: #00b65b;">' + portion.name + '</span>&nbsp;';
+			} else	if (portion.type == "Fruits") {
+				typePortion += '<span style="color: #dc332e;">' + portion.name + '</span>&nbsp;';
+			} else	if (portion.type == "Dairy") {
+				typePortion += '<span style="color: #4c98d0;">' + portion.name + '</span>&nbsp;';
+			}
 		}
+		pageMarkup += '<p>' + typePortion + '</p>';
+	    pageMarkup += '</div>';
 	}
-	pageMarkup += '<p>' + typePortion + '</p>';
-    pageMarkup += '</div>';
-
     pageMarkup += '<div style="' + divLabelStyle + ';">';
     pageMarkup += '<h2>Dinner</h2>';
     pageMarkup += '<h3>' + dinnerPlate + '</h3>';
