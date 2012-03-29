@@ -96,6 +96,9 @@ var alertDialogMessages = new Array();
 var duplicatePortionTitle = 'Duplicate Portion';
 var duplicatePortionLine1;
 var duplicatePortionLine2;
+// tjs 120328
+//var viewSlatesDows;
+var viewSlatesNames;
 
 var systemDB;
 
@@ -5066,7 +5069,11 @@ Dairy			4c98d0		8cc7eb
 	//var results = getReportGridArrays(thresholdOffset, 7, false);
 	var results = getReportGridArrays(thresholdOffset, 10, false);
 	//alert("plateSlateCellApp hijaxSlateOfPlatesPages results.length " + results.length);
+	// tjs 120328
 	var dows = results[0];
+	//viewSlatesDows = results[0];
+	viewSlatesNames = results[7];
+
 	var breakfastPlates = results[1]; 
 	var lunchPlates = results[2]; 
 	var dinnerPlates = results[3];
@@ -5074,7 +5081,8 @@ Dairy			4c98d0		8cc7eb
 	var lunchPortions = results[5];
 	var dinnerPortions = results[6];
 	var len = dows.length;
-	//alert("plateSlateCellApp hijaxSlateOfPlatesPages dows.length " + len);
+	//var len = viewSlatesDows.length;
+	//alert("plateSlateCellApp hijaxSlateOfPlatesPages dows length " + len + " viewSlatesNames length " + viewSlatesNames.length);
 	// tjs 120327
 	if (len < 2) {
 		//var paragraphs = new Array();
@@ -5089,6 +5097,7 @@ Dairy			4c98d0		8cc7eb
     $('.slatePage').remove();
     // Add the new slate pages
     var currentDow = addSlatePages(dows, breakfastPlates, lunchPlates, dinnerPlates, breakfastPortions, lunchPortions, dinnerPortions);
+    //var currentDow = addSlatePages(breakfastPlates, lunchPlates, dinnerPlates, breakfastPortions, lunchPortions, dinnerPortions);
    	//alert("plateSlateCellApp hijaxSlateOfPlatesPages currentDow " + currentDow);
 
     // Switch to the current slate's menu page
@@ -5096,34 +5105,72 @@ Dairy			4c98d0		8cc7eb
 } 
 
 function addSlatePages(dows, breakfastPlates, lunchPlates, dinnerPlates, breakfastPortions, lunchPortions, dinnerPortions) {
+//function addSlatePages(breakfastPlates, lunchPlates, dinnerPlates, breakfastPortions, lunchPortions, dinnerPortions) {
 	var chalkColors = getScreenReportHues(3);
 	var divHeaderStyle = 'color:' + makeColor(chalkColors[0]);
 	var divLabelStyle = 'color:' + makeColor(chalkColors[1]);
 	var divDataStyle = 'color:' + makeColor(chalkColors[2]);
-	var currentDow = dows[0];
+	//var currentDow = dows[0];
+	//var currentDow = viewSlatesDows[0];
+	var currentDow = viewSlatesNames[0];
 
     // Store a reference to the previously added page
+	var results;
     var prevPage = null;
+    var prevPageDateName = null;
 
     // tjs 120326
     var colorOffset = 0;
     var synchronizedColor = 0;
     
-   	//alert("plateSlateCellApp addSlatePages dows.length " + dows.length);
+   	//alert("plateSlateCellApp addSlatePages dows length " + dows.length + " viewSlatesNames length " + viewSlatesNames.length);
    	// e.g. 7
     
     // Create each page's markup
     for ( var i=0; i<dows.length; i++ ) {
-    	prevPage = addSlatePage(prevPage, divHeaderStyle, divLabelStyle, divDataStyle, dows[i], breakfastPlates[i].name, lunchPlates[i].name, dinnerPlates[i].name, breakfastPortions[i], lunchPortions[i], dinnerPortions[i] );
+    //for ( var i=0; i<viewSlatesDows.length; i++ ) {
+    	//prevPage = addSlatePage(prevPage, divHeaderStyle, divLabelStyle, divDataStyle, dows[i], breakfastPlates[i].name, lunchPlates[i].name, dinnerPlates[i].name, breakfastPortions[i], lunchPortions[i], dinnerPortions[i] );
+    	//prevPage = addSlatePage(prevPage, divHeaderStyle, divLabelStyle, divDataStyle, dows[i], viewSlatesNames[i], breakfastPlates[i].name, lunchPlates[i].name, dinnerPlates[i].name, breakfastPortions[i], lunchPortions[i], dinnerPortions[i] );
+    	//var results = addSlatePage(prevPage, divHeaderStyle, divLabelStyle, divDataStyle, dows[i], viewSlatesNames[i], breakfastPlates[i].name, lunchPlates[i].name, dinnerPlates[i].name, breakfastPortions[i], lunchPortions[i], dinnerPortions[i] );
+    	results = addSlatePage(prevPageDateName, divHeaderStyle, divLabelStyle, divDataStyle, dows[i], viewSlatesNames[i], breakfastPlates[i].name, lunchPlates[i].name, dinnerPlates[i].name, breakfastPortions[i], lunchPortions[i], dinnerPortions[i] );
+    	prevPage = results[0];
+        prevPageDateName = results[1];
+    	//prevPage = addSlatePage(prevPage, divHeaderStyle, divLabelStyle, divDataStyle, viewSlatesDows[i], breakfastPlates[i].name, lunchPlates[i].name, dinnerPlates[i].name, breakfastPortions[i], lunchPortions[i], dinnerPortions[i] );
     	//alert("plateSlateCellApp addSlatePages prevPage " + prevPage);
+    	//alert("plateSlateCellApp addSlatePages prevPage " + prevPage + " prevPageDateName " + prevPageDateName + " i " + i);
+        // e.g. Today March 28, 2012 and thru i=0 i=9 April...
     	if (prevPage == "Today") {
-    		currentDow = prevPage;
+    		//currentDow = prevPage;
+    		currentDow = prevPageDateName;
     		//colorOffset = 0;
     		synchronizedColor = 0;
     	} else {
     		//colorOffset++;
     		synchronizedColor += 20;
     	}
+    	
+    	// tjs 120328
+	    //$('#'+viewSlatesDows[i]).bind( 'pageshow', function() {
+	    $('#'+viewSlatesNames[i]).bind( 'pagebeforecreate', function() {
+
+		      // Update the dots at the bottom of the screen to
+		      // highlight the new current page		      
+	    	$('#'+viewSlatesNames[i]+'-dots').empty();
+	    	//alert("plateSlateCellApp addSlatePages this.id " + this.id);
+	    	for ( var j=0; j<viewSlatesNames.length; j++ ) {
+		        if ( viewSlatesNames[j] == this.id) {
+			    	//alert("plateSlateCellApp addSlatePages this.id " + this.id + " j " + j + " viewSlatesNames[j] " + viewSlatesNames[j]);
+		          $('#'+viewSlatesNames[i]+'-dots').append( '<span class="highlight">.</span>' );
+		        } else {
+		          $('#'+viewSlatesNames[i]+'-dots').append( '.' );
+		        }
+	    	}
+
+		      // Store the page's associated screen name in currentFriend
+		      //currentFriend = localStorage['currentFriend'] = $.mobile.activePage.attr('id');
+		} );
+	    
+	    //);
     }
     
     // tjs 120326 when the final page is reached it has no 'Next' link.  However we will insert a pseudo-next link.
@@ -5134,7 +5181,9 @@ function addSlatePages(dows, breakfastPlates, lunchPlates, dinnerPlates, breakfa
 
 	//alert("plateSlateCellApp addSlatePages prevPage " + prevPage);
 	// e.g. Friday
-    if ( prevPage ) {
+	//alert("plateSlateCellApp addSlatePages prevPageDateName " + prevPageDateName);
+    //if ( prevPage ) {
+    if ( prevPageDateName ) {
 		synchronizedColor += 20;
    	//colorOffset++;
     	color = synchronizedColor;
@@ -5151,23 +5200,35 @@ function addSlatePages(dows, breakfastPlates, lunchPlates, dinnerPlates, breakfa
     	//alert("plateSlateCellApp addSlatePages pageMarkup appended...");
 
           var nextLinkMarkup = '<li class="ui-pagination-next"><a href="#' + pageId + '">Next</a></li>';
-          $('#' + prevPage + ' ul:jqmData(role="pagination")').append( nextLinkMarkup );
+          //$('#' + prevPage + ' ul:jqmData(role="pagination")').append( nextLinkMarkup );
+          $('#' + prevPageDateName + ' ul:jqmData(role="pagination")').append( nextLinkMarkup );
     }
     
     // Render the pages
-    for ( var i=0; i<dows.length; i++ ) $('#'+dows[i]).page();
+    //for ( var i=0; i<dows.length; i++ ) $('#'+dows[i]).page();
+    //var len = viewSlatesDows.length;
+    var len = viewSlatesNames.length;
+    //alert("plateSlateCellApp addSlatePages len " + len);
+    //alert("plateSlateCellApp addSlatePages viewSlatesNames len " + len);
+    for ( var i=0; i<len; i++ ) {
+    	$('#'+viewSlatesNames[i]).page();
+    }
     if ( prevPage ) {
     	$('#'+pageId).page();
     }    
     return currentDow;
 }
 
-function addSlatePage(prevPage, divHeaderStyle, divLabelStyle, divDataStyle, dow, breakfastPlate, lunchPlate, dinnerPlate, breakfastPortions, lunchPortions, dinnerPortions) {
+//function addSlatePage(prevPage, divHeaderStyle, divLabelStyle, divDataStyle, dow, breakfastPlate, lunchPlate, dinnerPlate, breakfastPortions, lunchPortions, dinnerPortions) {
+function addSlatePage(prevPage, divHeaderStyle, divLabelStyle, divDataStyle, dow, dateName, breakfastPlate, lunchPlate, dinnerPlate, breakfastPortions, lunchPortions, dinnerPortions) {
 	// NB the dow is also the page id
-	var pageId = dow;
+	//var pageId = dow;
+	var pageId = dateName;
+	var displayDateName = dateName.replace(/_/g,' ');
 	var typePortions;
 	var typePortion;
 	var portion;
+	var results = new Array();
 	
     // Don't add the page if it's already in the DOM
     if ( document.getElementById( pageId ) ) return;
@@ -5182,7 +5243,10 @@ function addSlatePage(prevPage, divHeaderStyle, divLabelStyle, divDataStyle, dow
 	//alert("plateSlateCellApp addSlatePage pageMarkup " + pageMarkup);
     pageMarkup += '<div class="felt">';
     pageMarkup += '<div style="' + divHeaderStyle + ';">';
-    pageMarkup += '<h1>' + pageId + '</h1>';
+    if (dow == displayDateName)
+    	pageMarkup += '<h1>' + displayDateName + '</h1>';
+    else
+    	pageMarkup += '<h1>' + dow + ', ' + displayDateName + '</h1>';
     pageMarkup += '</div>';
     // tjs 120327
 	if (!slateMealPlansForDinnerOnly) {
@@ -5267,13 +5331,17 @@ function addSlatePage(prevPage, divHeaderStyle, divLabelStyle, divDataStyle, dow
     pageMarkup += '<ul data-role="pagination">';
     // tjs 120323
     if ( prevPage ) {
+    	//alert("plateSlateCellApp addSlatePage prev link prevPage " + prevPage);
     	pageMarkup += '<li class="ui-pagination-prev"><a href="#' + prevPage + '">Prev</a></li>';    
     } else {
      	pageMarkup += '<li class="ui-pagination-prev"><a href="#home-page">Prev</a></li>';    
     }
     pageMarkup += '</ul>';
     pageMarkup += '</div>';
-
+    // tjs 120328
+    //pageMarkup += '<div id="dots"></div>';
+    //pageMarkup += '<div id="' + pageId + '-dots"></div>';
+    pageMarkup += '<div id="' + pageId + '-dots" class="dots"></div>';
 	//alert("plateSlateCellApp addSlatePage pageMarkup " + pageMarkup);
 
     // Add the page to the DOM
@@ -5282,10 +5350,17 @@ function addSlatePage(prevPage, divHeaderStyle, divLabelStyle, divDataStyle, dow
     // add a  "Next" link to the previous page's nav
     if ( prevPage ) {
        var nextLinkMarkup = '<li class="ui-pagination-next"><a href="#' + pageId + '">Next</a></li>';
-      $('#' + prevPage + ' ul:jqmData(role="pagination")').append( nextLinkMarkup );
+   	   //alert("plateSlateCellApp addSlatePage nextLinkMarkup " + nextLinkMarkup + " prevPage " + prevPage);
+       // e.g. <li class="ui-pagination-next"><a href="#March_29,_2012">Next</a></li> prevPage March_28,_2012
+
+       $('#' + prevPage + ' ul:jqmData(role="pagination")').append( nextLinkMarkup );
+   	   //alert("plateSlateCellApp addSlatePage nextLinkMarkup " + nextLinkMarkup + " prevPage " + prevPage);
     }
     // All done - this page now becomes the new "previous page"
-    return pageId;
+    //return pageId;
+    results.push(dow);
+    results.push(pageId);
+    return results;
 }
 
 function doReport() {
@@ -5414,6 +5489,11 @@ function getReportGridArrays(thresholdOffset, plateCount, plateHistory) {
 	var lunchPortions = new Array();
 	// tjs 120116
 	var dinnerPortions = new Array();
+	// tjs 120328
+	var dateName;
+	var dateNames = new Array();
+    //var reg = new RegExp("[ ]+","g");
+
 	var plateId;
 	var plate;
 	while (count < maxCount) {
@@ -5430,6 +5510,11 @@ function getReportGridArrays(thresholdOffset, plateCount, plateHistory) {
 	    	} else {
 		    	dows.push(slate.description);
 	    	}
+	    	// tjs 120328
+	    	dateName = slate.name;
+	    	dateName = dateName.replace(/\s/g,'_');
+	    	dateName = dateName.replace(/,/g,'');
+	    	dateNames.push(dateName);
 	    	plateId = slate.breakfastId;
 	    	plate = plates[plateId];
 	    	//breakfastPlates.push(plate.name);
@@ -5468,6 +5553,11 @@ function getReportGridArrays(thresholdOffset, plateCount, plateHistory) {
 		    	} else {
 			    	dows.unshift("Prior Day");
 		    	}
+		    	// tjs 120328
+		    	dateName = slate.name;
+		    	dateName = dateName.replace(/\s/g,'_');
+		    	dateName = dateName.replace(/,/g,'');
+		    	dateNames.push(dateName);
 		    	plateId = slate.breakfastId;
 		    	plate = plates[plateId];
 		    	breakfastPlates.unshift(plate);
@@ -5494,6 +5584,8 @@ function getReportGridArrays(thresholdOffset, plateCount, plateHistory) {
 	results.push(breakfastPortions);
 	results.push(lunchPortions);
 	results.push(dinnerPortions);
+	// tjs 120328
+	results.push(dateNames);
 	//alert("plateSlateCellApp getReportGridArrays results.length " + results.length);
 	return results;
 }

@@ -188,10 +188,132 @@ margin-left:30px;
 }
 
 /* Slate Report screen name */
-
 .slatePageContent h1 {
   text-align: center;
   font-size: 100%;
   /*margin-top: -10px;*/
   margin-top: 10px;
+}
+
+/* tjs 120328 */
+/* The pagination dots at the bottom of the page */
+
+.dots {
+  position: absolute;
+  z-index: 9999;
+  bottom: 8px;
+  height: 30px;
+  line-height: 0;
+  color: #888;
+  width: 100%;
+  text-align: center;
+  font-size: 55px;
+  letter-spacing: 1px;
+}
+
+.dots .highlight {
+  color: #fff;
+}
+
+
+/*** Media queries to handle different iOS devices and orientations ***/
+
+
+/* iPhone, standalone */
+
+@media only screen and (max-device-width: 480px) and (orientation: portrait) {
+  .tweetPageContent { height: 380px; }
+}
+
+@media only screen and (max-device-width: 480px) and (orientation: landscape) {
+  .tweetPageContent { height: 230px; font-size: 95%; }
+  .profileImage { width: 60px; height: 60px; }
+  .tweetPageContent .recentTweet { min-height: 80px; font-size: 95%; background-size: 25%; }
+}
+
+
+/* iPhone, running in Safari */
+
+@media only screen and (max-height: 360px) and (orientation: portrait) {
+  .tweetPageContent { height: 330px; font-size: 85%; }
+  .tweetPageContent .recentTweet { font-size: 120%; margin-top: -20px; }
+  #dots { bottom: -50px; }
+  .ui-pagination { bottom: 65px; }
+}
+
+@media only screen and (max-height: 260px) and (orientation: landscape) {
+  .tweetPageContent { font-size: 95%; margin-top: 10px; }
+  .profileImage { width: 60px; height: 60px; }
+  .gloss { top: 10px; }
+  #dots { bottom: -63px; }
+  .ui-pagination { bottom: 72px; }
+}
+
+
+/* iPad */
+
+@media only screen and (device-width: 768px) and (orientation: portrait) {
+  .tweetPageContent { height: 92%; font-size: 150%; }
+}
+
+@media only screen and (device-width: 768px) and (orientation: landscape) {
+  .tweetPageContent { height: 89%; font-size: 150%; }
+}
+
+
+/*** jQuery Mobile swatches ***/
+
+/* A swatch */
+.ui-body-a {
+  background: #000;
+}
+
+/* F swatch */
+
+.ui-btn-up-f {
+  border: 1px solid #b11;
+  background: #a00;
+  font-weight: bold;
+  color: #fff;
+  cursor: pointer;
+  text-shadow: 0 -1px 1px #000;
+  text-decoration: none;
+  background-image: -moz-linear-gradient(top, #e55, #a00);
+  background-image: -webkit-gradient(linear,left top,left bottom, color-stop(0, #f66), color-stop(1, #a00));
+  -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#f66', EndColorStr='#a00')";
+}
+.ui-btn-up-f a.ui-link-inherit {
+  color: #fff;
+}
+.ui-btn-hover-f {
+  border: 1px solid #a00;
+  background: #b11;
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 0 -1px 1px #000;
+  text-decoration: none;
+  background-image: -moz-linear-gradient(top, #f66, #b11);
+  background-image: -webkit-gradient(linear,left top,left bottom, color-stop(0, #f66), color-stop(1, #b11));
+  -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#f66', EndColorStr='#b11')";
+}
+.ui-btn-hover-f a.ui-link-inherit {
+  color: #fff;
+}
+.ui-btn-down-f {
+  border: 1px solid #800;
+  background: #e55;
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 0 -1px 1px #000;
+  background-image: -moz-linear-gradient(top, #800, #e55);
+  background-image: -webkit-gradient(linear,left top,left bottom, color-stop(0, #800), color-stop(1, #e55));
+  -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#800', EndColorStr='#e55')";
+}
+.ui-btn-down-f a.ui-link-inherit {
+  color: #fff;
+}
+.ui-btn-up-f,
+.ui-btn-hover-f,
+.ui-btn-down-f {
+  font-family: Helvetica, Arial, sans-serif;
 }
