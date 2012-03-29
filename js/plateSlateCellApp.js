@@ -429,13 +429,15 @@ function populatePortionMasterData() {
 	portly = new Portion(i, "Grain", "Bagels", "Bagels", 1, 0);
 	portions.push(portly);
 	i++;
-	portly = new Portion(i, "Grain", "Bran Flakes", "Bran Flakes", 1, 0);
+	portly = new Portion(i, "Grain", "Bran Flakes", "(Flaked Cereal)", 1, 0);
 	portions.push(portly);
 	i++;
 	portly = new Portion(i, "Grain", "English Muffins", "English Muffins", 1, 0);
 	portions.push(portly);
 	i++;
-	portly = new Portion(i, "Grain", "Irish Bread", "Irish Bread", 1, 0);
+	// tjs 120329
+	//portly = new Portion(i, "Grain", "Irish Bread", "Irish Bread", 1, 0);
+	portly = new Portion(i, "Grain", "Bread", "(Irish, Wheat)", 1, 0);
 	portions.push(portly);
 	i++;
 	portly = new Portion(i, "Grain", "Muffins", "Muffins", 1, 0);
@@ -447,16 +449,18 @@ function populatePortionMasterData() {
 	portly = new Portion(i, "Grain", "Pasta", "Pasta", 1, 0);
 	portions.push(portly);
 	i++;
-	portly = new Portion(i, "Grain", "Pecan Buns", "Pecan Buns", 1, 0);
+	// tjs 120329
+	//portly = new Portion(i, "Grain", "Pecan Buns", "Pecan Buns", 1, 0);
+	portly = new Portion(i, "Grain", "Buns", "(Hot Cross, Pecan)", 1, 0);
 	portions.push(portly);
 	i++;
-	portly = new Portion(i, "Grain", "Puffs", "Puffs", 1, 0);
+	portly = new Portion(i, "Grain", "Puffs", "(Puffed Cereal)", 1, 0);
 	portions.push(portly);
 	i++;
 	portly = new Portion(i, "Grain", "Rice", "Rice", 1, 0);
 	portions.push(portly);
 	i++;
-	portly = new Portion(i, "Grain", "Schredded Wheat", "Schredded Wheat", 1, 0);
+	portly = new Portion(i, "Grain", "Schredded Wheat", "(Schredded Cereal)", 1, 0);
 	portions.push(portly);
 	i++;
 	portly = new Portion(i, "Grain", "Toast", "Toast", 1, 0);
@@ -476,7 +480,7 @@ function populatePortionMasterData() {
 	portly = new Portion(i, "Protein", "Fish", "Fish", 1, 0);
 	portions.push(portly);
 	i++;
-	portly = new Portion(i, "Protein", "Legeume Products", "(Whole Peanuts, Green, Peanut Butter)", 1, 0);
+	portly = new Portion(i, "Protein", "Legume Products", "(Peanuts, Soy, Peanut Butter)", 1, 0);
 	portions.push(portly);
 	i++;
 	portly = new Portion(i, "Protein", "Poultry", "(Chicken, Turkey)", 1, 0);
@@ -487,16 +491,23 @@ function populatePortionMasterData() {
 	
 	//Vegetables
 	i++;
-	portly = new Portion(i, "Vegetables", "Asparagas", "Asparagas", 1, 0);
+	portly = new Portion(i, "Vegetables", "Asparagus", "Asparagus", 1, 0);
 	portions.push(portly);
 	i++;
 	portly = new Portion(i, "Vegetables", "Beets", "Beets", 1, 0);
 	portions.push(portly);
 	i++;
-	portly = new Portion(i, "Vegetables", "Brussel Sprouts", "Brussel Sprouts", 1, 0);
+	portly = new Portion(i, "Vegetables", "Broccoli", "(Broccoli, Sprouts)", 1, 0);
 	portions.push(portly);
 	i++;
-	portly = new Portion(i, "Vegetables", "Cauliflour", "Cauliflour", 1, 0);
+	portly = new Portion(i, "Vegetables", "Brussel Sprouts", "(Cabbage, Kale, Sprouts)", 1, 0);
+	portions.push(portly);
+	// tjs 120329
+	i++;
+	portly = new Portion(i, "Vegetables", "Carrots", "Carrots", 1, 0);
+	portions.push(portly);
+	i++;
+	portly = new Portion(i, "Vegetables", "Cauliflower", "(Cauliflower)", 1, 0);
 	portions.push(portly);
 	i++;
 	portly = new Portion(i, "Vegetables", "Celery", "Celery", 1, 0);
@@ -505,31 +516,36 @@ function populatePortionMasterData() {
 	portly = new Portion(i, "Vegetables", "Corn", "Corn", 1, 0);
 	portions.push(portly);
 	i++;
-	portly = new Portion(i, "Vegetables", "Cucomber", "(Cukes, Pickles, Zukini)", 1, 0);
+	// tjs 120329
+	//portly = new Portion(i, "Vegetables", "Cucomber", "(Cukes, Pickles, Zukini)", 1, 0);
+	portly = new Portion(i, "Vegetables", "Cucumber", "(Cukes, Pickles)", 1, 0);
 	portions.push(portly);
 	i++;
-	portly = new Portion(i, "Vegetables", "Leafy Produce", "Leafy Produce", 1, 0);
+	// tjs 120329
+	//portly = new Portion(i, "Vegetables", "Leafy Produce", "Leafy Produce", 1, 0);
+	portly = new Portion(i, "Vegetables", "Leafy Produce", "(Boston, Crisp, Iceberg Leaf, Romaine)", 1, 0);
 	portions.push(portly);
 	i++;
-	portly = new Portion(i, "Vegetables", "Onions", "Onions", 1, 0);
+	portly = new Portion(i, "Vegetables", "Onions", "(Garlic, Onions)", 1, 0);
 	portions.push(portly);
 	i++;
 	portly = new Portion(i, "Vegetables", "Peas", "Peas", 1, 0);
 	portions.push(portly);
 	i++;
-	portly = new Portion(i, "Vegetables", "Peppers", "Peppers", 1, 0);
+	portly = new Portion(i, "Vegetables", "Peppers", "(Green, Orange, Red, White, Yellow)", 1, 0);
 	portions.push(portly);
 	i++;
 	portly = new Portion(i, "Vegetables", "Potatos", "Potatos", 1, 0);
 	portions.push(portly);
 	i++;
-	portly = new Portion(i, "Vegetables", "Squash", "Squash", 1, 0);
+	// tjs 120329
+	portly = new Portion(i, "Vegetables", "Squash", "(Acorn, Summer, Zucchini)", 1, 0);
 	portions.push(portly);
 	i++;
 	portly = new Portion(i, "Vegetables", "Radishes", "Radishes", 1, 0);
 	portions.push(portly);
 	i++;
-	portly = new Portion(i, "Vegetables", "Tomatoes", "Tomatoes", 1, 0);
+	portly = new Portion(i, "Vegetables", "Tomatoes", "(Beefsteak, Cherry, Plum)", 1, 0);
 	portions.push(portly);
 	
 	//Fruits
@@ -543,25 +559,25 @@ function populatePortionMasterData() {
 	portly = new Portion(i, "Fruits", "Bananas", "Bananas", 1, 0);
 	portions.push(portly);
 	i++;
-	portly = new Portion(i, "Fruits", "Berries", "Berries", 1, 0);
+	portly = new Portion(i, "Fruits", "Berries", "(Blueberry, Cranberry, Rasberry)", 1, 0);
 	portions.push(portly);
 	i++;
 	portly = new Portion(i, "Fruits", "Cherries", "Cherries", 1, 0);
 	portions.push(portly);
 	i++;
-	portly = new Portion(i, "Fruits", "Citrous", "(Grapefruit, Oranges)", 1, 0);
+	portly = new Portion(i, "Fruits", "Citrous", "(Clementines, Grapefruit, Oranges)", 1, 0);
 	portions.push(portly);
 	i++;
-	portly = new Portion(i, "Fruits", "Grapes", "(Whole, Raisons)", 1, 0);
+	portly = new Portion(i, "Fruits", "Grapes", "(Grapes, Raisins)", 1, 0);
 	portions.push(portly);
 	i++;
-	portly = new Portion(i, "Fruits", "Peaches", "(Whole, Necturines)", 1, 0);
+	portly = new Portion(i, "Fruits", "Peaches", "(Peaches, Nectarines)", 1, 0);
 	portions.push(portly);
 	i++;
 	portly = new Portion(i, "Fruits", "Pears", "Pears", 1, 0);
 	portions.push(portly);
 	i++;
-	portly = new Portion(i, "Fruits", "Plums", "Plums", 1, 0);
+	portly = new Portion(i, "Fruits", "Plums", "(Plums, Prunes)", 1, 0);
 	portions.push(portly);
 
 	//Dairy
