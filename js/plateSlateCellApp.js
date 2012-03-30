@@ -6213,6 +6213,90 @@ function refreshSlatePortionCache(slate, mealName, optionValue) {
 	}
 }
 
+function refreshSlatePortionCache2(slate, mealName, optionValue) {
+	var index = 0;
+	var currentPortionId;
+	if  (mealName == "Breakfast") {
+		for (var i = 0; i < slate.breakfastPortions.length; i++) {
+			currentPortionId = slate.breakfastPortions[i];
+			if (currentPortionId == optionValue) {
+				continue;
+			}
+			slate.breakfastPortions[index++] = currentPortionId;
+		}
+		slate.breakfastPortions[index] = 0;
+		hijaxBreakfastPage('fade');
+	} else if (mealName == "Lunch") {
+		for (var i = 0; i < slate.lunchPortions.length; i++) {
+			currentPortionId = slate.lunchPortions[i];
+			if (currentPortionId == optionValue) {
+				continue;
+			}
+			slate.lunchPortions[index++] = currentPortionId;
+		}
+		slate.lunchPortions[index] = 0;
+		hijaxLunchPage('fade');
+	} else if (mealName == "Dinner") {
+		for (var i = 0; i < slate.dinnerPortions.length; i++) {
+			currentPortionId = slate.dinnerPortions[i];
+			if (currentPortionId == optionValue) {
+				continue;
+			}
+			slate.dinnerPortions[index++] = currentPortionId;
+		}
+		slate.dinnerPortions[index] = 0;
+		hijaxDinnerPage('fade');
+	}
+	
+	/*
+	var typePortions;
+	if  (mealName == "Breakfast") {
+		typePortions = slate.breakfastPortions;
+	} else if (mealName == "Lunch") {
+		typePortions = slate.lunchPortions;
+	} else if (mealName == "Dinner") {
+		typePortions = slate.dinnerPortions;
+	}
+	//var index = 0;
+	var portionExists = false;
+	for (var i = 0; i < typePortions.length; i++) {
+		if (typePortions[i] == optionValue) {
+			portionExists = true;
+		}
+		//index++;
+	}
+	if (portionExists) {
+		if  (mealName == "Breakfast") {
+			slate.breakfastPortions.length = 0;
+			for (var i = 0; i < typePortions.length; i++) {
+				if (typePortions[i] == optionValue) {
+					continue;
+				}
+				slate.breakfastPortions.push(typePortions[i]);
+			}
+			hijaxBreakfastPage('fade');
+		} else if (mealName == "Lunch") {
+			slate.lunchPortions.length = 0;
+			for (var i = 0; i < typePortions.length; i++) {
+				if (typePortions[i] == optionValue) {
+					continue;
+				}
+				slate.lunchPortions.push(typePortions[i]);
+			}
+			hijaxLunchPage('fade');
+		} else if (mealName == "Dinner") {
+			slate.dinnerPortions.length = 0;
+			for (var i = 0; i < typePortions.length; i++) {
+				if (typePortions[i] == optionValue) {
+					continue;
+				}
+				slate.dinnerPortions.push(typePortions[i]);
+			}
+			hijaxDinnerPage('fade');
+		}
+	}*/	
+}
+
 function hijaxGrainSelectionDial(offset, mealName, torf) {
 	//alert("plateslate hijaxGrainSelectionDial offset " + offset + " mealName " + mealName);
 	//alert("plateslate hijaxGrainSelectionDial offset " + offset + " mealName " + mealName + " grainPortionSelectListHtml " + grainPortionSelectListHtml);
@@ -6353,7 +6437,8 @@ function hijaxDairySelectionDial(offset, mealName, torf) {
 }
 
 function dropPortion(plateIndex, mealName, portionId) {
-	//alert("plateslate dropPortion mealName " + mealName + " portionId " + portionId);
+	//alert("plateSlateCellApp dropPortion mealName " + mealName + " portionId " + portionId + " plateIndex " + plateIndex);
+	// e.g. plateSlateCellApp dropPortion mealName Breakfast portionId 47 plateIndex 0 (when edit slate mode)
 	if (plateIndex == 0) {
 	    var offset = color/20;
 		var thresholdOffset = offset + slateOffsetThreshold;
@@ -6361,6 +6446,9 @@ function dropPortion(plateIndex, mealName, portionId) {
 		var slateId = slate.id;
 		// make the portioninactive...
 		updateFood(slateId, mealName, portionId, 0, 1);
+		// tjs 120330
+		//  update cache
+		refreshSlatePortionCache2(slate, mealName, portionId);
 	} else {
 		var dish = plates[plateIndex];
 		if (dish.portion1 == portionId)
