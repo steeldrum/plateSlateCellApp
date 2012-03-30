@@ -3680,6 +3680,12 @@ function viewSlate(location, slate) {
 
 // tjs 120209
 function hyjaxLoginDial() {
+	// tjs 120330
+    // Remove all old dialog
+    //$('#login-dial').remove();
+	//$('.ui-dialog').remove();
+	//alert("plateSlateCellApp  hyjaxLoginDial...");
+    
 	var newDialHtml = '<div data-role="dialog" id="login-dial" data-rel="dialog"><div data-role="header">';
 	newDialHtml += '<h1>Login</h1></div>';	
 	newDialHtml += '<div data-role="content" data-theme="c"><div class="content-primary"><div id="loginContents">';	
@@ -3693,7 +3699,8 @@ function hyjaxLoginDial() {
 		newDialHtml += ' checked="checked" ';
 	} 
 	newDialHtml += ' data-theme="d"/></fieldset></p>';
-	newDialHtml += '</form><br/><br/><a href="#home-page" data-role="button" data-inline="true" data-rel="back" data-theme="a">Cancel</a>';		
+	//newDialHtml += '</form><br/><br/><a href="#home-page" data-role="button" data-inline="true" data-rel="back" data-theme="a">Cancel</a>';		
+	newDialHtml += '</form><br/><br/><a href="#home-page" data-role="button" data-inline="true" data-theme="a">Cancel</a>';		
 	newDialHtml += '<a href="javascript:processLoginForm();" data-role="button" data-inline="true">Login</a><div id ="resultLog"></div>';
 	newDialHtml += '</div></div></div><script></script></div>';
 	var newDial = $(newDialHtml);
@@ -3731,8 +3738,9 @@ function processLoginForm() {
 		}
 	}
 	// use loginForm
-	//alert("plateslate  processLoginForm name " + name + " password " + pword + " restoreFromBackup " + restoreFromBackup);
-
+	//alert("plateSlateCellApp  processLoginForm name " + name + " password " + pword + " restoreFromBackup " + restoreFromBackup);
+	// e.g. plateSlateCellApp  processLoginForm name SteelDrum password xxxxxxxxxxxx restoreFromBackup false
+	
     $.ajax({  
         //type: "POST",  
       type: "GET",
@@ -3740,10 +3748,11 @@ function processLoginForm() {
       data: { "name": name,
     	  "pword": pword },  
       success: function(msg) {
-          //alert("plateslate processLoginForm success msg " + msg + " len " + msg.length);
+          //alert("plateSlateCellApp processLoginForm success msg " + msg + " len " + msg.length);
+          // e.g. plateSlateCellApp processLoginForm success msg ["loginInfo", {"id":"1","userName":"SteelDrum","firstName":"Tom","lastName":"Soucy"}] len 85
           var tempMsg = msg;
     		JSON.parse(tempMsg, function (key, value) {
-    			//alert("plateslate processLoginForm key " + key + " value " + value);
+    			//alert("plateSlateCellApp processLoginForm key " + key + " value " + value);
     			if (key =='id') {
     				loginInfo.id = value;
     			} else if (key =='userName') {
@@ -3755,12 +3764,14 @@ function processLoginForm() {
     			}
     			});
     		var accountId = loginInfo.id;
-			//alert("plateslate processLoginForm loginInfo.id " + loginInfo.id + " loginInfo.userName " + loginInfo.userName + " loginInfo.firstName " + loginInfo.firstName + " loginInfo.lastName " + loginInfo.lastName);
+			//alert("plateSlateCellApp processLoginForm loginInfo.id " + loginInfo.id + " loginInfo.userName " + loginInfo.userName + " loginInfo.firstName " + loginInfo.firstName + " loginInfo.lastName " + loginInfo.lastName + " restoreFromBackup " + restoreFromBackup);
+			// e.g. plateSlateCellApp processLoginForm loginInfo.id 1 loginInfo.userName SteelDrum loginInfo.firstName Tom loginInfo.lastName Soucy restoreFromBackup false
     	  if (accountId > 0) {
     		  authenticated = true;
     		  loginAccountNumber = accountId;
-    		  //alert("plateslate processLoginForm success  authenticated " + authenticated + " loginAccountNumber " + loginAccountNumber + " restoreFromBackup " + restoreFromBackup);
-     		  //alert("plateslate processLoginForm success closing dialog...");
+    		  //alert("plateSlateCellApp processLoginForm success  authenticated " + authenticated + " loginAccountNumber " + loginAccountNumber + " restoreFromBackup " + restoreFromBackup);
+    		  // e.g. plateSlateCellApp processLoginForm success  authenticated true loginAccountNumber 1 restoreFromBackup false
+     		  //alert("plateSlateCellApp processLoginForm success closing dialog...");
     		  // tjs 120119
      		  //setLogoutButton();
     		  // tjs 120210
@@ -3770,7 +3781,16 @@ function processLoginForm() {
     			  doRestoreFromBackup(loginAccountNumber, null);
     		  } else {
 	    		  $('.loginLogout').children('.ui-btn-inner').children('.ui-btn-text').text("Logout");
-	    		  $("#login-dial").dialog("close");
+	     		  //alert("plateSlateCellApp processLoginForm success closing dialog...");
+	    		  //$("#login-dial").dialog("close");
+	    		  $('#login-dial').dialog('close');
+	    		  //$('.ui-dialog').dialog('close');
+					//setTimeout(function() {
+						//alert('hello');
+						//$('#login-dial').dialog('close');
+						//},1000);
+	    		  //alert("plateSlateCellApp processLoginForm success closed dialog...");
+	    		  //alert("plateSlateCellApp processLoginForm closed state success  authenticated " + authenticated + " loginAccountNumber " + loginAccountNumber + " restoreFromBackup " + restoreFromBackup);
     		  }
     	  } else {
     		  //alert("Login failed!");
@@ -3783,7 +3803,7 @@ function processLoginForm() {
       }  
     });  
     
-	//alert("plateslate  processLoginForm called ajax...");
+	//alert("plateSlateCellApp  processLoginForm called ajax...");
     return false;  
 }
 
@@ -3801,7 +3821,8 @@ function hyjaxLogoutDial() {
 		newDialHtml += ' checked="checked" ';
 	}
 	newDialHtml += ' data-theme="d"/></fieldset></p>';
-	newDialHtml += '</form><br/><br/><a href="#home-page" data-role="button" data-inline="true" data-rel="back" data-theme="a">Cancel</a>';		
+	//newDialHtml += '</form><br/><br/><a href="#home-page" data-role="button" data-inline="true" data-rel="back" data-theme="a">Cancel</a>';		
+	newDialHtml += '</form><br/><br/><a href="#home-page" data-role="button" data-inline="true" data-theme="a">Cancel</a>';		
 	newDialHtml += '<a href="javascript:doLogout();" data-role="button" data-inline="true">Logout</a><div id ="resultLog"></div>';
 	newDialHtml += '</div><script></script></div>';
 	var newDial = $(newDialHtml);
@@ -3868,7 +3889,8 @@ function hijaxPreferencesPage() {
 	// cf <div data-role="page" data-add-back-btn="true" id="report-page" data-title="Report">
 	var newPageHtml = '<div data-role="page" data-add-back-btn="true" id="preferences-page" data-title="Preferences">';
 	newPageHtml += '<div data-role="header" data-theme="f" data-position="fixed">';
-	newPageHtml += '<a href="index.html" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-left jqm-home">Home</a>';
+	//newPageHtml += '<a href="index.html" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-left jqm-home">Home</a>';
+	newPageHtml += '<a href="#home-page" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-left jqm-home">Home</a>';
 	newPageHtml += '<h1>Preferences</h1>';
 	newPageHtml += '</div>';
 	newPageHtml += '<div data-role="content"><div class="content-primary"><div id="placeSettingContents">';
@@ -4029,7 +4051,8 @@ function hijaxReportPage() {
 	var newPageHtml = '<div data-role="page" data-add-back-btn="true" id="report-page" data-title="Report">';
 	//newPageHtml += '<div data-role="header"><h1>Meal Plan Report</h1></div>';
 	newPageHtml += '<div data-role="header" data-theme="f" data-position="fixed">';
-	newPageHtml += '<a href="index.html" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-left jqm-home">Home</a>';
+	//newPageHtml += '<a href="index.html" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-left jqm-home">Home</a>';
+	newPageHtml += '<a href="#home-page" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-left jqm-home">Home</a>';
 	newPageHtml += '<h1>Reports</h1>';
 	newPageHtml += '</div>';
 	newPageHtml += '<div data-role="content">';
@@ -4105,7 +4128,8 @@ function hijaxSlateOfPlatesPage() {
 	var columnClass = 'ui-block-';
 	var newPageHtml = '<div data-role="page" data-add-back-btn="true" id="slate-of-plates-report-page" data-title="Slate of Plates">';
 	newPageHtml += '<div data-role="header" data-theme="f" data-position="fixed">';
-	newPageHtml += '<a href="index.html" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-left jqm-home">Home</a>';
+	//newPageHtml += '<a href="index.html" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-left jqm-home">Home</a>';
+	newPageHtml += '<a href="#home-page" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-left jqm-home">Home</a>';
 	newPageHtml += '<h1>Slate of Plates</h1>';
 	newPageHtml += '</div>';
 	newPageHtml += '<div data-role="content">';
@@ -4323,7 +4347,8 @@ function hijaxDinnerSlatePage() {
 	var columnClass = 'ui-block-';
 	var newPageHtml = '<div data-role="page" data-add-back-btn="true" id="dinner-slate-report-page" data-title="Dinner Slate">';
 	newPageHtml += '<div data-role="header" data-theme="f" data-position="fixed">';
-	newPageHtml += '<a href="index.html" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-left jqm-home">Home</a>';
+	//newPageHtml += '<a href="index.html" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-left jqm-home">Home</a>';
+	newPageHtml += '<a href="#home-page" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-left jqm-home">Home</a>';
 	newPageHtml += '<h1>Dinner Slate</h1>';
 	newPageHtml += '</div>';
 	newPageHtml += '<div data-role="content">';
@@ -4460,7 +4485,8 @@ Dairy			4c98d0		8cc7eb
 	var columnClass = 'ui-block-';
 	var newPageHtml = '<div data-role="page" data-add-back-btn="true" id="dinner-portions-slate-report-page" data-title="Dinner Portions Slate">';
 	newPageHtml += '<div data-role="header" data-theme="f" data-position="fixed">';
-	newPageHtml += '<a href="index.html" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-left jqm-home">Home</a>';
+	//newPageHtml += '<a href="index.html" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-left jqm-home">Home</a>';
+	newPageHtml += '<a href="#home-page" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-left jqm-home">Home</a>';
 	newPageHtml += '<h1>Dinner Portions Slate</h1>';
 	newPageHtml += '</div>';
 	newPageHtml += '<div data-role="content">';
@@ -4733,7 +4759,8 @@ Dairy			4c98d0		8cc7eb
 	var columnClass = 'ui-block-';
 	var newPageHtml = '<div data-role="page" data-add-back-btn="true" id="kitchen-portions-whiteboard-report-page" data-title="Kitchen Portions Whiteboard">';
 	newPageHtml += '<div data-role="header" data-theme="f" data-position="fixed">';
-	newPageHtml += '<a href="index.html" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-left jqm-home">Home</a>';
+	//newPageHtml += '<a href="index.html" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-left jqm-home">Home</a>';
+	newPageHtml += '<a href="#home-page" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-left jqm-home">Home</a>';
 	newPageHtml += '<h1>Kitchen Portions Whiteboard</h1>';
 	newPageHtml += '</div>';
 	newPageHtml += '<div data-role="content">';
@@ -5386,8 +5413,8 @@ function doReport() {
 		paragraphs.push(requiresLoginLine1);
 		paragraphs.push(requiresLoginLine2);
 		hijaxAlertDial(requiresLoginTitle, paragraphs);
-		return;
-	}
+		//return;
+	} else {
 	//alert("plateSlateCellApp doReport authenticated " + authenticated);
 	var thresholdOffset = slateOffsetThreshold;
 	var xml = getReportXml('Meal Plan Report', thresholdOffset);
@@ -5405,6 +5432,7 @@ function doReport() {
 		//alert("plateslate click url " + url + " windowName " + windowName);
 		window.open(url, windowName, 'resizable,scrollbars');
 	});
+	}
 }
 
 function getReportXml(name, offset) {
@@ -5650,7 +5678,8 @@ function hijaxImportPage() {
 	var newPageHtml = '<div data-role="page" data-add-back-btn="true" id="import-page" data-title="Import">';
 	//newPageHtml += '<div data-role="header"><h1>Meal Plan Report</h1></div>';
 	newPageHtml += '<div data-role="header" data-theme="f" data-position="fixed">';
-	newPageHtml += '<a href="index.html" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-left jqm-home">Home</a>';
+	//newPageHtml += '<a href="index.html" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-left jqm-home">Home</a>';
+	newPageHtml += '<a href="#home-page" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-left jqm-home">Home</a>';
 	newPageHtml += '<h1>Imports</h1>';
 	newPageHtml += '</div>';
 	newPageHtml += '<div data-role="content"><form name="importForm">';
@@ -5817,7 +5846,8 @@ function getSlatePlateView(mealName, offset, torf) {
 	newPageHtml += '" data-theme="b" data-dom-cache="true">';
 	newPageHtml += '<div data-role="header" data-theme="f" data-position="fixed">';
 	newPageHtml += '<h1>' + mealName + '</h1>';
-	newPageHtml += '<a href="index.html" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-left jqm-home">Home</a>';
+	//newPageHtml += '<a href="index.html" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-left jqm-home">Home</a>';
+	newPageHtml += '<a href="#home-page" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-left jqm-home">Home</a>';
 	newPageHtml += '</div><div data-role="content"><div class="content-primary">';
 	newPageHtml += mealHtml;
 	newPageHtml += '</div></div>';
@@ -6519,7 +6549,8 @@ function hijaxPlatesPage(direction) {
 	  // create page markup
 	var newPageHtml = '<div data-role="page" id="plates-page" data-title="Plates" class="type-interior" data-theme="b" data-dom-cache="true">';
 	newPageHtml += '<div data-role="header" data-theme="f" data-position="fixed">';
-	newPageHtml += '<a href="index.html" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-left jqm-home">Home</a>';
+	//newPageHtml += '<a href="index.html" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-left jqm-home">Home</a>';
+	newPageHtml += '<a href="#home-page" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-left jqm-home">Home</a>';
 	newPageHtml += '<h1>Plates</h1>';
 	newPageHtml += '</div>';
 	newPageHtml += '<div data-role="content">';
@@ -6759,7 +6790,8 @@ function hijaxPortionsPage(direction) {
 	  // create page markup
 	var newPageHtml = '<div data-role="page" id="portions-page" data-title="Portions" class="type-interior" data-theme="b" data-dom-cache="true">';
 	newPageHtml += '<div data-role="header" data-theme="f" data-position="fixed">';
-	newPageHtml += '<a href="index.html" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-left jqm-home">Home</a>';
+	//newPageHtml += '<a href="index.html" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-left jqm-home">Home</a>';
+	newPageHtml += '<a href="#home-page" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-left jqm-home">Home</a>';
 	newPageHtml += '<h1>Portions</h1>';
 	newPageHtml += '</div>';
 	newPageHtml += '<div data-role="content">';
@@ -6839,7 +6871,8 @@ function editPortion(index) {
 	newDialHtml += '</optgroup></select></p>';
 	newDialHtml += '</form>';
 	newDialHtml += '<br><br>';
-	newDialHtml += '<a href="#home-page" data-role="button" data-inline="true" data-rel="back" data-theme="a">Cancel</a>';		
+	//newDialHtml += '<a href="#home-page" data-role="button" data-inline="true" data-rel="back" data-theme="a">Cancel</a>';		
+	newDialHtml += '<a href="#home-page" data-role="button" data-inline="true" data-theme="a">Cancel</a>';		
 	newDialHtml += '<a href="javascript:processEditPortionForm();" data-role="button" data-inline="true">Save Portion Edit</a>';
 	newDialHtml += '<div id ="resultLog"></div>';
 	newDialHtml += '</div><script></script></div>';
@@ -7396,7 +7429,9 @@ function hijaxAlertDial(title, paragraphs) {
 		newDialHtml += '</p>';
 	}
 	newDialHtml += '<br/><br/>';
-	newDialHtml += '<a href="#home-page" data-role="button" data-inline="true" data-rel="back" data-theme="a">OK</a>';
+	//newDialHtml += '<a href="#home-page" data-role="button" data-inline="true" data-rel="back" data-theme="a">OK</a>';
+	//newDialHtml += '<a href="javascript:changeToHomePage();" data-role="button" data-inline="true" data-rel="back" data-theme="a">OK</a>';
+	newDialHtml += '<a href="#home-page" data-role="button" data-inline="true" data-theme="a">OK</a>';
 	newDialHtml += '</div><script></script></div>';
 	var newDial = $(newDialHtml);
 	//add new dialog to page container
