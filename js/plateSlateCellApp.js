@@ -907,7 +907,11 @@ function restoreSlatesCompleted() {
 	} else {
 	// tjs 120214
 		$('.loginLogout').children('.ui-btn-inner').children('.ui-btn-text').text("Logout");
-		$("#login-dial").dialog("close");
+		//$("#login-dial").dialog("close");
+		// tjs 120402
+	    $.mobile.changePage( $('#home-page'), { transition: 'fade'} );
+		// tjs 120403
+		//$('.ui-dialog').dialog('close');
 	}
 	// the database for slates, foods is now restored, next load the cache arrays
 	truncateSlates();
@@ -2523,7 +2527,11 @@ function processPlateEdit(slateId, plate, typePortions, override) {
 		//persist cache
 		addToPlate(plate);
 	}
-	$("#plateEditDialog").dialog("close");
+	//$("#plateEditDialog").dialog("close");
+	// tjs 120403
+	//$('.ui-dialog').dialog('close');
+	// tjs 120403
+    $.mobile.changePage( $('#home-page'), { transition: 'fade'} );
 	
 	view.sendEvent();
 }
@@ -3683,10 +3691,12 @@ function hyjaxLoginDial() {
 	// tjs 120330
     // Remove all old dialog
     //$('#login-dial').remove();
-	//$('.ui-dialog').remove();
+	$('.ui-dialog').remove();
 	//alert("plateSlateCellApp  hyjaxLoginDial...");
     
-	var newDialHtml = '<div data-role="dialog" id="login-dial" data-rel="dialog"><div data-role="header">';
+	// tjs 120403
+	//var newDialHtml = '<div data-role="dialog" id="login-dial" data-rel="dialog"><div data-role="header">';
+	var newDialHtml = '<div data-role="dialog" id="login-dial"><div data-role="header">';
 	newDialHtml += '<h1>Login</h1></div>';	
 	newDialHtml += '<div data-role="content" data-theme="c"><div class="content-primary"><div id="loginContents">';	
 	newDialHtml += '<form name="loginForm"><p>Plate Slate login...</p><p/>';
@@ -3701,7 +3711,9 @@ function hyjaxLoginDial() {
 	newDialHtml += ' data-theme="d"/></fieldset></p>';
 	//newDialHtml += '</form><br/><br/><a href="#home-page" data-role="button" data-inline="true" data-rel="back" data-theme="a">Cancel</a>';		
 	newDialHtml += '</form><br/><br/><a href="#home-page" data-role="button" data-inline="true" data-theme="a">Cancel</a>';		
+	// tjs 120403
 	newDialHtml += '<a href="javascript:processLoginForm();" data-role="button" data-inline="true">Login</a><div id ="resultLog"></div>';
+	//newDialHtml += '<a href="#" id="loginButton" data-role="button" data-inline="true">Login</a><div id ="resultLog"></div>';
 	newDialHtml += '</div></div></div><script></script></div>';
 	var newDial = $(newDialHtml);
 	//add new dialog to page container
@@ -3783,7 +3795,11 @@ function processLoginForm() {
 	    		  $('.loginLogout').children('.ui-btn-inner').children('.ui-btn-text').text("Logout");
 	     		  //alert("plateSlateCellApp processLoginForm success closing dialog...");
 	    		  //$("#login-dial").dialog("close");
-	    		  $('#login-dial').dialog('close');
+	    		  //$('#login-dial').dialog('close');
+	  			// tjs 120402
+	  		    $.mobile.changePage( $('#home-page'), { transition: 'fade'} );
+	    			// tjs 120403
+	    			//$('.ui-dialog').dialog('close');
 	    		  //$('.ui-dialog').dialog('close');
 					//setTimeout(function() {
 						//alert('hello');
@@ -3809,6 +3825,11 @@ function processLoginForm() {
 
 //tjs 120209
 function hyjaxLogoutDial() {
+	// tjs 120402
+    // Remove all old dialog
+    //$('#logout-dial').remove();
+	$('.ui-dialog').remove();
+	
 	var newDialHtml = '<div data-role="dialog" id="logout-dial" data-rel="dialog"><div data-role="header">';
 	newDialHtml += '<h1>Logout</h1></div>';	
 	newDialHtml += '<div data-role="content" data-theme="c">';	
@@ -3842,12 +3863,12 @@ function doLogout() {
 		// tjs 120216
     	var fieldsChecked = $("#logout-dial input:checked");
     	var len = fieldsChecked.length;
-    	//alert("plateSlateCellApp hyjaxPreferencesPage len " + len);
+    	//alert("plateSlateCellApp doLogout len " + len);
     	var field;
     	for (var i = 0; i < len; i++) {
     		var inputElm = fieldsChecked[i];
     		field = inputElm.value;
-        	//alert("plateSlateCellApp hyjaxPreferencesPage pref " + pref);
+        	//alert("plateSlateCellApp doLogout pref " + pref);
     		if (field == "backup") {
     			isBackupStarted = true;
     			doClientBackup();
@@ -3855,8 +3876,20 @@ function doLogout() {
     	}
 	}
 	if (!isBackupStarted) {
-		if (backupDataToServer == true)
-			$("#logout-dial").dialog("close");
+		// tjs 120402
+		//if (backupDataToServer == true)
+		//if (backupDataToServer != true)
+    	//alert("plateSlateCellApp doLogout isBackupStarted " + isBackupStarted + " backupDataToServer " + backupDataToServer);
+    	// e.g. plateSlateCellApp doLogout isBackupStarted false backupDataToServer true
+			//$("#logout-dial").dialog("close");
+			//alert("plateSlateCellApp doLogout isBackupStarted " + isBackupStarted + " backupDataToServer " + backupDataToServer + " closed!");
+			// e.g. plateSlateCellApp doLogout isBackupStarted false backupDataToServer true closed!
+			//$.mobile.changePage($('#home-page')); ?? , reverse: true
+			// tjs 120402
+		    $.mobile.changePage( $('#home-page'), { transition: 'fade'} );
+			// tjs 120403
+			//$('.ui-dialog').dialog('close');
+
 		finishLogout();
 	}
 }
@@ -5668,6 +5701,8 @@ function deriveProfileSelectionList() {
 	profileSelectListHtml += '<option value ="texmex">Texmex</option>';
 	profileSelectListHtml += '<option value ="vegetarian">Vegetarian</option>';
 	profileSelectListHtml += '<option value ="other">Other</option>';
+	// tjs 120402
+	profileSelectListHtml += '<option value ="reset">RESET</option>';
 	profileSelectListHtml += '</optgroup></select>';
 	//alert("plateSlateCellApp deriveProfileSelectionList profileSelectListHtml " + profileSelectListHtml);
 	return profileSelectListHtml;
@@ -5713,7 +5748,15 @@ function processImportProfileForm() {
 	var profileSelection;
 	profileSelection = document.importForm.profileSelection;
 	var optionValue = profileSelection.options[profileSelection.selectedIndex].value;
-	doRestoreFromBackup(loginAccountNumber, optionValue);
+	// tjs 120402
+	if (optionValue == "reset") {
+		initClientData();
+		setTimeout(function() {
+			readPortions();
+			},500);
+	} else {
+		doRestoreFromBackup(loginAccountNumber, optionValue);
+	}
 }
 
 // tjs 120216
@@ -6037,7 +6080,11 @@ function processAddNewPortionForm(portionType) {
 	}
 
 	if (portionType == "grain") {
-		$('#grain-portion-dial').dialog('close');
+		//$('#grain-portion-dial').dialog('close');
+		// tjs 120403
+		//$('.ui-dialog').dialog('close');
+		// tjs 120403
+	    $.mobile.changePage( $('#home-page'), { transition: 'fade'} );
 		//if (offset < 1000){
 		if (isSlate > 0){
 			var dividerId = '#grain' + mealName;
@@ -6073,13 +6120,29 @@ function processAddNewPortionForm(portionType) {
 		}
 		//alert("plateSlateCellApp processAddNewPortionForm mealName " + mealName);
 	} else if (portionType == "protein") {
-		$('#protein-portion-dial').dialog('close');
+		//$('#protein-portion-dial').dialog('close');
+		// tjs 120403
+		//$('.ui-dialog').dialog('close');
+		// tjs 120403
+	    $.mobile.changePage( $('#home-page'), { transition: 'fade'} );
 	} else if (portionType == "vegetables") {
-		$('#vegetables-portion-dial').dialog('close');
+		//$('#vegetables-portion-dial').dialog('close');
+		// tjs 120403
+		//$('.ui-dialog').dialog('close');
+		// tjs 120403
+	    $.mobile.changePage( $('#home-page'), { transition: 'fade'} );
 	} else if (portionType == "fruits") {
-		$('#fruits-portion-dial').dialog('close');
+		//$('#fruits-portion-dial').dialog('close');
+		// tjs 120403
+		//$('.ui-dialog').dialog('close');
+		// tjs 120403
+	    $.mobile.changePage( $('#home-page'), { transition: 'fade'} );
 	} else if (portionType == "dairy") {
-		$('#dairy-portion-dial').dialog('close');
+		//$('#dairy-portion-dial').dialog('close');
+		// tjs 120403
+		//$('.ui-dialog').dialog('close');
+		// tjs 120403
+	    $.mobile.changePage( $('#home-page'), { transition: 'fade'} );
 	}
 }
 
@@ -6088,15 +6151,35 @@ function cancelAddNewPortionForm(portionType) {
 	var offset;
 	var mealName;
 	if (portionType == "grain") {
-		$('#grain-portion-dial').dialog('close');
+		//$('#grain-portion-dial').dialog('close');
+		// tjs 120403
+		//$('.ui-dialog').dialog('close');
+		// tjs 120403
+	    $.mobile.changePage( $('#home-page'), { transition: 'fade'} );
 	} else if (portionType == "protein") {
-		$('#protein-portion-dial').dialog('close');
+		//$('#protein-portion-dial').dialog('close');
+		// tjs 120403
+		//$('.ui-dialog').dialog('close');
+		// tjs 120403
+	    $.mobile.changePage( $('#home-page'), { transition: 'fade'} );
 	} else if (portionType == "vegetables") {
-		$('#vegetables-portion-dial').dialog('close');
+		//$('#vegetables-portion-dial').dialog('close');
+		// tjs 120403
+		//$('.ui-dialog').dialog('close');
+		// tjs 120403
+	    $.mobile.changePage( $('#home-page'), { transition: 'fade'} );
 	} else if (portionType == "fruits") {
-		$('#fruits-portion-dial').dialog('close');
+		//$('#fruits-portion-dial').dialog('close');
+		// tjs 120403
+		//$('.ui-dialog').dialog('close');
+		// tjs 120403
+	    $.mobile.changePage( $('#home-page'), { transition: 'fade'} );
 	} else if (portionType == "dairy") {
-		$('#dairy-portion-dial').dialog('close');
+		//$('#dairy-portion-dial').dialog('close');
+		// tjs 120403
+		//$('.ui-dialog').dialog('close');
+		// tjs 120403
+	    $.mobile.changePage( $('#home-page'), { transition: 'fade'} );
 	}
 }
 
@@ -6328,6 +6411,9 @@ function refreshSlatePortionCache2(slate, mealName, optionValue) {
 }
 
 function hijaxGrainSelectionDial(offset, mealName, torf) {
+	// tjs 120403
+	//$('.ui-dialog').remove();
+
 	//alert("plateslate hijaxGrainSelectionDial offset " + offset + " mealName " + mealName);
 	//alert("plateslate hijaxGrainSelectionDial offset " + offset + " mealName " + mealName + " grainPortionSelectListHtml " + grainPortionSelectListHtml);
 	var newDialHtml = '<div data-role="dialog" id="grain-portion-dial" data-rel="dialog"><div data-role="header">';
@@ -6358,6 +6444,9 @@ function hijaxGrainSelectionDial(offset, mealName, torf) {
 }
 
 function hijaxProteinSelectionDial(offset, mealName, torf) {
+	// tjs 120403
+	//$('.ui-dialog').remove();
+
 	//alert("plateslate hijaxProteinSelectionDial offset " + offset + " mealName " + mealName + " grainPortionSelectListHtml " + grainPortionSelectListHtml);
 	var newDialHtml = '<div data-role="dialog" id="protein-portion-dial"><div data-role="header">';
 	newDialHtml += '<h1>Add New Protein Portion</h1></div>';	
@@ -6386,6 +6475,9 @@ function hijaxProteinSelectionDial(offset, mealName, torf) {
 }
 
 function hijaxVegetablesSelectionDial(offset, mealName, torf) {
+	// tjs 120403
+	//$('.ui-dialog').remove();
+
 	var newDialHtml = '<div data-role="dialog" id="vegetables-portion-dial"><div data-role="header">';
 	newDialHtml += '<h1>Add New Vegetable Portion</h1></div>';	
 	newDialHtml += '<div data-role="content" data-theme="c">';	
@@ -6413,6 +6505,9 @@ function hijaxVegetablesSelectionDial(offset, mealName, torf) {
 }
 
 function hijaxFruitsSelectionDial(offset, mealName, torf) {
+	// tjs 120403
+	//$('.ui-dialog').remove();
+
 	var newDialHtml = '<div data-role="dialog" id="fruits-portion-dial"><div data-role="header">';
 	newDialHtml += '<h1>Add New Fruit Portion</h1></div>';	
 	newDialHtml += '<div data-role="content" data-theme="c">';	
@@ -6440,6 +6535,9 @@ function hijaxFruitsSelectionDial(offset, mealName, torf) {
 }
 
 function hijaxDairySelectionDial(offset, mealName, torf) {
+	// tjs 120403
+	//$('.ui-dialog').remove();
+
 	var newDialHtml = '<div data-role="dialog" id="dairy-portion-dial"><div data-role="header">';
 	newDialHtml += '<h1>Add New Dairy Portion</h1></div>';	
 	newDialHtml += '<div data-role="content" data-theme="c">';	
@@ -6500,7 +6598,11 @@ function dropPortion(plateIndex, mealName, portionId) {
 		else if (dish.portion9 == portionId)
 			dish.portion9 = 0;
 		addToPlate(dish);
-		$('#edit-plate-dial').dialog('close');
+		//$('#edit-plate-dial').dialog('close');
+		// tjs 120403
+		//$('.ui-dialog').dialog('close');
+		// tjs 120403
+	    $.mobile.changePage( $('#home-page'), { transition: 'fade'} );
 	}
 }
 
@@ -6642,6 +6744,9 @@ function editPlate(index) {
 
 	derivePortionSelectionLists(preSelectedPortions);
 
+	// tjs 120403
+	$('.ui-dialog').remove();
+
 	var newDialHtml = '<div data-role="dialog" id="edit-plate-dial"><div data-role="header">';
 	newDialHtml += '<h1>Edit Plate</h1></div>';	
 	newDialHtml += '<div data-role="content" data-theme="c">';	
@@ -6665,6 +6770,8 @@ function editPlate(index) {
 	newDialHtml += '<a href="javascript:hijaxDairySelectionDial(' + index + ",'" + mealName + "', false" + ');" data-role="button" data-icon="plus" data-inline="true" data-iconpos="right">Dairy</a>';
 	newDialHtml += '</div></li>';
 	newDialHtml += plateDairyHtml;
+// tjs 120403
+	newDialHtml += '<br/><br/><a href="#home-page" data-role="button" data-inline="true" data-theme="a">Cancel</a>';		
 
 	newDialHtml += '</div><script></script></div>';
 	var newDial = $(newDialHtml);
@@ -6828,6 +6935,9 @@ function addPortion() {
 }
 
 function editPortion(index) {
+	// tjs 120403
+	$('.ui-dialog').remove();
+
 	//alert("plateSlateCellApp editPortion index " + index);
 	var portion = portions[index];
 	var portionName = portion.name;
@@ -6942,7 +7052,11 @@ function processAddPortionForm() {
 		portions[index] = portion;
 		// use plate edit dialog...
 		addToPortion(portion);
-		$('#add-portion-dial').dialog('close');
+		//$('#add-portion-dial').dialog('close');
+		// tjs 120403
+		//$('.ui-dialog').dialog('close');
+		// tjs 120403
+	    $.mobile.changePage( $('#home-page'), { transition: 'fade'} );
 	} else {
 		var isError = true;
 		var msg = "The portion with name " + portionName + " already Exists!";
@@ -6977,7 +7091,11 @@ function processEditPortionForm() {
 	portion.description = portionDescription;
 	portion.type = optionValue;
 	addToPortion(portion);
-	$('#edit-portion-dial').dialog('close');
+	//$('#edit-portion-dial').dialog('close');
+	// tjs 120403
+	//$('.ui-dialog').dialog('close');
+	// tjs 120403
+    $.mobile.changePage( $('#home-page'), { transition: 'fade'} );
 }
 
 function makeColor(hue) {
@@ -7066,7 +7184,11 @@ function doClientBackup() {
 			//$.post("../plateslate/clientXml2RDBMS.php", { xml: xml }, function(msg) {		
 				var len = msg.length;
 				// tjs 120216
-				$("#logout-dial").dialog("close");
+				//$("#logout-dial").dialog("close");
+				// tjs 120402
+			    $.mobile.changePage( $('#home-page'), { transition: 'fade'} );
+				// tjs 120403
+				//$('.ui-dialog').dialog('close');
 				finishLogout();
 		});
 	});
@@ -7302,7 +7424,9 @@ function doRestoreFromBackup(accountId, profile) {
 				var preferenceValue = preference.text();
 		         //alert("plateslate doRestoreFromBackup preference type " + preferenceType + " preferenceName " + preferenceName + " preferenceValue " + preferenceValue);
 			});
-
+			// tjs 120402
+			initClientData();
+/*
 			// delete all rows from all tables...
 			systemDB.transaction(
 					function(transaction) {
@@ -7376,7 +7500,7 @@ function doRestoreFromBackup(accountId, profile) {
 			slates.length = 0;
 			plates.length = 0;
 			portions.length = 0;
-			
+*/			
 			// now repopulate the portions
 			var type;
 			var description;
@@ -7418,8 +7542,88 @@ function doRestoreFromBackup(accountId, profile) {
     return false;	
 }
 
+// tjs 120402
+function initClientData() {
+	// delete all rows from all tables...
+	systemDB.transaction(
+			function(transaction) {
+				transaction.executeSql(
+				'DELETE from food', null,						
+				function (transaction, result) {
+					//alert("plateslate loadPlates result.rows.length " + result.rows.length);
+				});
+			});
+	systemDB.transaction(
+			function(transaction) {
+				transaction.executeSql(
+				'DELETE from slate', null,						
+				function (transaction, result) {
+					//alert("plateslate loadPlates result.rows.length " + result.rows.length);
+				});
+			});
+	systemDB.transaction(
+			function(transaction) {
+				transaction.executeSql(
+				'DELETE from plate', null,						
+				function (transaction, result) {
+					//alert("plateslate loadPlates result.rows.length " + result.rows.length);
+				});
+			});
+	systemDB.transaction(
+			function(transaction) {
+				transaction.executeSql(
+				'DELETE from portion', null,						
+				function (transaction, result) {
+					//alert("plateslate loadPlates result.rows.length " + result.rows.length);
+				});
+			});
+
+	// tjs 120301
+	// reset the tables' sequences...
+	systemDB.transaction(
+			function(transaction) {
+				transaction.executeSql(
+				"DELETE FROM sqlite_sequence WHERE name = 'food'", null,						
+				function (transaction, result) {
+					//alert("plateslate loadPlates result.rows.length " + result.rows.length);
+				});
+			});
+	systemDB.transaction(
+			function(transaction) {
+				transaction.executeSql(
+				"DELETE FROM sqlite_sequence WHERE name = 'slate'", null,						
+				function (transaction, result) {
+					//alert("plateslate loadPlates result.rows.length " + result.rows.length);
+				});
+			});
+	systemDB.transaction(
+			function(transaction) {
+				transaction.executeSql(
+				"DELETE FROM sqlite_sequence WHERE name = 'plate'", null,						
+				function (transaction, result) {
+					//alert("plateslate loadPlates result.rows.length " + result.rows.length);
+				});
+			});
+	systemDB.transaction(
+			function(transaction) {
+				transaction.executeSql(
+				"DELETE FROM sqlite_sequence WHERE name = 'portion'", null,						
+				function (transaction, result) {
+					//alert("plateslate loadPlates result.rows.length " + result.rows.length);
+				});
+			});
+
+	// the cache arrays also need to be truncated...
+	slates.length = 0;
+	plates.length = 0;
+	portions.length = 0;
+}
+
 // tjs 120229
 function hijaxAlertDial(title, paragraphs) {
+	// tjs 120403
+	$('.ui-dialog').remove();
+
 	var newDialHtml = '<div data-role="dialog" id="alert-dial" data-rel="dialog"><div data-role="header">';
 	newDialHtml += '<h1>' + title + '</h1></div>';	
 	newDialHtml += '<div data-role="content" data-theme="c">';

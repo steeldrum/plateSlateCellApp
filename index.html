@@ -181,7 +181,16 @@ $LastChangedDate:: 2012-01-03 14:44:48#$: Date of last commit
 				    	// tjs 110819
 				    	return false;
 					}); 
-				
+
+				// tjs 120403
+				/*
+				$('#loginButton').live('vclick', function() {
+			  		// Live handler called.
+			        //alert("index loginButton button clicked...");
+			  		processLoginForm();
+				    	return false;
+					}); */
+
 				// tjs 120119
 			    $('.loginLogout').bind('click', function () {
 			    	//alert("index Login/Logout button clicked...");
@@ -300,7 +309,8 @@ $LastChangedDate:: 2012-01-03 14:44:48#$: Date of last commit
 
 <!-- About -->
 <div data-role="page" data-add-back-btn="true" id="about-page" data-title="About">
-	<div data-role="header">
+	<div data-role="header" data-theme="f" data-position="fixed">
+	<a href="#home-page" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-left jqm-home">Home</a>
 		<h1>About Plate Slate</h1>
 	</div>
 
