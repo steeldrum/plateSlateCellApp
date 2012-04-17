@@ -5204,15 +5204,10 @@ function addSlatePages(dows, breakfastPlates, lunchPlates, dinnerPlates, breakfa
     
     // Create each page's markup
     for ( var i=0; i<dows.length; i++ ) {
-    //for ( var i=0; i<viewSlatesDows.length; i++ ) {
-    	//prevPage = addSlatePage(prevPage, divHeaderStyle, divLabelStyle, divDataStyle, dows[i], breakfastPlates[i].name, lunchPlates[i].name, dinnerPlates[i].name, breakfastPortions[i], lunchPortions[i], dinnerPortions[i] );
-    	//prevPage = addSlatePage(prevPage, divHeaderStyle, divLabelStyle, divDataStyle, dows[i], viewSlatesNames[i], breakfastPlates[i].name, lunchPlates[i].name, dinnerPlates[i].name, breakfastPortions[i], lunchPortions[i], dinnerPortions[i] );
-    	//var results = addSlatePage(prevPage, divHeaderStyle, divLabelStyle, divDataStyle, dows[i], viewSlatesNames[i], breakfastPlates[i].name, lunchPlates[i].name, dinnerPlates[i].name, breakfastPortions[i], lunchPortions[i], dinnerPortions[i] );
     	results = addSlatePage(prevPageDateName, divHeaderStyle, divLabelStyle, divDataStyle, dows[i], viewSlatesNames[i], breakfastPlates[i].name, lunchPlates[i].name, dinnerPlates[i].name, breakfastPortions[i], lunchPortions[i], dinnerPortions[i] );
     	prevPage = results[0];
         prevPageDateName = results[1];
-    	//prevPage = addSlatePage(prevPage, divHeaderStyle, divLabelStyle, divDataStyle, viewSlatesDows[i], breakfastPlates[i].name, lunchPlates[i].name, dinnerPlates[i].name, breakfastPortions[i], lunchPortions[i], dinnerPortions[i] );
-    	//alert("plateSlateCellApp addSlatePages prevPage " + prevPage);
+     	//alert("plateSlateCellApp addSlatePages prevPage " + prevPage);
     	//alert("plateSlateCellApp addSlatePages prevPage " + prevPage + " prevPageDateName " + prevPageDateName + " i " + i);
         // e.g. Today March 28, 2012 and thru i=0 i=9 April...
     	if (prevPage == "Today") {
@@ -5634,7 +5629,8 @@ function getReportGridArrays(thresholdOffset, plateCount, plateHistory) {
 		    	dateName = slate.name;
 		    	dateName = dateName.replace(/\s/g,'_');
 		    	dateName = dateName.replace(/,/g,'');
-		    	dateNames.push(dateName);
+		    	//dateNames.push(dateName);
+		    	dateNames.unshift(dateName);
 		    	plateId = slate.breakfastId;
 		    	plate = plates[plateId];
 		    	breakfastPlates.unshift(plate);
